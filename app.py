@@ -28,10 +28,10 @@ app.register_blueprint(account_book_auth)
 def index():
     return render_template("index.html")
 @app.route("/account_book/<id>")
-def attraction(id):
+def book(id):
     return render_template("account_book.html")
 @app.route("/home")
-def booking():
+def homPage():
     return render_template("home.html")
 
 # @socketio.on('send_message')
