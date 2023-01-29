@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: "Merriweather", serif;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: #fff5ee;
+}
+.container .row img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius: 10px;
+}
+.page-name {
+  font-family: "Comic Sans MS", cursive;
+  font-size: 28px;
+  padding-left: 5px;
+  font-weight: bold;
+  color: #8b4513;
+  cursor: pointer;
+}
+.join-us {
+  cursor: pointer;
+  font-size: 20px;
+  padding-right: 10px;
+  font-weight: bold;
+  color: #8b4513;
+}
+.nav {
+  background-color: #fdf5e6;
+}
+.kv {
+  display: flex;
+  height: 70vh;
+  align-items: center;
+  background-color: #fdf5e6;
+}
+.cover-image {
+  height: 65vh;
+  width: 1000px;
+  margin-bottom: 40px;
+}
+.cover-image img {
+  background-image: url(/static/img/index.png);
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: top;
+}
+.cover-text {
+  flex: none;
+  height: 40vh;
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+  color: #8b4513;
+}
+.slogan {
+  font-size: 42px;
+  font-family: "Joan", serif;
+}
+main {
+  margin-bottom: 50px;
+}
+.github {
+  padding-left: 10px;
+}
+/* -------------- Signin ------------------- */
+.name {
+  font-family: "Comic Sans MS", cursive;
+}
+section {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.login {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translate(-50%);
+}
+/* .sign-up-section {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.25);
+} */
+.sign-up {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translate(-50%);
+}
+#sign-up-message,
+#login-message {
+  color: red;
+  padding: 10px;
+}
+#register,
+#go-login {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .kv {
+    flex-wrap: wrap;
+    height: 100vh;
+  }
+}

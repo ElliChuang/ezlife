@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/static/css/home.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
+    <title>index</title>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="page-name" id="ezlife">EzLife</div>
+      <div class="right">
+        <div class="create">帳簿</div>
+        <div class="bar-list">
+          <div class="user-list"></div>
+          <div class="user-list-content">
+            <div>會員資料</div>
+            <div id="logout">登出系統</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <div class="welcome">
+        Hi，
+        <p id="welcome-name"></p>
+      </div>
+      <div class="new-book">
+        <div class="add"></div>
+      </div>
+      <div class="book-list"></div>
+      <!-- pop up message -->
+      <div class="popup-window-outer">
+        <div class="popup-window">
+          <div class="popup-body">
+            <div class="popup-closed"></div>
+            <div class="popup-title">請輸入帳簿名稱</div>
+            <input
+              type="text"
+              class="popup-message"
+              required
+              placeholder="浪漫小窩"
+            />
+            <button class="popup-button">確定</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="/static/js/html/html_notice.js"></script>
+    <script type="module" src="/static/js/home.js"></script>
+    <script type="module" src="/static/js/notice.js"></script>
+  </body>
+</html>

@@ -1,0 +1,272 @@
+@import url("https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: "Merriweather", serif;
+  color: #8b4513;
+  margin: 0;
+  padding: 0;
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid;
+  border-color: #8b4513;
+  background-color: #fdf5e6;
+  padding: 10px;
+}
+.page-name {
+  flex: none;
+  font-family: "Comic Sans MS", cursive;
+  font-size: 28px;
+  padding-left: 20px;
+  font-weight: bold;
+}
+.nav-list {
+  flex: none;
+  list-style-type: none;
+  margin: 0;
+  padding: 10px;
+  width: 60px;
+  cursor: pointer;
+  position: relative;
+  display: none;
+}
+.right {
+  display: flex;
+  flex: auto;
+  justify-content: flex-end;
+  align-items: center;
+}
+.create {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fdf5e6;
+  height: 50px;
+  width: 100px;
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+.bar-list {
+  flex: none;
+  list-style-type: none;
+  margin: 0;
+  padding: 10px;
+  width: 60px;
+  cursor: pointer;
+  position: relative;
+}
+.user-list {
+  width: 30px;
+  height: 30px;
+  background-image: url(/static/img/user-profile.png);
+  background-position: center;
+  background-size: cover;
+  margin-right: 5px;
+}
+.user-list-content {
+  background-color: #ffffff;
+  position: absolute;
+  width: 130px;
+  top: 50px;
+  right: 10px;
+  border-radius: 5px;
+  box-shadow: 3px 3px 8px rgba(33, 33, 33, 0.7);
+  border: 2px solid;
+  border-color: #8b4513;
+  display: none;
+}
+.user-list-content div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fdf5e6;
+  height: 60px;
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+.user-list-content div:hover,
+.create:hover {
+  background-color: rgba(139, 69, 19, 0.7);
+  color: #ffffff;
+  border-radius: 5px;
+}
+
+.create-books {
+  flex: auto;
+  cursor: pointer;
+  font-size: 20px;
+  padding-right: 20px;
+  font-weight: bold;
+  text-align: right;
+}
+
+/*---------------------- main ------------------------*/
+.welcome {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  height: 40px;
+  width: 200px;
+  margin-top: 40px;
+  margin-left: 60px;
+  font-size: 20px;
+}
+.new-book {
+  height: 245px;
+  width: 200px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #a8a8a8;
+  margin: 40px;
+  margin-left: 60px;
+}
+.add {
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  background-image: url(/static/img/add.png);
+  background-size: cover;
+  background-position: cover;
+}
+.new-book:hover,
+.book-list-file:hover {
+  box-shadow: 3px 3px 8px rgba(33, 33, 33, 0.7);
+}
+.book-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 40px;
+}
+.book-list-file {
+  position: relative;
+  height: 245px;
+  width: 200px;
+  border: 3px solid #a8a8a8;
+  border-radius: 5px;
+  margin: 20px;
+  cursor: pointer;
+}
+.delete-file {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background-image: url(/static/img/delete.png);
+  background-size: cover;
+  background-position: cover;
+}
+.file {
+  border: none;
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-45%, -50%);
+  background-image: url(/static/img/list.png);
+  background-size: cover;
+  background-position: cover;
+}
+.file-name {
+  position: absolute;
+  bottom: 0;
+  height: 40px;
+  width: 197px;
+  padding: 5px;
+  font-size: 18px;
+  text-align: center;
+  border-top: 3px solid #a8a8a8;
+}
+/*--------- pop up message ---------*/
+.popup-window-outer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.popup-window {
+  position: absolute;
+  top: 150px;
+  left: 50%;
+  transform: translate(-50%);
+  width: 340px;
+  margin: auto;
+  box-shadow: 0px 4px 60px #aaaaaa;
+  background: #ffffff;
+  border-radius: 6px;
+}
+
+.popup-body {
+  width: 310px;
+  margin: auto;
+  position: relative;
+}
+.popup-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 310px;
+  height: 27px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 24px;
+  color: #666666;
+}
+.popup-closed {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  background-image: url(/static/img/close.png);
+  background-size: cover;
+  z-index: 2;
+}
+.popup-message {
+  text-align: center;
+  font-weight: 00;
+  font-size: 18px;
+  color: #666666;
+  width: 310px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.popup-button {
+  cursor: pointer;
+  border: 0;
+  width: 310px;
+  height: 47px;
+  background-color: rgba(139, 69, 19, 0.7);
+  border-radius: 5px;
+  font-size: 19px;
+  font-weight: 400;
+  color: #ffffff;
+  margin-bottom: 25px;
+  transition-duration: 0.2s;
+}
+.popup-button:hover {
+  box-shadow: 2px 2px 5px rgba(33, 33, 33);
+}

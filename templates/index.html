@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <title>home</title>
+  </head>
+  <body>
+    <nav class="navbar nav">
+      <div class="container-fluid d-flex justify-content-between">
+        <!-- <a class="navbar-brand" href="/">
+          <img src="/static/img/logo_new.png" alt="Logo" width="50" /> -->
+        <span class="page-name" id="ezlife"> EzLife</span>
+        <!-- </a> -->
+        <span class="join-us">Login</span>
+      </div>
+    </nav>
+    <main>
+      <div class="kv">
+        <div class="cover-image">
+          <img />
+        </div>
+        <div class="cover-text">
+          <div class="slogan">easy</div>
+          <div class="slogan">to</div>
+          <div class="slogan">Share your life</div>
+        </div>
+      </div>
+      <!---------------- 說明 -------------------------->
+      <div class="container">
+        <div class="row row-cols-md-1 mt-5">
+          <div class="col-lg-5">共享賬本</div>
+          <div class="col-lg-7 p-5">
+            <img src="/static/img/home/bookkeeping.png" />
+          </div>
+        </div>
+        <div class="row row-cols-sm-1 mt-5">
+          <div class="col-md-5">費用分析</div>
+          <div class="col-md-7 p-5">
+            <img src="/static/img/home/analyse.png" />
+          </div>
+        </div>
+      </div>
+    </main>
+    <!----------------- signin ------------------------->
+    <section class="login-section">
+      <div class="container-fluid h-custom login">
+        <div class="row d-flex justify-content-center align-items-center">
+          <div
+            class="col-8 col-md-5 col-lg-4 shadow-lg mb-5 rounded p-4"
+            style="background: #ffffff"
+          >
+            <div>
+              <div class="d-flex justify-content-end">
+                <button
+                  type="button"
+                  class="btn-close d-flex justify-content-end"
+                  aria-label="Close"
+                  id="close-login-button"
+                ></button>
+              </div>
+              <div
+                class="d-flex justify-content-center align-items-center mb-3 pb-1"
+              >
+                <span class="h1 fw-bold mb-0 name">EzLife</span>
+              </div>
+
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <input
+                  type="email"
+                  class="form-control form-control-lg"
+                  placeholder="email"
+                  required
+                  id="login-email"
+                />
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-3">
+                <input
+                  type="password"
+                  class="form-control form-control-lg"
+                  placeholder="password"
+                  required
+                  pattern="[A-Za-z0-9]{6,}"
+                  id="login-password"
+                />
+              </div>
+              <div class="d-flex justify-content-center align-items-center">
+                <div id="login-message"></div>
+              </div>
+              <div class="d-flex justify-content-center align-items-center">
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-lg btn-block flex-grow-1"
+                  id="login-button"
+                >
+                  Sign in
+                </button>
+              </div>
+              <a
+                class="btn btn-secondary btn-lg d-flex justify-content-center align-items-center my-3"
+                role="button"
+              >
+                <i></i>Continue with Google
+              </a>
+              <div class="d-flex justify-content-center align-items-center">
+                <p class="small fw-bold mt-2 pt-1 mb-0">
+                  Don't have an account?
+                  <a class="link-danger" id="register">Register</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!----------------- signUp ------------------------->
+    <section class="sign-up-section">
+      <div class="container-fluid h-custom sign-up">
+        <div class="row d-flex justify-content-center align-items-center">
+          <div
+            class="col-10 col-md-6 col-lg-6 col-xl-4 shadow-lg mb-5 rounded p-4"
+            style="background: #ffffff"
+          >
+            <div>
+              <div class="d-flex justify-content-end">
+                <button
+                  type="button"
+                  class="btn-close d-flex justify-content-end"
+                  aria-label="Close"
+                  id="close-sign-up-button"
+                ></button>
+              </div>
+              <div
+                class="d-flex justify-content-center align-items-center mb-3 pb-1"
+              >
+                <span class="h1 fw-bold mb-0 name">EzLife</span>
+              </div>
+
+              <!-- Name input -->
+              <div class="form-outline mb-4">
+                <input
+                  type="text"
+                  class="form-control form-control-lg"
+                  placeholder="name"
+                  required
+                  id="sign-up-name"
+                />
+              </div>
+
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <input
+                  type="email"
+                  class="form-control form-control-lg"
+                  placeholder="email"
+                  required
+                  id="sign-up-email"
+                />
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-3">
+                <input
+                  type="password"
+                  id="sign-up-password"
+                  class="form-control form-control-lg"
+                  placeholder="password"
+                  required
+                  pattern="[A-Za-z0-9]{6,}"
+                />
+              </div>
+              <div class="d-flex justify-content-center align-items-center">
+                <div id="sign-up-message"></div>
+              </div>
+              <div class="d-flex justify-content-center align-items-center">
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-lg btn-block flex-grow-1"
+                  id="sign-up-button"
+                >
+                  Sign up
+                </button>
+              </div>
+              <a
+                class="btn btn-secondary btn-lg d-flex justify-content-center align-items-center my-3"
+                role="button"
+              >
+                <i></i>Continue with Google
+              </a>
+              <div class="d-flex justify-content-center align-items-center">
+                <p class="small fw-bold mt-2 pt-1 mb-0">
+                  Already have an account?
+                  <a class="link-danger" id="go-login">Sign in</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="/static/js/html/html_notice.js"></script>
+    <footer class="footer mt-auto py-4 bg-light">
+      <div class="d-flex justify-content-center align-items-center">
+        <span class="text-muted">@ 2023 ElliChunag</span>
+        <a href="https://github.com/ElliChuang">
+          <img class="github" src="/static/img/github.png" width="30" />
+        </a>
+      </div>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+      integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="/static/js/notice.js"></script>
+    <script type="module" src="/static/js/index.js"></script>
+  </body>
+</html>
