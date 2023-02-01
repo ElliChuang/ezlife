@@ -1,0 +1,125 @@
+.main-chart {
+  max-width: 1400px;
+  margin: auto;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+.chart-query-box {
+  display: flex;
+  flex: wrap;
+  max-width: 1400px;
+  padding: 40px 40px 40px 80px;
+  background-color: #fdf5e6;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  font-size: 18px;
+  box-shadow: 2px 2px 5px gray;
+}
+.chart-query-box-required {
+  width: 650px;
+}
+.chart-query-box-option {
+  width: 650px;
+}
+.chart-query-box-button {
+  width: 100px;
+}
+.chart-query-box-title {
+  font-size: 22px;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+.chart-query-box-subtitle {
+  display: inline-block;
+  font-size: 20px;
+  padding: 5px;
+  width: 100px;
+}
+.chart-query-box-required > select,
+.chart-query-box-option > select {
+  height: 35px;
+  width: 200px;
+  font-size: 18px;
+  text-align: center;
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+.chart-query-box-keyword {
+  height: 35px;
+  width: 200px;
+  font-size: 18px;
+  text-align: center;
+  cursor: pointer;
+  padding: 6px;
+  margin-left: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+.chart-query-box-button {
+  background-color: rgba(139, 69, 19, 0.7);
+  color: #ffffff;
+  border-radius: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px gray;
+  text-align: center;
+  line-height: 221px;
+}
+
+/*----------------------- chart ------------------------*/
+.chart {
+  display: flex;
+  flex: wrap;
+  max-width: 1400px;
+}
+#current-chart,
+#previous-chart {
+  width: 680px;
+  height: 500px;
+  padding: 10px;
+  margin-right: 40px;
+  background-color: blanchedalmond;
+  margin-bottom: 30px;
+}
+#current-journal-list,
+#previous-journal-list {
+  width: 680px;
+  padding: 10px;
+  height: 40vh;
+  background-color: blanchedalmond;
+}
+
+@media (max-width: 1400px) {
+  .chart-query-box {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 700px;
+    margin: auto;
+    padding: 60px 40px 60px 40px;
+  }
+  .chart-query-box-required {
+    max-width: 310px;
+    margin: auto;
+  }
+  .chart-query-box-option {
+    max-width: 310px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin: auto;
+  }
+  .chart-query-box-button {
+    padding: 10px;
+    width: 300px;
+    line-height: 100%;
+    margin: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-query-box {
+    width: 90%;
+  }
+}

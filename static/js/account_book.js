@@ -4,6 +4,7 @@ const date = document.querySelector("input[type='date']");
 const price = document.querySelector("input[name='price']");
 const remark = document.querySelector("input[name='remark']");
 const ezlife = document.querySelector("#ezlife");
+const accountBookes = document.querySelector("#account-books");
 const bookName = document.querySelector(".book-name");
 const contentList = document.querySelector(".content-list");
 const category1 = document.querySelector("#category1");
@@ -66,6 +67,10 @@ function homePage() {
 }
 
 ezlife.addEventListener("click", () => {
+  window.location.href = "/home";
+});
+
+accountBookes.addEventListener("click", () => {
   window.location.href = "/home";
 });
 

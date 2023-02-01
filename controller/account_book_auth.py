@@ -23,7 +23,7 @@ def book_auth(bookId):
         mycursor = connection_object.cursor(dictionary=True)
         query = ("""
             SELECT m.id, m.name FROM member AS m
-            INNer JOIN collaborator AS c ON m.id = c.collaborator_id
+            INNER JOIN collaborator AS c ON m.id = c.collaborator_id
             WHERE c.book_id = %s 
         """)
         mycursor.execute(query, (bookId,))
@@ -41,15 +41,6 @@ def book_auth(bookId):
                     "error": True,
                     "data" : "無帳簿權限",             
                 }),403
-        # if not result:
-        #     return jsonify({
-        #             "error": True,
-        #             "data" : "無帳簿權限",             
-        #         }),403
-        # if result:
-        #     return jsonify({
-        #                 "ok": True,          
-        #             }),200
 
     except mysql.connector.Error as err:
         print("Something went wrong when get book_auth: {}".format(err))
