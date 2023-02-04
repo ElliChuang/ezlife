@@ -15,54 +15,13 @@
       type="text/css"
       href="/static/css/account_book.css"
     />
-    <link rel="stylesheet" type="text/css" href="/static/css/chart.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
-    <script src="/static/js/index.global.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/nav.css" />
+    <script src="/static/js/home.calendar.js"></script>
     <title>book</title>
   </head>
   <body>
-    <nav class="nav">
-      <div class="nav-bar">
-        <div class="nav-left">
-          <div class="page-name" id="ezlife">EzLife ></div>
-          <div class="book-name"></div>
-        </div>
-        <div class="nav-right">
-          <div class="user-list"></div>
-          <div class="user-list-content">
-            <div>會員資料</div>
-            <div id="logout">登出系統</div>
-          </div>
-        </div>
-      </div>
-    </nav>
-    <nav class="nav-second">
-      <nav class="nav-bar-rwd-after">
-        <div class="options" id="account-books">帳簿</div>
-        <div class="options">圖表</div>
-        <div class="options member" id="member">
-          成員
-          <div class="member-list"></div>
-        </div>
-        <div class="options invite">
-          邀請
-          <div class="invite-list">
-            <input
-              type="email"
-              placeholder="email"
-              required
-              id="invite-email"
-              class="invite-email"
-            />
-            <div id="invite-button" class="invite-button">確定</div>
-          </div>
-        </div>
-      </nav>
-    </nav>
-    <div class="welcome">
-      Hello，
-      <span id="welcome-name"></span>
-    </div>
+    <script src="/static/js/html/html_nav.js"></script>
     <main class="main">
       <section class="container-left">
         <div id="calendar"></div>
@@ -72,7 +31,7 @@
           <span>金額</span><input type="text" name="price" /><br />
           <span>日期</span><input type="date" /><br />
           <span>生活機能</span>
-          <select size="1" id="category1">
+          <select size="1" id="category_main">
             <option></option>
             <option>食</option>
             <option>衣</option>
@@ -82,9 +41,10 @@
             <option>樂</option></select
           ><br />
           <span>消費型態</span>
-          <select size="1" id="category2">
+          <select size="1" id="category_object">
             <option></option>
-            <option>餐費</option>
+            <option>食品</option>
+            <option>日常用品</option>
             <option>水電</option>
             <option>瓦斯</option>
             <option>網路</option>
@@ -97,141 +57,44 @@
             <option>車貸</option>
             <option>油資</option>
             <option>停車</option>
+            <option>美妝保養</option>
+            <option>服裝</option>
+            <option>設備</option>
             <option>學習</option>
-            <option>理財</option>
             <option>運動</option>
             <option>娛樂</option>
-            <option>交際</option>
-            <option>購物</option>
+            <option>交際費</option>
+            <option>理財</option>
             <option>醫療</option>
             <option>保健</option>
             <option>保險</option>
             <option>其他</option></select
           ><br />
           <span>支出對象</span>
-          <select size="1" id="category3">
+          <select size="1" id="category_character">
             <option></option>
-            <option>家庭</option>
-            <option>宿舍</option>
-            <option>旅行</option>
-            <option>育兒</option>
             <option>個人</option>
-            <option>寵物</option></select
+            <option>家庭</option>
+            <option>育兒</option>
+            <option>寵物</option>
+            <option>宿舍</option>
+            <option>旅行</option></select
           ><br />
           <div>
-            <span>備註說明</span><input type="text" name="remark" />
+            <span>備註說明</span><input type="text" name="keyword" />
             <button type="button" id="submit">送出</button>
           </div>
         </div>
         <div class="journal-list">Journal List</div>
-        <div class="content-list"></div>
+        <div class="content-list">
+          <div class="content-list-container"></div>
+        </div>
       </section>
-    </main>
-    <main class="main-chart">
-      <div class="chart-query-box">
-        <section class="chart-query-box-required">
-          <div class="chart-query-box-title">請輸入年度、月份（必填）</div>
-          <span class="chart-query-box-subtitle">年度</span
-          ><select size="1" id="year">
-            <option>2022</option>
-            <option>2023</option>
-            <option>2024</option>
-            <option>2025</option>
-            <option>2026</option>
-            <option>2027</option>
-            <option>2028</option>
-            <option>2029</option>
-            <option>2030</option></select
-          ><br />
-          <span class="chart-query-box-subtitle">月份</span
-          ><select size="1" id="month">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-            <option>9</option>
-            <option>10</option>
-            <option>11</option>
-            <option>12</option></select
-          ><br />
-        </section>
-        <section class="chart-query-box-option">
-          <div class="chart-query-box-title">請輸入類別（選填）</div>
-          <span class="chart-query-box-subtitle">生活機能</span>
-          <select size="1" id="category1">
-            <option></option>
-            <option>食</option>
-            <option>衣</option>
-            <option>住</option>
-            <option>行</option>
-            <option>育</option>
-            <option>樂</option></select
-          ><br />
-          <span class="chart-query-box-subtitle">消費型態</span>
-          <select size="1" id="category2">
-            <option></option>
-            <option>餐費</option>
-            <option>水電</option>
-            <option>瓦斯</option>
-            <option>網路</option>
-            <option>電信</option>
-            <option>管理費</option>
-            <option>維修</option>
-            <option>保養</option>
-            <option>房租</option>
-            <option>房貸</option>
-            <option>車貸</option>
-            <option>油資</option>
-            <option>停車</option>
-            <option>學習</option>
-            <option>理財</option>
-            <option>運動</option>
-            <option>娛樂</option>
-            <option>交際</option>
-            <option>購物</option>
-            <option>醫療</option>
-            <option>保健</option>
-            <option>保險</option>
-            <option>其他</option></select
-          ><br />
-          <span class="chart-query-box-subtitle">支出對象</span>
-          <select size="1" id="category3">
-            <option></option>
-            <option>家庭</option>
-            <option>宿舍</option>
-            <option>旅行</option>
-            <option>育兒</option>
-            <option>個人</option>
-            <option>寵物</option></select
-          ><br />
-          <span class="chart-query-box-subtitle">關鍵字</span
-          ><input type="text" class="chart-query-box-keyword" />
-        </section>
-        <div class="chart-query-box-button">查詢</div>
-      </div>
-      <div class="chart">
-        <div class="current">
-          <div>本期數</div>
-          <div id="current-chart"></div>
-          <div class="journal-list">Journal List</div>
-          <div id="current-journal-list"></div>
-        </div>
-        <div class="previous">
-          <div>上期數</div>
-          <div id="previous-chart"></div>
-          <div class="journal-list">Journal List</div>
-          <div id="previous-journal-list"></div>
-        </div>
-      </div>
     </main>
     <script src="/static/js/html/html_notice.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script type="module" src="/static/js/collaborative_editing.js"></script>
     <script type="module" src="/static/js/account_book.js"></script>
     <script type="module" src="/static/js/notice.js"></script>
+    <script type="module" src="/static/js/nav.js"></script>
   </body>
 </html>

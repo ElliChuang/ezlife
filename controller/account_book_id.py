@@ -26,46 +26,24 @@ def journal_list(bookId):
             # current_month = datetime.now().month
             query = ("""
                 SELECT 
-                    j.id,
-                    j.date, 
-                    j.category1, 
-                    j.category2,  
-                    j.category3,  
-                    j.remark, 
-                    j.price, 
-                    b.book_name,
-                    (SELECT m.name FROM member AS m INNER JOIN account_book AS b on b.host_id = m.id WHERE b.id = %s) AS host_name,
-                    group_concat(concat("id",":",m.id,"name",":",m.name))AS collaborator 
+                    id,
+                    date, 
+                    category_main, 
+                    category_object,  
+                    category_character,  
+                    keyword, 
+                    price
                 FROM journal_list AS j 
-                LEFT JOIN account_book AS b on b.id = j.book_id
-                LEFT JOIN collaborator AS c on b.id = c.book_id 
-                LEFT JOIN member AS m on m.id = c.collaborator_id  
-                WHERE b.id = %s
-                GROUP BY host_name,j.id,j.date,j.category1,j.category2,j.category3,j.remark,j.price,b.id 
-                Order by j.date DESC;
+                WHERE book_id = %s 
+                Order by date DESC;
             """)
-            value = (bookId,bookId)
-            mycursor.execute(query, value)
+            mycursor.execute(query, (bookId,))
             results = mycursor.fetchall()
             if not results:
-                query = ('SELECT book_name FROM account_book WHERE id = %s')
-                mycursor.execute(query, (bookId,))
-                result = mycursor.fetchone()
                 return jsonify({
-                            "data" : {
-                                "message" : "尚無新增項目",
-                                "book_name" : result['book_name']
-                                }             
+                            "data" : {"message" : "尚無新增項目"}             
                         }),200
             else:
-                collaborator = results[0]["collaborator"]
-                editors = []
-                if collaborator:
-                    data = collaborator.split(',')
-                    for item in data:
-                        id = int(item.split(':')[1].split('name')[0])
-                        name = item.split(':')[2]
-                        editors.append({'id': id, 'name': name})
                 # respose data
                 datas = []
                 for item in results:
@@ -75,15 +53,12 @@ def journal_list(bookId):
                     data = {
                             "journal_list" : {
                                 "id" : item["id"],
-                                "book_name" : item["book_name"],
-                                "collaborator" : editors,
-                                "host_name" : item["host_name"],
                                 "date" : date,
                                 "day" : day,
-                                "category1" : item["category1"],
-                                "category2" : item["category2"],
-                                "category3" : item["category3"],
-                                "remark" : item["remark"],
+                                "category_main" : item["category_main"],
+                                "category_object" : item["category_object"],
+                                "category_character" : item["category_character"],
+                                "keyword" : item["keyword"],
                                 "price" : item["price"],
                             },
                     }
@@ -108,12 +83,12 @@ def journal_list(bookId):
     if request.method == "POST":
         data = request.get_json()
         date = data["date"]
-        category1 = data["category1"]
-        category2 = data["category2"]
-        category3 = data["category3"]
-        remark = data["remark"]
+        category_main = data["category_main"]
+        category_object = data["category_object"]
+        category_character = data["category_character"]
+        keyword = data["keyword"]
         price = data["price"]
-        if date == "" or category1 == "" or category2 == "" or category3 == "" or remark == "" or price == "":
+        if date == "" or category_main == "" or category_object == "" or category_character == "" or keyword == "" or price == "":
             return jsonify({
                         "error": True,
                         "data" : "欄位填寫不完整",             
@@ -133,16 +108,16 @@ def journal_list(bookId):
             query = ("""
                 INSERT INTO journal_list (
                     date, 
-                    category1, 
-                    category2, 
-                    category3, 
-                    remark, 
+                    category_main, 
+                    category_object, 
+                    category_character, 
+                    keyword, 
                     price, 
                     book_id,
                     created_member_id)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """)
-            value = (date, category1, category2, category3, remark, price, bookId, member_id)
+            value = (date, category_main, category_object, category_character, keyword, price, bookId, member_id)
             mycursor.execute(query, value)
             connection_object.commit() 
             return jsonify({

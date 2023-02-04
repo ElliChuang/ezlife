@@ -22,13 +22,13 @@ def book_auth(bookId):
         connection_object = MySQL.conn_obj()
         mycursor = connection_object.cursor(dictionary=True)
         query = ("""
-            SELECT m.id, m.name FROM member AS m
+            SELECT m.id, m.name, b.book_name FROM member AS m
             INNER JOIN collaborator AS c ON m.id = c.collaborator_id
+            INNER JOIN account_book AS b ON c.book_id = b.id
             WHERE c.book_id = %s 
         """)
         mycursor.execute(query, (bookId,))
         result = mycursor.fetchall()
-        print(result)
         for item in result:
             if item['id'] == member_id:
                 return jsonify({

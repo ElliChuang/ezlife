@@ -4,6 +4,7 @@ from controller.account_book import account_book
 from controller.account_book_id import account_book_id
 from controller.collaborator import collaborator
 from controller.account_book_auth import account_book_auth
+from controller.chart import chart
 from config import SECRET_KEY, JSON_AS_ASCII, TEMPLATES_AUTO_RELOAD, JSON_SORT_KEYS
 from flask_socketio import SocketIO, join_room, leave_room
 
@@ -22,17 +23,21 @@ app.register_blueprint(account_book)
 app.register_blueprint(account_book_id)
 app.register_blueprint(collaborator)
 app.register_blueprint(account_book_auth)
+app.register_blueprint(chart)
 
 # Pages
 @app.route("/")
 def index():
     return render_template("index.html")
-@app.route("/account_book/<id>")
-def book(id):
-    return render_template("account_book.html")
 @app.route("/home")
 def homPage():
     return render_template("home.html")
+@app.route("/account_book/<id>")
+def book(id):
+    return render_template("account_book.html")
+@app.route("/account_book/<id>/chart")
+def chart(id):
+    return render_template("chart.html")
 
 # @socketio.on('send_message')
 # def handle_send_message_event(data):

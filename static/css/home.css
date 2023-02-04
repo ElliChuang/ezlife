@@ -9,7 +9,9 @@
 .nav {
   border-bottom: 2px solid;
   border-color: #8b4513;
-  background-color: #fdf5e6;
+  /* background-color: #fdf5e6; */
+  background-color: rgba(210, 180, 140, 0.8);
+  padding: 10px;
 }
 .nav-bar {
   display: flex;
@@ -23,7 +25,7 @@
 .page-name {
   flex: none;
   font-family: "Comic Sans MS", cursive;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: bold;
 }
 .book {
@@ -33,7 +35,7 @@
   align-items: center;
   justify-content: center;
   margin-left: 10px;
-  font-size: 20px;
+  font-size: 24px;
   text-align: center;
   cursor: pointer;
 }
@@ -68,8 +70,8 @@
   cursor: pointer;
 }
 .user-list {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   background-image: url(/static/img/user-profile.png);
   background-position: center;
   background-size: cover;
@@ -128,7 +130,7 @@ main {
   width: 200px;
   margin-top: 40px;
   margin-left: 60px;
-  font-size: 20px;
+  font-size: 22px;
 }
 .new-book {
   height: 245px;
