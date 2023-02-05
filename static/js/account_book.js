@@ -25,12 +25,16 @@ bookAuthCheck.then((data) => {
       user.id = data.id;
       user.name = data.name;
     });
-    getData();
+    let dt = new Date();
+    let dt_year = dt.getFullYear();
+    let dt_month = dt.getMonth() + 1;
+    getData(bookId, dt_year, dt_month);
   }
 });
 
-async function getData() {
-  let url = "/api/account_book/" + bookId;
+async function getData(bookId, year, month) {
+  removeJournalList();
+  let url = `/api/account_book/${bookId}?year=${year}&month=${month}`;
   let fetchData = await fetch(url, {
     method: "GET",
   });
@@ -94,7 +98,8 @@ async function getData() {
       };
       events.push(event);
     }
-    calendar(events);
+    calendar(events, year, month);
+
     // delete journal list
     document.querySelectorAll(".item-delete").forEach((id) => {
       id.addEventListener("click", (elem) => {
@@ -105,9 +110,18 @@ async function getData() {
   }
 }
 
+function removeJournalList() {
+  const contentListContainer = document.querySelector(
+    ".content-list-container"
+  );
+  const items = document.querySelectorAll(".item");
+  items.forEach((item) => {
+    contentListContainer.removeChild(item);
+  });
+}
+
 // 顯示日曆
-document.addEventListener("DOMContentLoaded", calendar);
-function calendar(events) {
+function calendar(events, year, month) {
   const calendarEl = document.getElementById("calendar");
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "dayGridMonth",
@@ -117,9 +131,9 @@ function calendar(events) {
     headerToolbar: {
       left: "prev,next today",
       center: "title",
-      //   right: "dayGridMonth,timeGridWeek,timeGridDay",
       right: "dayGridMonth",
     },
+    initialDate: new Date(year, month - 1, 1),
     events: events,
     selectable: true,
     eventColor: "#FFE4B5",
@@ -128,6 +142,31 @@ function calendar(events) {
     },
   });
   calendar.render();
+  const toolBar = document.querySelector(".fc-button-group");
+  toolBar.addEventListener("click", getCalendarDate);
+}
+
+// 取得當前日曆年月
+function getCalendarDate() {
+  const calendarDate = document.getElementById("fc-dom-1");
+  let dateValue = calendarDate.innerText;
+  let year = dateValue.split(" ")[1];
+  let dt = new Date(dateValue);
+  let dt_month = dt.getMonth();
+  let month = new Array(12);
+  month[0] = "1";
+  month[1] = "2";
+  month[2] = "3";
+  month[3] = "4";
+  month[4] = "5";
+  month[5] = "6";
+  month[6] = "7";
+  month[7] = "8";
+  month[8] = "9";
+  month[9] = "10";
+  month[10] = "11";
+  month[11] = "12";
+  getData(bookId, year, month[dt_month]);
 }
 
 // 新增日記帳
@@ -159,7 +198,6 @@ async function addJournalList() {
   requestBody.date = date.value;
   requestBody.keyword = keyword.value;
   requestBody.price = price.value;
-  console.log(requestBody);
   if (requestBody.price === "") {
     showNoticeWindow("錯誤訊息", "請輸入金額", closeNoticeWindow);
   } else if (requestBody.date === "") {
@@ -238,7 +276,6 @@ async function addJournalList() {
 
 async function deleteJournalList(elem) {
   let requestBody = { id: elem };
-  console.log(requestBody);
   let url = "/api/account_book/" + bookId;
   let fetchUrl = await fetch(url, {
     method: "DELETE",

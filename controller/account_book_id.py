@@ -20,6 +20,8 @@ def journal_list(bookId):
                         "data" : "請先登入會員",             
                     }),403
         try:
+            year = request.args.get("year")
+            month = request.args.get("month")
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             # current_year = datetime.now().year
@@ -34,10 +36,10 @@ def journal_list(bookId):
                     keyword, 
                     price
                 FROM journal_list AS j 
-                WHERE book_id = %s 
+                WHERE book_id = %s AND YEAR(date) = %s AND MONTH(date) = %s 
                 Order by date DESC;
             """)
-            mycursor.execute(query, (bookId,))
+            mycursor.execute(query, (bookId, year, month))
             results = mycursor.fetchall()
             if not results:
                 return jsonify({
