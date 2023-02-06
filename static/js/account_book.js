@@ -49,6 +49,7 @@ async function getData(bookId, year, month) {
   } else if (jsonData.data[0].journal_list) {
     let len = jsonData.data.length;
     let events = [];
+    let dict = {};
     for (let i = 0; i < len; i++) {
       let itemDiv = document.createElement("div");
       contentListContainer.appendChild(itemDiv);
@@ -91,12 +92,22 @@ async function getData(bookId, year, month) {
       subCategoryDiv2.className = "sub-category";
       subCategoryDiv2.innerText =
         jsonData.data[i].journal_list.category_character;
+
       // calendar event
-      let event = {
-        title: jsonData.data[i].journal_list.price + "元",
-        start: jsonData.data[i].journal_list.date,
-      };
-      events.push(event);
+      let eventDate = jsonData.data[i].journal_list.date;
+      let eventPrice = jsonData.data[i].journal_list.price;
+      if (eventDate in dict) {
+        dict[eventDate] = dict[eventDate] + parseInt(eventPrice);
+      } else {
+        dict[eventDate] = parseInt(eventPrice);
+      }
+    }
+
+    for (const [key, value] of Object.entries(dict)) {
+      events.push({
+        title: value + "元",
+        start: key,
+      });
     }
     calendar(events, year, month);
 
@@ -125,13 +136,13 @@ function calendar(events, year, month) {
   const calendarEl = document.getElementById("calendar");
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "dayGridMonth",
-    navLinks: true,
+    navLinks: false,
     nextDayThreshold: "09:00:00",
     titleFormat: { year: "numeric", month: "long" },
     headerToolbar: {
-      left: "prev,next today",
+      left: "prev,next",
       center: "title",
-      right: "dayGridMonth",
+      right: "today",
     },
     initialDate: new Date(year, month - 1, 1),
     events: events,
@@ -143,7 +154,9 @@ function calendar(events, year, month) {
   });
   calendar.render();
   const toolBar = document.querySelector(".fc-button-group");
+  const today = document.querySelector(".fc-today-button");
   toolBar.addEventListener("click", getCalendarDate);
+  today.addEventListener("click", getCalendarDate);
 }
 
 // 取得當前日曆年月
