@@ -24,8 +24,6 @@ def journal_list(bookId):
             month = request.args.get("month")
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
-            # current_year = datetime.now().year
-            # current_month = datetime.now().month
             query = ("""
                 SELECT 
                     id,

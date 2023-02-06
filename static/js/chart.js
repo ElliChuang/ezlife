@@ -1,5 +1,6 @@
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
-import { indexPage, loadPage, bookAuth, getStatus } from "./nav.js";
+import { indexPage, bookAuth, getStatus } from "./nav.js";
+
 // 取得帳簿 id
 const url = location.href;
 const bookId = url.split("account_book/")[1].split("/")[0];
@@ -46,6 +47,7 @@ const queryBoxButton = document.querySelector(".chart-query-box-button");
 queryBoxButton.addEventListener("click", getData);
 
 async function getData() {
+  // 取得篩選條件
   const year = document.getElementById("year").value;
   const month = document.getElementById("month").value;
   const categoryMain = document.getElementById("category_main").value;
@@ -269,4 +271,40 @@ function removeJournalList() {
   items.forEach((item) => {
     journalListContainer.removeChild(item);
   });
+}
+
+// 下載 csv file
+const download = document.getElementById("download");
+download.addEventListener("click", getFile);
+
+async function getFile() {
+  // 取得篩選條件
+  const year = document.getElementById("year").value;
+  const month = document.getElementById("month").value;
+  const categoryMain = document.getElementById("category_main").value;
+  const categoryCharacter = document.getElementById("category_character").value;
+  const categoryObject = document.getElementById("category_object").value;
+  const keyword = document.getElementById("keyword").value;
+
+  const url = `/api/account_book/${bookId}/csv_file?year=${year}&month=${month}&main=${categoryMain}&character=${categoryCharacter}&object=${categoryObject}&keyword=${keyword}`;
+  const fetchData = await fetch(url);
+  if (fetchData.status === 403) {
+    const jsonData = await fetchData.json();
+    if (jsonData.data === "請先登入會員") {
+      return showNoticeWindow("請登入會員", jsonData.data, indexPage);
+    }
+    if (jsonData.data === "請輸入欲查詢的年度及月份") {
+      return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
+    }
+  }
+
+  const blobData = await fetchData.blob();
+  const fileUrl = window.URL.createObjectURL(blobData);
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = fileUrl;
+  a.download = `${year}_${month}月.csv`;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(fileUrl);
 }

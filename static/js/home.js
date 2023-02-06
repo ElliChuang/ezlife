@@ -81,7 +81,7 @@ popupButton.addEventListener("click", () => {
 });
 
 async function getBook() {
-  let url = "/api/account_book";
+  let url = "/api/account_books";
   let fetchUrl = await fetch(url, {
     method: "GET",
   });
@@ -97,7 +97,7 @@ async function getBook() {
 async function addBook(msg) {
   let requestBody = { bookName: msg };
   console.log(requestBody);
-  let url = "/api/account_book";
+  let url = "/api/account_books";
   let fetchUrl = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -160,7 +160,7 @@ function showBook(datas) {
 
 async function deleteBook(Id) {
   let requestBody = { bookId: Id };
-  let url = "/api/account_book";
+  let url = "/api/account_books";
   let fetchUrl = await fetch(url, {
     method: "DELETE",
     headers: { "content-type": "application/json" },
