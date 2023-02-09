@@ -3,6 +3,7 @@ const home = document.querySelector("#home-page");
 const accountBookes = document.querySelector("#account-books");
 const bookName = document.querySelector(".book-name");
 const chart = document.querySelector("#chart");
+const accountSettlement = document.querySelector("#account-settlement");
 const logout = document.querySelector("#logout");
 const userListContent = document.querySelector(".user-list-content");
 const inviteList = document.querySelector(".invite-list");
@@ -88,11 +89,9 @@ async function bookAuth(bookId) {
   let jsonData = await fetchData.json();
   console.log(jsonData);
   if (jsonData.ok) {
-    // closeNoticeWindow();
-    // getStatus();
     getBookName(jsonData);
     getEditor(jsonData);
-    return "ok";
+    return jsonData;
   } else {
     showNoticeWindow("訊息通知", jsonData.data, homePage);
   }
@@ -128,6 +127,11 @@ chart.addEventListener("click", () => {
   window.location.href = `/account_book/${book.id}/chart`;
 });
 
+accountSettlement.addEventListener("click", () => {
+  window.location.href = `/account_book/${book.id}/account_settlement`;
+});
+
+// 取得共同編輯
 function getEditor(data) {
   const len = data.data.length;
   for (let i = 0; i < len; i++) {

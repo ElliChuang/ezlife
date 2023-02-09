@@ -336,4 +336,34 @@ input[type="radio"] {
     width: 100%;
     height: 750px;
   }
+  .chart-query-box-required,
+  .chart-query-box-option {
+    width: 100%;
+  }
+  .chart-query-box-title {
+    font-size: 20px;
+  }
+  .chart-query-box-subtitle {
+    display: inline;
+    font-size: 18px;
+    padding: 5px;
+  }
+  .chart-query-box-required > select,
+  .chart-query-box-option > select {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .chart-query-box-keyword {
+    width: 100%;
+    margin-left: 0;
+  }
+  .chart-query-box-click {
+    width: 100%;
+  }
+  .chart-query-box-button {
+    width: 100%;
+  }
+  .chart-query-box-export {
+    width: 100%;
+  }
 }

@@ -19,6 +19,7 @@ nav =
     <div class="options" id="home-page">首頁</div>\
     <div class="options" id="account-books">帳簿</div>\
     <div class="options" id="chart">圖表</div>\
+    <div class="options" id="account-settlement">結算</div>\
     <div class="options member" id="member">\
       成員\
       <div class="member-list"></div>\

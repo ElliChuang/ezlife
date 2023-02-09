@@ -6,6 +6,7 @@ from controller.collaborator import collaborator
 from controller.account_book_auth import account_book_auth
 from controller.chart import chart
 from controller.csv_file import csv_file
+from controller.account_settlement import account_settlement
 from config import SECRET_KEY, JSON_AS_ASCII, TEMPLATES_AUTO_RELOAD, JSON_SORT_KEYS
 from flask_socketio import SocketIO, join_room, leave_room
 
@@ -26,6 +27,7 @@ app.register_blueprint(collaborator)
 app.register_blueprint(account_book_auth)
 app.register_blueprint(chart)
 app.register_blueprint(csv_file)
+app.register_blueprint(account_settlement)
 
 # Pages
 @app.route("/")
@@ -40,6 +42,9 @@ def book(id):
 @app.route("/account_book/<id>/chart")
 def chart(id):
     return render_template("chart.html")
+@app.route("/account_book/<id>/account_settlement")
+def settlement(id):
+    return render_template("account_settlement.html")
 
 # @socketio.on('send_message')
 # def handle_send_message_event(data):

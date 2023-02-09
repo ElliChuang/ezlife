@@ -19,8 +19,9 @@ const bookId = url.split("account_book/")[1];
 const bookAuthCheck = bookAuth(bookId);
 const userAuthCheck = getStatus();
 let user = { name: "", id: "" };
+// let collaborators = [];
 bookAuthCheck.then((data) => {
-  if (data === "ok") {
+  if (data.ok) {
     userAuthCheck.then((data) => {
       user.id = data.id;
       user.name = data.name;
@@ -29,8 +30,42 @@ bookAuthCheck.then((data) => {
     let dt_year = dt.getFullYear();
     let dt_month = dt.getMonth() + 1;
     getData(bookId, dt_year, dt_month);
+    setObject(data.data);
   }
 });
+
+function setObject(datas) {
+  let len = datas.length;
+  const payableGroup = document.getElementById("payable-group");
+  const prepayGroup = document.getElementById("prepay-group");
+  for (let i = 0; i < len; i++) {
+    // 分攤欄
+    let payableSubgroup = document.createElement("div");
+    payableSubgroup.className = "subgroup";
+    let payableTitle = document.createElement("span");
+    payableTitle.className = "title";
+    payableTitle.innerText = datas[i].name;
+    let payableInput = document.createElement("input");
+    payableInput.name = "payable";
+    payableInput.id = datas[i].id;
+    payableSubgroup.appendChild(payableTitle);
+    payableSubgroup.appendChild(payableInput);
+    payableGroup.appendChild(payableSubgroup);
+    // 代墊欄
+    let prepaySubgroup = document.createElement("div");
+    prepaySubgroup.className = "subgroup";
+    let prepayTitle = document.createElement("span");
+    prepayTitle.className = "title";
+    prepayTitle.innerText = datas[i].name;
+    let prepayInput = document.createElement("input");
+    prepayInput.name = "prepay";
+    prepayInput.id = datas[i].id;
+    // prepayInput.name = datas[i].name;
+    prepaySubgroup.appendChild(prepayTitle);
+    prepaySubgroup.appendChild(prepayInput);
+    prepayGroup.appendChild(prepaySubgroup);
+  }
+}
 
 async function getData(bookId, year, month) {
   removeJournalList();
@@ -39,8 +74,9 @@ async function getData(bookId, year, month) {
     method: "GET",
   });
   let jsonData = await fetchData.json();
+  let events = [];
   if (jsonData.data === "請先登入會員") {
-    showNoticeWindow("請登入會員", "", indexPage);
+    return showNoticeWindow("請登入會員", "", indexPage);
   } else if (jsonData.data.message) {
     let itemDiv = document.createElement("div");
     contentListContainer.appendChild(itemDiv);
@@ -48,7 +84,6 @@ async function getData(bookId, year, month) {
     itemDiv.innerText = jsonData.data.message;
   } else if (jsonData.data[0].journal_list) {
     let len = jsonData.data.length;
-    let events = [];
     let dict = {};
     for (let i = 0; i < len; i++) {
       let itemDiv = document.createElement("div");
@@ -109,7 +144,6 @@ async function getData(bookId, year, month) {
         start: key,
       });
     }
-    calendar(events, year, month);
 
     // delete journal list
     document.querySelectorAll(".item-delete").forEach((id) => {
@@ -119,6 +153,7 @@ async function getData(bookId, year, month) {
       });
     });
   }
+  calendar(events, year, month);
 }
 
 function removeJournalList() {
@@ -190,6 +225,8 @@ let requestBody = {
   category_character: "",
   keyword: "",
   price: "",
+  payable: [],
+  prepaid: [],
 };
 category_main.addEventListener("change", (elem) => {
   const value = elem.target.value;
@@ -210,18 +247,38 @@ document.querySelector("#submit").addEventListener("click", addJournalList);
 async function addJournalList() {
   requestBody.date = date.value;
   requestBody.keyword = keyword.value;
-  requestBody.price = price.value;
+  requestBody.price = parseInt(price.value);
+
+  let payableAmount = 0;
+  const payablePrice = document.querySelectorAll("input[name='payable']");
+  payablePrice.forEach((elem) => {
+    payableAmount += parseInt(elem.value);
+    requestBody.payable.push({ collaborator_id: elem.id, price: elem.value });
+  });
+
+  let prepaidAmount = 0;
+  const prepaidPrice = document.querySelectorAll("input[name='prepay']");
+  prepaidPrice.forEach((elem) => {
+    prepaidAmount += parseInt(elem.value);
+    requestBody.prepaid.push({ collaborator_id: elem.id, price: elem.value });
+  });
+
   if (requestBody.price === "") {
-    showNoticeWindow("錯誤訊息", "請輸入金額", closeNoticeWindow);
+    return showNoticeWindow("錯誤訊息", "請輸入金額", closeNoticeWindow);
   } else if (requestBody.date === "") {
-    showNoticeWindow("錯誤訊息", "請輸入日期", closeNoticeWindow);
+    return showNoticeWindow("錯誤訊息", "請輸入日期", closeNoticeWindow);
   } else if (
     requestBody.category_main === "" ||
     requestBody.category_object === "" ||
     requestBody.category_character === ""
   ) {
-    showNoticeWindow("錯誤訊息", "請選擇類別", closeNoticeWindow);
+    return showNoticeWindow("錯誤訊息", "請選擇類別", closeNoticeWindow);
+  } else if (requestBody.price !== payableAmount) {
+    return showNoticeWindow("錯誤訊息", "分攤金額有誤", closeNoticeWindow);
+  } else if (requestBody.price !== prepaidAmount) {
+    return showNoticeWindow("錯誤訊息", "代墊金額有誤", closeNoticeWindow);
   }
+  console.log(requestBody);
   let url = "/api/account_book/" + bookId;
   let fetchUrl = await fetch(url, {
     method: "POST",
@@ -297,7 +354,9 @@ async function deleteJournalList(elem) {
   });
   let jsonData = await fetchUrl.json();
   if (jsonData.data === "請先登入會員") {
-    showNoticeWindow("請登入會員", "", indexPage);
+    return showNoticeWindow("請登入會員", "", indexPage);
+  } else if (jsonData.data === "支出已結算，無法刪除。") {
+    return showNoticeWindow("訊息通知", jsonData.data, closeNoticeWindow);
   } else if (jsonData.ok) {
     socket.emit("delete_journal_list", {
       userName: user.name,

@@ -10,7 +10,7 @@ const bookAuthCheck = bookAuth(bookId);
 const userAuthCheck = getStatus();
 let user = { name: "", id: "" };
 bookAuthCheck.then((data) => {
-  if (data === "ok") {
+  if (data.ok) {
     userAuthCheck.then((data) => {
       user.id = data.id;
       user.name = data.name;
@@ -230,10 +230,6 @@ function getJournalList(datas) {
     itemDiv.appendChild(itemDollarDiv);
     itemDollarDiv.className = "item-dollar";
     itemDollarDiv.innerText = datas.data[i].journal_list.price;
-    let itemDeleteDiv = document.createElement("div");
-    itemDiv.appendChild(itemDeleteDiv);
-    itemDeleteDiv.className = "item-delete";
-    itemDeleteDiv.value = datas.data[i].journal_list.id;
     let categoryDiv = document.createElement("div");
     itemDescribeDiv.appendChild(categoryDiv);
     categoryDiv.className = "category";
