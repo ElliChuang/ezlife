@@ -3,8 +3,6 @@ from mysql.connector import errorcode
 import mysql.connector 
 from model.db import MySQL 
 import jwt
-import datetime
-import random
 from config import TOKEN_PW
 
 # 建立 Flask Blueprint
@@ -156,6 +154,10 @@ def checkout(bookId):
                     }),403
         
         try:
+            token = session["token"]
+            decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
+            collaborator_id = decode_data["id"]
+            collaborator_name = decode_data["name"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor()
             status = "已結算"
@@ -164,28 +166,48 @@ def checkout(bookId):
             query_account_settlement = ("""
                 UPDATE account_settlement as s
                 INNER JOIN journal_list as j on j.id =  s.journal_list_id
+                INNER JOIN account_book as b on b.id =  j.book_id
+                INNER JOIN collaborator as c on c.book_id = b.id
                 SET s.status = %s
-                WHERE year(s.date) = %s AND month(s.date) = %s AND j.book_id = %s AND s.status = %s 
+                WHERE year(s.date) = %s AND month(s.date) = %s AND j.book_id = %s AND s.status = %s
+                AND c.collaborator_id = %s IN (SELECT collaborator_id FROM collaborator WHERE book_id = %s)
                 AND j.id IN (SELECT id FROM journal_list WHERE book_id = %s AND status = %s);
             """)
-            value_account_settlement = (status, year, month, bookId, "未結算",bookId, "未結算")
+            value_account_settlement = (status, year, month, bookId, "未結算",collaborator_id, bookId, bookId, "未結算")
             mycursor.execute(query_account_settlement, value_account_settlement)
+            rows_affected = mycursor.rowcount
             connection_object.commit() 
+            if rows_affected == 0:
+                return jsonify({
+                        "data": "無法結算，請洽帳簿管理員。"    
+                    }),200
 
             # 更新 journal_list table
             query_journal_list = ("""
                 UPDATE journal_list as j
                 INNER JOIN account_settlement as s on s.journal_list_id = j.id 
+                INNER JOIN account_book as b on b.id =  j.book_id
+                INNER JOIN collaborator as c on c.book_id = b.id
                 SET j.status = %s
                 WHERE year(j.date) = %s AND month(j.date) = %s AND j.book_id = %s AND j.status = %s
+                AND c.collaborator_id = %s IN (SELECT collaborator_id FROM collaborator WHERE book_id = %s)
                 AND j.id IN (SELECT journal_list_id FROM account_settlement WHERE status = %s);
             """)
-            value_journal_list = (status, year, month, bookId, '未結算', '未結算')
+            value_journal_list = (status, year, month, bookId, '未結算', collaborator_id, bookId,  '已結算')
             mycursor.execute(query_journal_list, value_journal_list)
+            rows_affected = mycursor.rowcount
             connection_object.commit() 
+            if rows_affected == 0:
+                return jsonify({
+                        "data": "無法結算，請洽帳簿管理員。"    
+                    }),200
 
             return jsonify({
-                        "ok": True,          
+                        "ok": True,
+                        "data":{
+                            "collaborator_id": collaborator_id,
+                            "collaborator_name" : collaborator_name
+                         }          
                     }),200
 
         except mysql.connector.Error as err:

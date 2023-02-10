@@ -46,10 +46,6 @@ def chart(id):
 def settlement(id):
     return render_template("account_settlement.html")
 
-# @socketio.on('send_message')
-# def handle_send_message_event(data):
-#     print(f"{data['username']} has sent the {data['message']} to the room {data['room']}")
-#     socketio.emit('receive_message', data, room=data['room'])
 
 @socketio.on('join_room')
 def handle_join_room_event(data):
@@ -76,6 +72,10 @@ def add_journal_list_event(data):
 @socketio.on('delete_journal_list')
 def delete_journal_list_event(data):
     socketio.emit("delete_journal_list_announcement", data)
+
+@socketio.on('sumbit_checkout')
+def checkout_event(data):
+    socketio.emit("checkout_announcement", data)
 
 if __name__ == '__main__':
     socketio.run(app, host = '0.0.0.0', port = 3000)

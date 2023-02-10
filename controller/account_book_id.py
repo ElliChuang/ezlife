@@ -33,7 +33,8 @@ def journal_list(bookId):
                     category_object,  
                     category_character,  
                     keyword, 
-                    price
+                    price,
+                    status
                 FROM journal_list AS j 
                 WHERE book_id = %s AND YEAR(date) = %s AND MONTH(date) = %s 
                 Order by date DESC, id DESC;
@@ -61,6 +62,7 @@ def journal_list(bookId):
                                 "category_character" : item["category_character"],
                                 "keyword" : item["keyword"],
                                 "price" : item["price"],
+                                "status" : item["status"]
                             },
                     }
                     datas.append(data)

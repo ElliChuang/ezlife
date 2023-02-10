@@ -27,8 +27,20 @@ def set_collaborator():
                         "data" : "請先登入會員",             
                     }),403
         try:
+            token = session["token"]
+            decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
+            host_id = decode_data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
+            query = ("SELECT * FROM account_book WHERE host_id = %s AND id = %s")
+            mycursor.execute(query, (host_id, book_id))
+            result = mycursor.fetchone()
+            if not result:
+                    return jsonify({
+                        "error": True,
+                        "data" : "無新增權限，請洽帳簿管理員",             
+                    }),403
+           
             query = ("SELECT id, name FROM member WHERE email = %s")
             mycursor.execute(query, (email,))
             result = mycursor.fetchone()
@@ -77,7 +89,6 @@ def set_collaborator():
             token = session["token"]
             decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
             host_id = decode_data["id"]
-            print("host",host_id)
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("SELECT * FROM account_book WHERE host_id = %s AND id = %s")
@@ -86,7 +97,7 @@ def set_collaborator():
             if not result:
                     return jsonify({
                         "error": True,
-                        "data" : "無刪除權限",             
+                        "data" : "無刪除權限，請洽帳簿管理員",             
                     }),403
             
             query = ("DELETE FROM collaborator WHERE collaborator_id = %s AND book_id = %s")

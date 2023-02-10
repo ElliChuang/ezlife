@@ -92,12 +92,15 @@ async function getData(bookId, year, month) {
       let itemDescribeDiv = document.createElement("div");
       itemDiv.appendChild(itemDescribeDiv);
       itemDescribeDiv.className = "item-describe";
+      let itemContainerDiv = document.createElement("div");
+      itemDiv.appendChild(itemContainerDiv);
+      itemContainerDiv.className = "item-container";
       let itemDollarDiv = document.createElement("div");
-      itemDiv.appendChild(itemDollarDiv);
+      itemContainerDiv.appendChild(itemDollarDiv);
       itemDollarDiv.className = "item-dollar";
       itemDollarDiv.innerText = jsonData.data[i].journal_list.price;
       let itemDeleteDiv = document.createElement("div");
-      itemDiv.appendChild(itemDeleteDiv);
+      itemContainerDiv.appendChild(itemDeleteDiv);
       itemDeleteDiv.className = "item-delete";
       itemDeleteDiv.value = jsonData.data[i].journal_list.id;
       let categoryDiv = document.createElement("div");
@@ -127,6 +130,10 @@ async function getData(bookId, year, month) {
       subCategoryDiv2.className = "sub-category";
       subCategoryDiv2.innerText =
         jsonData.data[i].journal_list.category_character;
+      let itemStatusDiv = document.createElement("div");
+      categoryDiv.appendChild(itemStatusDiv);
+      itemStatusDiv.className = "status";
+      itemStatusDiv.innerText = jsonData.data[i].journal_list.status;
 
       // calendar event
       let eventDate = jsonData.data[i].journal_list.date;
@@ -287,53 +294,6 @@ async function addJournalList() {
   });
   let jsonData = await fetchUrl.json();
   if (jsonData.ok) {
-    // location.reload();
-    // let itemDiv = document.createElement("div");
-    // contentListContainer.appendChild(itemDiv);
-    // itemDiv.className = "item";
-    // let itemDescribeDiv = document.createElement("div");
-    // itemDiv.appendChild(itemDescribeDiv);
-    // itemDescribeDiv.className = "item-describe";
-    // let itemDollarDiv = document.createElement("div");
-    // itemDiv.appendChild(itemDollarDiv);
-    // itemDollarDiv.className = "item-dollar";
-    // itemDollarDiv.innerText = requestBody.price;
-    // let itemDeleteDiv = document.createElement("div");
-    // itemDiv.appendChild(itemDeleteDiv);
-    // itemDeleteDiv.className = "item-delete";
-    // itemDeleteDiv.value = requestBody.id;
-    // let categoryDiv = document.createElement("div");
-    // itemDescribeDiv.appendChild(categoryDiv);
-    // categoryDiv.className = "category";
-    // let keywordDiv = document.createElement("div");
-    // itemDescribeDiv.appendChild(keywordDiv);
-    // keywordDiv.className = "keyword";
-    // let date = requestBody.date;
-    // let then = new Date(date);
-    // let theDay = then.getDay() + 1;
-    // let weekday = new Array(6);
-    // weekday[1] = "Sun";
-    // weekday[2] = "Mon";
-    // weekday[3] = "Tue";
-    // weekday[4] = "Wed";
-    // weekday[5] = "Thu";
-    // weekday[6] = "Fri";
-    // weekday[7] = "Sat";
-    // let shortDate = date.split("-")[1] + "/" + date.split("-")[2];
-    // keywordDiv.innerText =
-    //   shortDate + " （" + weekday[theDay] + "） " + requestBody.keyword;
-    // let mainCategoryDiv = document.createElement("div");
-    // categoryDiv.appendChild(mainCategoryDiv);
-    // mainCategoryDiv.className = "main-category";
-    // mainCategoryDiv.innerText = requestBody.category_main;
-    // let subCategoryDiv1 = document.createElement("div");
-    // categoryDiv.appendChild(subCategoryDiv1);
-    // subCategoryDiv1.className = "sub-category";
-    // subCategoryDiv1.innerText = requestBody.category_object;
-    // let subCategoryDiv2 = document.createElement("div");
-    // categoryDiv.appendChild(subCategoryDiv2);
-    // subCategoryDiv2.className = "sub-category";
-    // subCategoryDiv2.innerText = requestBody.category_character;
     socket.emit("add_journal_list", {
       userName: user.name,
     });
@@ -363,11 +323,3 @@ async function deleteJournalList(elem) {
     });
   }
 }
-
-socket.on("add_journal_list_announcement", function (data) {
-  showNoticeWindow("訊息通知", `${data.userName}已新增一筆帳務`, loadPage);
-});
-
-socket.on("delete_journal_list_announcement", function (data) {
-  showNoticeWindow("訊息通知", `${data.userName}已刪除一筆帳務`, loadPage);
-});

@@ -3,6 +3,7 @@ const detailContainer = document.querySelector(".detail-inner-container");
 const amount = document.getElementById("amount");
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
 import { indexPage, loadPage, bookAuth, getStatus } from "./nav.js";
+const socket = io();
 
 // 取得帳簿 id
 const url = location.href;
@@ -112,13 +113,8 @@ async function getOverview() {
   // 結算鈕
   let status = jsonData.data.status;
   let checkout = document.createElement("div");
-  if (status === "未結算") {
-    checkout.className = "unsettlement";
-    checkout.innerText = "送出結算";
-  } else {
-    checkout.className = "settlement";
-    checkout.innerText = `${jsonData.data.account_day} 已結算完畢`;
-  }
+  checkout.className = "unsettlement";
+  checkout.innerText = "送出結算";
   container.appendChild(checkout);
 
   // 取得結帳明細
@@ -135,9 +131,7 @@ async function getOverview() {
 
   // 送出結算
   const checkoutButton = document.querySelector(".unsettlement");
-  if (checkoutButton) {
-    checkoutButton.addEventListener("click", goCheckout);
-  }
+  checkoutButton.addEventListener("click", goCheckout);
 }
 
 // 明細賬
@@ -167,44 +161,46 @@ async function getJournalList(collaborator_id = "") {
   const journalList = jsonData.data.journal_list;
   const len = journalList.length;
   for (let i = 0; i < len; i++) {
-    let itemDiv = document.createElement("div");
-    detailContainer.appendChild(itemDiv);
-    itemDiv.className = "item";
-    let itemDescribeDiv = document.createElement("div");
-    itemDiv.appendChild(itemDescribeDiv);
-    itemDescribeDiv.className = "item-describe";
-    let itemDollarDiv = document.createElement("div");
-    itemDiv.appendChild(itemDollarDiv);
-    itemDollarDiv.className = "item-dollar";
-    itemDollarDiv.innerText = journalList[i].price;
-    let categoryDiv = document.createElement("div");
-    itemDescribeDiv.appendChild(categoryDiv);
-    categoryDiv.className = "category";
-    let keywordDiv = document.createElement("div");
-    itemDescribeDiv.appendChild(keywordDiv);
-    keywordDiv.className = "keyword";
-    let date = journalList[i].date;
-    let shortDate = date.split("-")[1] + "/" + date.split("-")[2];
-    keywordDiv.innerText =
-      shortDate + " （" + journalList[i].day + "） " + journalList[i].keyword;
-    let mainCategoryDiv = document.createElement("div");
-    categoryDiv.appendChild(mainCategoryDiv);
-    mainCategoryDiv.className = "main-category";
-    mainCategoryDiv.innerText = journalList[i].category_main;
-    let subCategoryDiv1 = document.createElement("div");
-    categoryDiv.appendChild(subCategoryDiv1);
-    subCategoryDiv1.className = "sub-category";
-    subCategoryDiv1.innerText = journalList[i].category_object;
-    let subCategoryDiv2 = document.createElement("div");
-    categoryDiv.appendChild(subCategoryDiv2);
-    subCategoryDiv2.className = "sub-category";
-    subCategoryDiv2.innerText = journalList[i].category_character;
-    let nameCategoryDiv = document.createElement("div");
-    categoryDiv.appendChild(nameCategoryDiv);
-    nameCategoryDiv.className = "name-category";
-    nameCategoryDiv.innerText = journalList[i].name;
-    // 計算總額
-    total += parseInt(journalList[i].price);
+    if (parseInt(journalList[i].price) > 0) {
+      let itemDiv = document.createElement("div");
+      detailContainer.appendChild(itemDiv);
+      itemDiv.className = "item";
+      let itemDescribeDiv = document.createElement("div");
+      itemDiv.appendChild(itemDescribeDiv);
+      itemDescribeDiv.className = "item-describe";
+      let itemDollarDiv = document.createElement("div");
+      itemDiv.appendChild(itemDollarDiv);
+      itemDollarDiv.className = "item-dollar";
+      itemDollarDiv.innerText = journalList[i].price;
+      let categoryDiv = document.createElement("div");
+      itemDescribeDiv.appendChild(categoryDiv);
+      categoryDiv.className = "category";
+      let keywordDiv = document.createElement("div");
+      itemDescribeDiv.appendChild(keywordDiv);
+      keywordDiv.className = "keyword";
+      let date = journalList[i].date;
+      let shortDate = date.split("-")[1] + "/" + date.split("-")[2];
+      keywordDiv.innerText =
+        shortDate + " （" + journalList[i].day + "） " + journalList[i].keyword;
+      let mainCategoryDiv = document.createElement("div");
+      categoryDiv.appendChild(mainCategoryDiv);
+      mainCategoryDiv.className = "main-category";
+      mainCategoryDiv.innerText = journalList[i].category_main;
+      let subCategoryDiv1 = document.createElement("div");
+      categoryDiv.appendChild(subCategoryDiv1);
+      subCategoryDiv1.className = "sub-category";
+      subCategoryDiv1.innerText = journalList[i].category_object;
+      let subCategoryDiv2 = document.createElement("div");
+      categoryDiv.appendChild(subCategoryDiv2);
+      subCategoryDiv2.className = "sub-category";
+      subCategoryDiv2.innerText = journalList[i].category_character;
+      let nameCategoryDiv = document.createElement("div");
+      categoryDiv.appendChild(nameCategoryDiv);
+      nameCategoryDiv.className = "name-category";
+      nameCategoryDiv.innerText = journalList[i].name;
+      // 計算總額
+      total += parseInt(journalList[i].price);
+    }
   }
   amount.innerText = total;
 }
@@ -252,7 +248,14 @@ async function goCheckout() {
     return showNoticeWindow("請登入會員", jsonData.data, indexPage);
   } else if (jsonData.data === "請輸入欲結帳年度及月份") {
     return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
+  } else if (jsonData.data === "無法結算，請洽帳簿管理員") {
+    return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
   } else if (jsonData.ok) {
-    showNoticeWindow("訊息通知", "結算成功", loadPage);
+    socket.emit("sumbit_checkout", {
+      collaboratorName: jsonData.data.collaborator_name,
+      roomId: bookId,
+      year: year,
+      month: month,
+    });
   }
 }
