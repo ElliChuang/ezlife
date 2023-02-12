@@ -4,6 +4,7 @@ import mysql.connector
 from model.db import MySQL 
 import jwt
 import datetime
+import random
 from config import TOKEN_PW
 
 # 建立 Flask Blueprint
@@ -20,52 +21,31 @@ def journal_list(bookId):
                         "data" : "請先登入會員",             
                     }),403
         try:
+            year = request.args.get("year")
+            month = request.args.get("month")
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
-            # current_year = datetime.now().year
-            # current_month = datetime.now().month
             query = ("""
                 SELECT 
-                    j.id,
-                    j.date, 
-                    j.category1, 
-                    j.category2,  
-                    j.category3,  
-                    j.remark, 
-                    j.price, 
-                    b.book_name,
-                    (SELECT m.name FROM member AS m INNER JOIN account_book AS b on b.host_id = m.id WHERE b.id = %s) AS host_name,
-                    group_concat(concat("id",":",m.id,"name",":",m.name))AS collaborator 
+                    id,
+                    date, 
+                    category_main, 
+                    category_object,  
+                    category_character,  
+                    keyword, 
+                    price,
+                    status
                 FROM journal_list AS j 
-                LEFT JOIN account_book AS b on b.id = j.book_id
-                LEFT JOIN collaborator AS c on b.id = c.book_id 
-                LEFT JOIN member AS m on m.id = c.collaborator_id  
-                WHERE b.id = %s
-                GROUP BY host_name,j.id,j.date,j.category1,j.category2,j.category3,j.remark,j.price,b.id 
-                Order by j.date DESC;
+                WHERE book_id = %s AND YEAR(date) = %s AND MONTH(date) = %s 
+                Order by date DESC, id DESC;
             """)
-            value = (bookId,bookId)
-            mycursor.execute(query, value)
+            mycursor.execute(query, (bookId, year, month))
             results = mycursor.fetchall()
             if not results:
-                query = ('SELECT book_name FROM account_book WHERE id = %s')
-                mycursor.execute(query, (bookId,))
-                result = mycursor.fetchone()
                 return jsonify({
-                            "data" : {
-                                "message" : "尚無新增項目",
-                                "book_name" : result['book_name']
-                                }             
+                            "data" : {"message" : "尚無新增項目"}             
                         }),200
             else:
-                collaborator = results[0]["collaborator"]
-                editors = []
-                if collaborator:
-                    data = collaborator.split(',')
-                    for item in data:
-                        id = int(item.split(':')[1].split('name')[0])
-                        name = item.split(':')[2]
-                        editors.append({'id': id, 'name': name})
                 # respose data
                 datas = []
                 for item in results:
@@ -75,16 +55,14 @@ def journal_list(bookId):
                     data = {
                             "journal_list" : {
                                 "id" : item["id"],
-                                "book_name" : item["book_name"],
-                                "collaborator" : editors,
-                                "host_name" : item["host_name"],
                                 "date" : date,
                                 "day" : day,
-                                "category1" : item["category1"],
-                                "category2" : item["category2"],
-                                "category3" : item["category3"],
-                                "remark" : item["remark"],
+                                "category_main" : item["category_main"],
+                                "category_object" : item["category_object"],
+                                "category_character" : item["category_character"],
+                                "keyword" : item["keyword"],
                                 "price" : item["price"],
+                                "status" : item["status"]
                             },
                     }
                     datas.append(data)
@@ -108,12 +86,15 @@ def journal_list(bookId):
     if request.method == "POST":
         data = request.get_json()
         date = data["date"]
-        category1 = data["category1"]
-        category2 = data["category2"]
-        category3 = data["category3"]
-        remark = data["remark"]
+        category_main = data["category_main"]
+        category_object = data["category_object"]
+        category_character = data["category_character"]
+        keyword = data["keyword"]
         price = data["price"]
-        if date == "" or category1 == "" or category2 == "" or category3 == "" or remark == "" or price == "":
+        payable = data["payable"]
+        prepaid = data["prepaid"]
+        status = "未結算"
+        if date == "" or category_main == "" or category_object == "" or category_character == "" or keyword == "" or price == "":
             return jsonify({
                         "error": True,
                         "data" : "欄位填寫不完整",             
@@ -124,7 +105,12 @@ def journal_list(bookId):
                         "error": True,
                         "data" : "請先登入會員",             
                     }),403
+        
+        # insert into journal list table
         try:
+            create_time = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+            create_num = random.randrange(100,999)
+            journal_list_id = create_time + str(create_num)
             token = session["token"]
             decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
             member_id = decode_data["id"]
@@ -132,25 +118,65 @@ def journal_list(bookId):
             mycursor = connection_object.cursor()
             query = ("""
                 INSERT INTO journal_list (
+                    id,
                     date, 
-                    category1, 
-                    category2, 
-                    category3, 
-                    remark, 
+                    category_main, 
+                    category_object, 
+                    category_character, 
+                    keyword, 
                     price, 
                     book_id,
-                    created_member_id)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    created_member_id,
+                    status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """)
-            value = (date, category1, category2, category3, remark, price, bookId, member_id)
+            value = (journal_list_id, date, category_main, category_object, category_character, keyword, price, bookId, member_id, status)
             mycursor.execute(query, value)
             connection_object.commit() 
+
+        except mysql.connector.Error as err:
+            print("Something went wrong when create journal list: {}".format(err))
+            return jsonify({
+                "error": True,
+                "data" : "INTERNAL_SERVER_ERROR",             
+            }),500
+
+        finally:
+            if connection_object.is_connected():
+                mycursor.close()
+                connection_object.close()
+
+        # insert into account_settlement table
+        try:
+            connection_object = MySQL.conn_obj()
+            mycursor = connection_object.cursor()
+            prepaid_dict = {item['collaborator_id']: item['price'] for item in prepaid}
+            payable_dict = {item['collaborator_id']: item['price'] for item in payable}
+            ids = set(prepaid_dict) | set(payable_dict)
+            result = [{'collaborator_id': id, 'prepaid_price': prepaid_dict.get(id, 0), 'payable_price': payable_dict.get(id, 0)} for id in ids]
+            for i in result:
+                collaborator_id = i["collaborator_id"]
+                payable = i["payable_price"]
+                prepaid = i["prepaid_price"]
+                query = ("""
+                    INSERT INTO account_settlement (
+                        journal_list_id,
+                        date, 
+                        collaborator_id,
+                        payable, 
+                        prepaid , 
+                        status)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """)
+                value = (journal_list_id, date, collaborator_id, payable, prepaid , status)
+                mycursor.execute(query, value)
+                connection_object.commit() 
             return jsonify({
                         "ok": True,          
                     }),200
 
         except mysql.connector.Error as err:
-            print("Something went wrong when create journal list: {}".format(err))
+            print("Something went wrong when insert into account_settlement: {}".format(err))
             return jsonify({
                 "error": True,
                 "data" : "INTERNAL_SERVER_ERROR",             
@@ -175,9 +201,14 @@ def journal_list(bookId):
             id = data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor()
-            query = ("DELETE FROM journal_list WHERE id = %s")
-            mycursor.execute(query, (id,))
+            query = ("DELETE FROM journal_list WHERE id = %s AND status = %s")
+            mycursor.execute(query, (id, '未結算'))
+            rows_affected = mycursor.rowcount
             connection_object.commit() 
+            if rows_affected == 0:
+                return jsonify({
+                        "data": "支出已結算，無法刪除。"    
+                    }),200
             return jsonify({
                         "ok": True    
                     }),200

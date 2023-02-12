@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # SESSION_PW = os.environ.get("SESSION_PW")
-MySQL_PW= os.environ.get("MySQL_PW")
+MYSQL_PW = os.environ.get("MYSQL_PW")
+MYSQL_HOST = os.environ.get("MYSQL_HOST")
 TOKEN_PW = os.environ.get("TOKEN_PW")
 SECRET_KEY = os.environ.get("SECRET_KEY")
 

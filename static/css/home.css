@@ -2,26 +2,42 @@
 
 * {
   box-sizing: border-box;
-  font-family: "Merriweather", serif;
   color: #8b4513;
   margin: 0;
   padding: 0;
 }
 .nav {
+  border-bottom: 2px solid;
+  border-color: #8b4513;
+  /* background-color: #fdf5e6; */
+  background-color: rgba(210, 180, 140, 0.8);
+  padding: 10px;
+}
+.nav-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid;
-  border-color: #8b4513;
-  background-color: #fdf5e6;
-  padding: 10px;
+  max-width: 1400px;
+  margin: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 .page-name {
   flex: none;
   font-family: "Comic Sans MS", cursive;
-  font-size: 28px;
-  padding-left: 20px;
+  font-size: 32px;
   font-weight: bold;
+}
+.book {
+  flex: none;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
 }
 .nav-list {
   flex: none;
@@ -38,6 +54,7 @@
   flex: auto;
   justify-content: flex-end;
   align-items: center;
+  position: relative;
 }
 .create {
   font-weight: bold;
@@ -52,45 +69,37 @@
   text-align: center;
   cursor: pointer;
 }
-.bar-list {
-  flex: none;
-  list-style-type: none;
-  margin: 0;
-  padding: 10px;
-  width: 60px;
-  cursor: pointer;
-  position: relative;
-}
 .user-list {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   background-image: url(/static/img/user-profile.png);
   background-position: center;
   background-size: cover;
-  margin-right: 5px;
+  cursor: pointer;
 }
 .user-list-content {
   background-color: #ffffff;
   position: absolute;
-  width: 130px;
-  top: 50px;
+  width: 120px;
+  top: 40px;
   right: 10px;
   border-radius: 5px;
   box-shadow: 3px 3px 8px rgba(33, 33, 33, 0.7);
   border: 2px solid;
   border-color: #8b4513;
   display: none;
+  z-index: 3;
 }
 .user-list-content div {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fdf5e6;
+  background-color: #ffffff;
   height: 60px;
   font-size: 20px;
-  font-weight: 500;
   text-align: center;
   cursor: pointer;
+  border-radius: 5px;
 }
 .user-list-content div:hover,
 .create:hover {
@@ -109,6 +118,10 @@
 }
 
 /*---------------------- main ------------------------*/
+main {
+  max-width: 1400px;
+  margin: auto;
+}
 .welcome {
   display: flex;
   justify-content: start;
@@ -117,7 +130,7 @@
   width: 200px;
   margin-top: 40px;
   margin-left: 60px;
-  font-size: 20px;
+  font-size: 22px;
 }
 .new-book {
   height: 245px;
@@ -269,4 +282,33 @@
 }
 .popup-button:hover {
   box-shadow: 2px 2px 5px rgba(33, 33, 33);
+}
+
+@media (max-width: 1400px) {
+  .nav-bar {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .welcome {
+    max-width: 700px;
+  }
+  .main {
+    display: block;
+    margin-top: 10px;
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome {
+    padding-left: 10px;
+    padding-top: 60px;
+    padding-bottom: 40px;
+    width: 90%;
+    margin: auto;
+  }
+  .main {
+    width: 90%;
+    margin: auto;
+  }
 }

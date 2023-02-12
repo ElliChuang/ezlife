@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/static/css/chart.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
+    <title>chart</title>
+  </head>
+  <body>
+    <script src="/static/js/html/html_nav.js"></script>
+    <main class="main-chart">
+      <div class="chart-query-box">
+        <section class="chart-query-box-required">
+          <div class="chart-query-box-title">請輸入年度、月份（必填）</div>
+          <span class="chart-query-box-subtitle">年度</span
+          ><select size="1" id="year" name="year">
+            <option value="2022">2022</option>
+            <option value="2023" selected>2023</option>
+            <option>2024</option>
+            <option>2025</option>
+            <option>2026</option>
+            <option>2027</option>
+            <option>2028</option>
+            <option>2029</option>
+            <option>2030</option></select
+          ><br />
+          <span class="chart-query-box-subtitle">月份</span
+          ><select size="1" id="month" name="month">
+            <option selected>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option></select
+          ><br />
+        </section>
+        <section class="chart-query-box-option">
+          <div class="chart-query-box-title">請輸入類別（選填）</div>
+          <span class="chart-query-box-subtitle">生活機能</span>
+          <select size="1" id="category_main" name="main">
+            <option></option>
+            <option>食</option>
+            <option>衣</option>
+            <option>住</option>
+            <option>行</option>
+            <option>育</option>
+            <option>樂</option></select
+          ><br />
+          <span class="chart-query-box-subtitle">支出對象</span>
+          <select size="1" id="category_character" name="character">
+            <option></option>
+            <option>個人</option>
+            <option>家庭</option>
+            <option>育兒</option>
+            <option>寵物</option>
+            <option>宿舍</option>
+            <option>旅行</option></select
+          ><br />
+          <span class="chart-query-box-subtitle">消費型態</span>
+          <select size="1" id="category_object" name="object">
+            <option></option>
+            <option>食品</option>
+            <option>日常用品</option>
+            <option>水電</option>
+            <option>瓦斯</option>
+            <option>網路</option>
+            <option>電信</option>
+            <option>管理費</option>
+            <option>維修</option>
+            <option>保養</option>
+            <option>房租</option>
+            <option>房貸</option>
+            <option>車貸</option>
+            <option>油資</option>
+            <option>停車</option>
+            <option>美妝保養</option>
+            <option>服裝</option>
+            <option>設備</option>
+            <option>學習</option>
+            <option>運動</option>
+            <option>娛樂</option>
+            <option>交際費</option>
+            <option>理財</option>
+            <option>醫療</option>
+            <option>保健</option>
+            <option>保險</option>
+            <option>其他</option></select
+          ><br />
+          <span class="chart-query-box-subtitle">關鍵字</span
+          ><input
+            type="text"
+            class="chart-query-box-keyword"
+            id="keyword"
+            name="keyword"
+          />
+        </section>
+        <section class="chart-query-box-click">
+          <div class="chart-query-box-button">查詢</div>
+          <div class="chart-query-box-export" id="download">匯出 csv</div>
+        </section>
+      </div>
+      <div class="chart">
+        <div class="container">
+          <div class="chart-main">
+            <input type="radio" value="main" name="radio" checked />
+            <span class="chart-main-span-checked" id="main">生活機能</span>
+            <input type="radio" name="radio" value="character" /><span
+              class="chart-main-span-unchecked"
+              id="character"
+              >支出對象</span
+            >
+          </div>
+          <div id="current-chart">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+        <div class="container">
+          <div class="journal-list">
+            <div>Journal List</div>
+            <div>合計：<span id="total"></span>元</div>
+          </div>
+          <div id="current-journal-list">
+            <div class="current-journal-list-subtotal">
+              <div class="subtotal">
+                <label>食</label>
+                <span id="subtotal-食"></span>元
+              </div>
+              <div class="subtotal">
+                <label>衣</label>
+                <span id="subtotal-衣"></span>元
+              </div>
+              <div class="subtotal">
+                <label>住</label>
+                <span id="subtotal-住"></span>元
+              </div>
+              <div class="subtotal">
+                <label>行</label>
+                <span id="subtotal-行"></span>元
+              </div>
+              <div class="subtotal">
+                <label>育</label>
+                <span id="subtotal-育"></span>元
+              </div>
+              <div class="subtotal">
+                <label>樂</label>
+                <span id="subtotal-樂"></span>元
+              </div>
+            </div>
+            <div class="current-journal-list-container"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="/static/js/html/html_notice.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"
+      integrity="sha512-JPcRR8yFa8mmCsfrw4TNte1ZvF1e3+1SdGMslZvmrzDYxS69J7J49vkFL8u6u8PlPJK+H3voElBtUCzaXj+6ig=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script type="module" src="/static/js/chart.js"></script>
+    <script type="module" src="/static/js/nav.js"></script>
+    <script type="module" src="/static/js/notice.js"></script>
+  </body>
+</html>

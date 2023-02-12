@@ -7,9 +7,9 @@ from config import TOKEN_PW
 
 
 # 建立 Flask Blueprint
-account_book = Blueprint("account_book", __name__)
+account_books = Blueprint("account_books", __name__)
 
-@account_book.route("/api/account_book", methods=["GET", "POST", "DELETE"])
+@account_books.route("/api/account_books", methods=["GET", "POST", "DELETE"])
 def book():
     # 取得帳簿資訊
     if request.method == "GET":
