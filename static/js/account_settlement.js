@@ -11,10 +11,10 @@ const bookId = url.split("account_book/")[1].split("/")[0];
 
 // 取得帳簿權限、使用者權限
 const bookAuthCheck = bookAuth(bookId);
-const userAuthCheck = getStatus();
 let user = { name: "", id: "" };
 bookAuthCheck.then((data) => {
   if (data.ok) {
+    const userAuthCheck = getStatus();
     userAuthCheck.then((data) => {
       user.id = data.id;
       user.name = data.name;

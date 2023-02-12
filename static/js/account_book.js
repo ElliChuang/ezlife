@@ -7,7 +7,7 @@ const category_object = document.querySelector("#category_object");
 const category_character = document.querySelector("#category_character");
 
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
-import { indexPage, loadPage, bookAuth, getStatus } from "./nav.js";
+import { indexPage, bookAuth, getStatus } from "./nav.js";
 
 const socket = io();
 
@@ -17,11 +17,10 @@ const bookId = url.split("account_book/")[1];
 
 // 取得帳簿權限、使用者權限
 const bookAuthCheck = bookAuth(bookId);
-const userAuthCheck = getStatus();
 let user = { name: "", id: "" };
-// let collaborators = [];
 bookAuthCheck.then((data) => {
   if (data.ok) {
+    const userAuthCheck = getStatus();
     userAuthCheck.then((data) => {
       user.id = data.id;
       user.name = data.name;

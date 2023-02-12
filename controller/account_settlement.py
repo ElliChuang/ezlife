@@ -72,7 +72,7 @@ def checkout(bookId):
                     WHERE j.book_id = %s AND year(s.date) = %s AND month(s.date) = %s AND s.status = %s
                     
                 """
-                query_detail_end = "Order by s.date DESC;"
+                query_detail_end = "Order by s.date DESC, s.journal_list_id DESC;;"
                 value_detail = (bookId, year, month, '未結算')
 
                 condition = []

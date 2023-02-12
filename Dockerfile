@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.9
+FROM python:3.8-slim-buster
 
 WORKDIR /project
 
@@ -9,6 +9,6 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-ENV FLASK_APP = app.py
+EXPOSE 3000
 
 CMD ["python", "app.py"]

@@ -92,6 +92,8 @@ async function bookAuth(bookId) {
     getBookName(jsonData);
     getEditor(jsonData);
     return jsonData;
+  } else if (jsonData.data === "請先登入會員") {
+    showNoticeWindow("訊息通知", jsonData.data, indexPage);
   } else {
     showNoticeWindow("訊息通知", jsonData.data, homePage);
   }
@@ -111,7 +113,7 @@ async function getStatus() {
     user.id = jsonData.data.id;
     return user;
   } else {
-    showNoticeWindow("請登入會員", "", indexPage);
+    showNoticeWindow("訊息通知", "請登入會員", indexPage);
   }
 }
 
