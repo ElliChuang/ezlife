@@ -7,6 +7,7 @@ MYSQL_PW = os.environ.get("MYSQL_PW")
 MYSQL_HOST = os.environ.get("MYSQL_HOST")
 TOKEN_PW = os.environ.get("TOKEN_PW")
 SECRET_KEY = os.environ.get("SECRET_KEY")
+GOOGLE_OAUTH2_CLIENT_ID = os.environ.get("GOOGLE_OAUTH2_CLIENT_ID")
 
 JSON_AS_ASCII = False
 TEMPLATES_AUTO_RELOAD = True

@@ -1,12 +1,9 @@
 .nav {
-  /* background-color: #fdf5e6; */
   background-color: rgba(210, 180, 140, 0.8);
   padding: 10px;
 }
 .nav-second {
-  /* background-color: #fffaf0; */
   background-color: rgba(210, 180, 140, 0.3);
-  /* background-color: rgba(184, 134, 11, 0.3); */
 }
 .nav-bar {
   display: flex;
@@ -25,8 +22,6 @@
   margin: auto;
   padding-bottom: 5px;
   padding-top: 5px;
-  /* background-color: #fffaf0; */
-  /* background-color: rgba(184, 134, 11, 0.3); */
 }
 .nav-left {
   flex: none;

@@ -2,24 +2,19 @@
 
 * {
   box-sizing: border-box;
-  font-family: "Joan", serif;
   margin: 0;
   padding: 0;
+  color: #8b4513;
 }
-
-.container .row img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 50%;
-  border-radius: 10px;
+body,
+main {
+  background-color: rgba(210, 180, 140, 0.3);
 }
 .page-name {
   font-family: "Comic Sans MS", cursive;
   font-size: 32px;
-  padding-left: 5px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   font-weight: bold;
   color: #8b4513;
   cursor: pointer;
@@ -27,54 +22,46 @@
 .join-us {
   cursor: pointer;
   font-size: 24px;
-  padding-right: 10px;
   font-weight: 800;
   color: #8b4513;
+  font-family: "Joan", serif;
 }
 .nav {
   background-color: rgba(210, 180, 140, 0.3);
 }
-.kv {
-  display: flex;
-  align-items: center;
-  background-color: rgba(210, 180, 140, 0.3);
+.cover {
+  height: 68vh;
+  margin-right: 150px;
 }
 .cover-image {
-  height: 65vh;
-  width: 900px;
-}
-.cover {
-  height: 70vh;
-}
-.cover-image img {
   background-image: url(/static/img/index.png);
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-position: top;
+  background-position: bottom;
+  opacity: 0.7;
 }
 .cover-text {
-  flex: none;
-  max-width: 400px;
+  max-width: 700px;
   margin: auto;
   padding: 20px;
   text-align: center;
-  color: #8b4513;
   margin-top: 19vh;
-}
-.slogan {
-  font-size: 42px;
   font-family: "Joan", serif;
 }
-main {
-  margin-bottom: 50px;
+.slogan {
+  font-size: 32px;
+  font-family: "Joan", serif;
+  color: beige;
 }
 .github {
   padding-left: 10px;
 }
+
 /* -------------- Signin ------------------- */
 .name {
   font-family: "Comic Sans MS", cursive;
+  color: grey;
 }
 section {
   display: none;
@@ -83,7 +70,7 @@ section {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 .login {
   position: absolute;
@@ -100,7 +87,7 @@ section {
 }
 #sign-up-message,
 #login-message {
-  color: red;
+  color: #dc3545;
   padding: 10px;
 }
 #register,
@@ -108,18 +95,38 @@ section {
   cursor: pointer;
 }
 
+/* -------------- index ------------------- */
+.subcontainer {
+  height: 680px;
+}
+.co-edit {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 15% 20%;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px 5px gray;
+}
+.analyze {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px 5px gray;
+}
+footer {
+  background-color: #d2b48c;
+}
+
 @media (max-width: 1200px) {
+  .slogan {
+    color: #fff;
+  }
   .cover {
-    height: 65vh;
-  }
-  .cover-image {
-    width: auto;
-  }
-  .kv {
-    display: block;
+    margin-right: 50px;
   }
   .cover-text {
-    padding: 40px;
-    margin-top: 0;
+    margin-top: 14vh;
   }
 }
