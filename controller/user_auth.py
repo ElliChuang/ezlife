@@ -1,60 +1,22 @@
 from flask import *
 from mysql.connector import errorcode
 import mysql.connector 
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from model.db import MySQL 
 import jwt
 import datetime
-import secrets
-from google.oauth2 import id_token
-from google.auth.transport import requests
-from config import TOKEN_PW, GOOGLE_OAUTH2_CLIENT_ID
+from werkzeug.utils import secure_filename
+import boto3
+from config import TOKEN_PW, S3_ACCESS_KEY_ID, S3_ACCESS_SECRET_KEY, CLOUDFRONT_PATH, S3_BUCKET_NAME
 
 # 建立 Flask Blueprint
 user_auth = Blueprint("user_auth", __name__)
 
-@user_auth.route("/api/user", methods=["POST"])
-def signup():
-	data = request.get_json()
-	if data["name"] == "" or data["email"] == "" or data["password"] == "":
-		return jsonify({
-					"error": True,
-					"data" : "請輸入姓名、電子郵件及密碼",             
-				}),400
-	try:
-		connection_object = MySQL.conn_obj()
-		mycursor = connection_object.cursor()
-		query = ("SELECT email FROM member where email = %s")
-		mycursor.execute(query, (data["email"],))
-		result = mycursor.fetchone()
-		if result:
-			return jsonify({
-						"error": True,
-						"data" : "電子郵件已被註冊",             
-					}),400
-		else: 
-			# 將使用者密碼加密
-			hash_password = generate_password_hash(data['password'], method='sha256')
-			query = "INSERT INTO member (name, email, password) VALUES (%s, %s, %s)"
-			value = (data["name"], data["email"], hash_password)
-			mycursor.execute(query, value)
-			connection_object.commit() 
-			return jsonify({
-						"ok": True,          
-					}),200
-
-	except mysql.connector.Error as err:
-		print("Something went wrong when user sign up: {}".format(err))
-		return jsonify({
-					"error": True,
-					"data" : "INTERNAL_SERVER_ERROR",             
-				}),500
-
-	finally:
-		if connection_object.is_connected():
-			mycursor.close()
-			connection_object.close()
-
+# 設定 s3
+s3 = boto3.client('s3',
+                    aws_access_key_id = S3_ACCESS_KEY_ID,
+                    aws_secret_access_key= S3_ACCESS_SECRET_KEY,
+                )
 
 @user_auth.route("/api/user/auth", methods=["GET", "PUT", "DELETE"])
 def user():
@@ -69,6 +31,7 @@ def user():
 								"id" : decode_data["id"],
 								"name" : decode_data["name"],
 								"email" : decode_data["email"],
+								"profile" : decode_data["profile"]
 							}
 						}),200
 			except:
@@ -89,7 +52,7 @@ def user():
 		try:
 			connection_object = MySQL.conn_obj()
 			mycursor = connection_object.cursor(dictionary=True)
-			query = ("SELECT id, name, email, password FROM member WHERE email = %s")
+			query = ("SELECT id, name, email, password, profile FROM member WHERE email = %s")
 			mycursor.execute(query, (email,))
 			result = mycursor.fetchone()
 			if not result: 
@@ -102,6 +65,7 @@ def user():
 					"id" : result["id"],
 					"name" : result["name"],
 					"email" : result["email"],
+					"profile" : result["profile"],
 					'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=3)
 				}
 				token = jwt.encode(payload, TOKEN_PW, algorithm="HS256")
@@ -143,61 +107,127 @@ def user():
 
 
 
-@user_auth.route("/api/user/auth", methods=["POST"])
-def google_login():
-	data = request.get_json()
-	credential = data["credential"]
-	try:
-		idinfo = id_token.verify_oauth2_token(credential, requests.Request(), GOOGLE_OAUTH2_CLIENT_ID)
-		email = idinfo["email"]
-		name = idinfo["name"]
-
-	except ValueError:
-		return jsonify({"error": True, "data": "Invalid token"})
-
-	# 確認使用者是否已經註冊過
-	try:
-		connection_object = MySQL.conn_obj()
-		mycursor = connection_object.cursor(dictionary=True)
-		query = ("SELECT * FROM member WHERE email = %s")
-		mycursor.execute(query, (email,))
-		user = mycursor.fetchone()
-
-		if not user:
-			# 未註冊，將會員資料建入資料庫
-			password = secrets.token_hex(16)
-			query = "INSERT INTO member (name, email, password) VALUES (%s, %s, %s)"
-			value = (name, email, password)
+@user_auth.route("/api/user/auth", methods=["PATCH"])
+def user_modify():
+	id = request.form["memberId"]
+	name = request.form["memberName"]
+	email = request.form["memberEmail"]
+	print(id, name, email)
+	image = request.files.get('file')
+	print(image)
+	print(type(image))
+	if not name or not email:
+		return jsonify({
+					"error": True,
+					"data" : "請輸入姓名及電子郵件",             
+				}),400
+	
+	# 使用者未更新大頭照
+	if not image:
+		try:
+			profile = request.form["profile"]
+			connection_object = MySQL.conn_obj()
+			mycursor = connection_object.cursor(dictionary=True)
+			query = """
+				UPDATE member 
+				SET name = %s, email = %s
+				WHERE id = %s
+			"""
+			value = (name, email, id)
 			mycursor.execute(query, value)
 			connection_object.commit() 
 
-			# 取得 user id
-			user_id = mycursor.lastrowid
-			user = {
-				"id" : user_id,
-				"name" : name,
-				"email" : email
-			}
+			# 更新 token 資料
+			payload = {
+						"id" : id,
+						"name" : name,
+						"email" : email,
+						"profile" : profile,
+						'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=3)
+					}
+			token = jwt.encode(payload, TOKEN_PW, algorithm="HS256")
+			session["token"] = token
 
+			return jsonify({
+				"ok" : True,
+				"data":{
+					"id" : id,
+					"name" : name,
+					"email" : email,
+					"profile" : profile
+				}
+			})
+
+		except mysql.connector.Error as err:
+			print("error while insert to database: {}".format(err))
+			return jsonify({
+				"error" : True,
+				"data" : "internal error"
+			})
+
+		finally:
+			if connection_object.is_connected():
+				mycursor.close()
+				connection_object.close()
+
+	# 使用者有更新大頭照 
+	allow_file_type = {'png', 'jpg', 'jpeg'}
+	file_type = image.content_type.split("/")[1]
+	if file_type not in allow_file_type:
+		return jsonify({
+					"error": True,
+					"data" : "圖片格式有誤",             
+				}),400
+
+	filename = secure_filename(image.filename)
+	now = datetime.datetime.now()
+	time = now.strftime("%m/%d/%Y-%H:%M:%S")
+	unique_filename = filename + "(" + time + ")"
+
+	# 圖片存 S3
+	s3.upload_fileobj(image, S3_BUCKET_NAME, 'profile/' + unique_filename)
+	profile = f'https://{CLOUDFRONT_PATH}/profile/{unique_filename}'
+
+	# 圖片 CDN 網址及會員資料更新到 RDS
+	try:
+		connection_object = MySQL.conn_obj()
+		mycursor = connection_object.cursor(dictionary=True)
+		query = """
+			UPDATE member 
+			SET name = %s, email = %s, profile = %s 
+			WHERE id = %s
+		"""
+		value = (name, email, profile, id)
+		mycursor.execute(query, value)
+		connection_object.commit() 
+
+		# 更新 token 資料
 		payload = {
-					"id" : user["id"],
-					"name" : user["name"],
-					"email" : user["email"],
+					"id" : id,
+					"name" : name,
+					"email" : email,
+					"profile" : profile,
 					'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=3)
 				}
 		token = jwt.encode(payload, TOKEN_PW, algorithm="HS256")
 		session["token"] = token
 
 		return jsonify({
-					"ok": True    
-				}),200
+			"ok" : True,
+			"data":{
+				"id" : id,
+				"name" : name,
+				"email" : email,
+				"profile" : profile
+			}
+		})
 
 	except mysql.connector.Error as err:
-			print("Something went wrong when use google login: {}".format(err))
-			return jsonify({
-				"error": True,
-				"data" : "INTERNAL_SERVER_ERROR",             
-			}),500
+		print("error while insert to database: {}".format(err))
+		return jsonify({
+			"error" : True,
+			"data" : "internal error"
+		})
 
 	finally:
 		if connection_object.is_connected():

@@ -30,7 +30,7 @@ def book_auth(bookId):
         mycursor.execute(query, (bookId,))
         result = mycursor.fetchall()
         for item in result:
-            if item['id'] == member_id:
+            if item['id'] == int(member_id):
                 return jsonify({
                         "ok": True,
                         "data" : result          

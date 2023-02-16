@@ -5,6 +5,8 @@ const contentListContainer = document.querySelector(".content-list-container");
 const category_main = document.querySelector("#category_main");
 const category_object = document.querySelector("#category_object");
 const category_character = document.querySelector("#category_character");
+const userList = document.querySelector(".user-list");
+const welcomeName = document.querySelector("#welcome-name");
 
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
 import { indexPage, bookAuth, getStatus } from "./nav.js";
@@ -17,13 +19,19 @@ const bookId = url.split("account_book/")[1];
 
 // 取得帳簿權限、使用者權限
 const bookAuthCheck = bookAuth(bookId);
-let user = { name: "", id: "" };
+let user = { name: "", id: "", email: "", profile: "" };
 bookAuthCheck.then((data) => {
   if (data.ok) {
     const userAuthCheck = getStatus();
     userAuthCheck.then((data) => {
+      welcomeName.innerText = data.name;
       user.id = data.id;
       user.name = data.name;
+      user.email = data.email;
+      user.profile = data.profile;
+      userList.src = user.profile;
+      userList.id = user.id;
+      userList.value = user.email;
     });
     let dt = new Date();
     let dt_year = dt.getFullYear();
@@ -59,7 +67,6 @@ function setObject(datas) {
     let prepayInput = document.createElement("input");
     prepayInput.name = "prepay";
     prepayInput.id = datas[i].id;
-    // prepayInput.name = datas[i].name;
     prepaySubgroup.appendChild(prepayTitle);
     prepaySubgroup.appendChild(prepayInput);
     prepayGroup.appendChild(prepaySubgroup);

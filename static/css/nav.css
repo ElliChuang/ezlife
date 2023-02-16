@@ -68,8 +68,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background-color: #fffaf0; */
-  /* background-color: rgba(184, 134, 11, 0.3); */
   height: 50px;
   width: 70px;
   font-size: 20px;
@@ -152,12 +150,14 @@
   border-radius: 5px;
 }
 .user-list {
-  width: 36px;
-  height: 36px;
-  background-image: url(/static/img/user-profile.png);
-  background-position: center;
-  background-size: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid;
+  border-color: #ffffff;
+  object-fit: cover;
   cursor: pointer;
+  background-color: #ffffff;
 }
 .user-list-content {
   background-color: #ffffff;

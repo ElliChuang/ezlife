@@ -8,6 +8,7 @@ const popupClose = document.querySelector(".popup-closed");
 const popupMessage = document.querySelector(".popup-message");
 const popupButton = document.querySelector(".popup-button");
 const bookList = document.querySelector(".book-list");
+const userList = document.querySelector(".user-list");
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
 
 ezlife.addEventListener("click", () => {
@@ -16,14 +17,23 @@ ezlife.addEventListener("click", () => {
 
 // 取得會員狀態
 getStatus();
+let user = { id: "", name: "", email: "", profile: "" };
 async function getStatus() {
   let url = "/api/user/auth";
   let fetchData = await fetch(url, {
     method: "GET",
   });
   let jsonData = await fetchData.json();
+  console.log(jsonData);
   if (jsonData.data !== null && jsonData.data.id) {
     welcomeName.innerText = jsonData.data.name;
+    user.id = jsonData.data.id;
+    user.name = jsonData.data.name;
+    user.email = jsonData.data.email;
+    user.profile = jsonData.data.profile;
+    userList.src = user.profile;
+    userList.id = user.id;
+    userList.value = user.email;
     getBook();
   } else {
     showNoticeWindow("請重新登入", "", indexPage);

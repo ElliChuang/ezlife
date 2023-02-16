@@ -6,14 +6,22 @@ const url = location.href;
 const bookId = url.split("account_book/")[1].split("/")[0];
 
 // 取得帳簿權限、使用者權限
+const userList = document.querySelector(".user-list");
+const welcomeName = document.querySelector("#welcome-name");
 const bookAuthCheck = bookAuth(bookId);
-let user = { name: "", id: "" };
+let user = { name: "", id: "", email: "", profile: "" };
 bookAuthCheck.then((data) => {
   if (data.ok) {
     const userAuthCheck = getStatus();
     userAuthCheck.then((data) => {
+      welcomeName.innerText = data.name;
       user.id = data.id;
       user.name = data.name;
+      user.email = data.email;
+      user.profile = data.profile;
+      userList.src = user.profile;
+      userList.id = user.id;
+      userList.value = user.email;
     });
     getData();
     console.log("Let's start");

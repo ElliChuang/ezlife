@@ -1,4 +1,5 @@
 from flask import *
+from controller.user import user
 from controller.user_auth import user_auth
 from controller.account_books import account_books
 from controller.account_book_id import account_book_id
@@ -20,6 +21,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 
 # 註冊Flask Blueprint
+app.register_blueprint(user)
 app.register_blueprint(user_auth)
 app.register_blueprint(account_books)
 app.register_blueprint(account_book_id)
@@ -46,7 +48,7 @@ def chart(id):
 def settlement(id):
     return render_template("account_settlement.html")
 
-
+# Socket
 @socketio.on('join_room')
 def handle_join_room_event(data):
     print(f"{data['username']} has joined the room")

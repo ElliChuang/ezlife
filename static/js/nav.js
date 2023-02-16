@@ -8,7 +8,6 @@ const logout = document.querySelector("#logout");
 const userListContent = document.querySelector(".user-list-content");
 const inviteList = document.querySelector(".invite-list");
 const memberList = document.querySelector(".member-list");
-const welcomeName = document.querySelector("#welcome-name");
 const inviteEmail = document.querySelector("#invite-email");
 
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
@@ -100,7 +99,7 @@ async function bookAuth(bookId) {
 }
 
 // 取得會員狀態
-const user = { name: "", id: "" };
+const user = { name: "", id: "", email: "", profile: "" };
 async function getStatus() {
   let url = "/api/user/auth";
   let fetchData = await fetch(url, {
@@ -108,9 +107,10 @@ async function getStatus() {
   });
   let jsonData = await fetchData.json();
   if (jsonData.data !== null && jsonData.data.id) {
-    welcomeName.innerText = jsonData.data.name;
     user.name = jsonData.data.name;
     user.id = jsonData.data.id;
+    user.email = jsonData.data.email;
+    user.profile = jsonData.data.profile;
     return user;
   } else {
     showNoticeWindow("訊息通知", "請登入會員", indexPage);
@@ -147,15 +147,16 @@ function getEditor(data) {
     const memberDiv = document.createElement("div");
     memberDiv.innerText = data.data[i].name;
     memberDiv.className = "collaborator";
+    memberDiv.id = `member-${data.data[i].id}`;
     Div.appendChild(memberDiv);
   }
 
   // delete collaborator
   document.querySelectorAll(".member-delete").forEach((id) => {
     id.addEventListener("click", (elem) => {
-      const Id = parseInt(elem.target.id);
+      const Id = elem.target.id;
       const name = elem.target.value;
-      if (Id === user.id) {
+      if (parseInt(Id) === parseInt(user.id)) {
         showNoticeWindow("無法將自己刪除", "", closeNoticeWindow);
       } else {
         deletCollaborator(Id, name);

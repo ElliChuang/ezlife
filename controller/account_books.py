@@ -106,10 +106,11 @@ def book():
                 value = (book_name, member_id)
                 mycursor.execute(query, value)
                 connection_object.commit() 
-                query_2 = ("SELECT id FROM account_book WHERE book_name = %s AND host_id = %s")
-                mycursor.execute(query_2, (book_name, member_id))
-                result = mycursor.fetchone()
-                book_id = result['id']
+                # query_2 = ("SELECT id FROM account_book WHERE book_name = %s AND host_id = %s")
+                # mycursor.execute(query_2, (book_name, member_id))
+                # result = mycursor.fetchone()
+                # book_id = 
+                book_id = mycursor.lastrowid
                 query_3 = ("""
                     INSERT INTO collaborator (collaborator_id, book_id)
                     VALUES (%s, %s)

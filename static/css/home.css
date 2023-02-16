@@ -9,7 +9,6 @@
 .nav {
   border-bottom: 2px solid;
   border-color: #8b4513;
-  /* background-color: #fdf5e6; */
   background-color: rgba(210, 180, 140, 0.8);
   padding: 10px;
 }
@@ -70,12 +69,14 @@
   cursor: pointer;
 }
 .user-list {
-  width: 36px;
-  height: 36px;
-  background-image: url(/static/img/user-profile.png);
-  background-position: center;
-  background-size: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid;
+  border-color: #ffffff;
+  object-fit: cover;
   cursor: pointer;
+  background-color: #ffffff;
 }
 .user-list-content {
   background-color: #ffffff;

@@ -179,10 +179,10 @@ continueWithGoogle.addEventListener("click", () => {
 function handleCredentialResponse(response) {
   if (response.credential) {
     // Handle signed-in state
-    let url = "/api/user/auth";
+    let url = "/api/user";
     let requestBody = { credential: response.credential };
     fetch(url, {
-      method: "POST",
+      method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(requestBody),
     })
