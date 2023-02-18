@@ -28,10 +28,10 @@ def book():
                 SELECT 
                     b.id, 
                     b.book_name, 
-                    b.host_id 
+                    b.created_member_id 
                 FROM account_book AS b 
                 LEFT JOIN collaborator as c ON b.id = c.book_id
-                WHERE b.host_id = %s OR c.collaborator_id = %s
+                WHERE b.created_member_id = %s OR c.collaborator_id = %s
                 GROUP BY b.id
             """)
             mycursor.execute(query, (member_id, member_id))
@@ -46,7 +46,7 @@ def book():
                         "account_book" : {
                             "id" : item["id"],
                             "book_name" : item["book_name"],
-                            "host_id" : item["host_id"],
+                            "created_member_id" : item["created_member_id"],
                         },
                 }
                 datas.append(data)
@@ -89,7 +89,7 @@ def book():
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             # 確認帳簿名稱是否重複
-            query = ("SELECT book_name FROM account_book WHERE book_name = %s AND host_id = %s")
+            query = ("SELECT book_name FROM account_book WHERE book_name = %s AND created_member_id = %s")
             mycursor.execute(query, (book_name, member_id))
             result = mycursor.fetchone()
             if result:
@@ -100,16 +100,12 @@ def book():
 
             else:
                 query = ("""
-                    INSERT INTO account_book (book_name, host_id)
+                    INSERT INTO account_book (book_name, created_member_id)
                     VALUES (%s, %s)
                 """)
                 value = (book_name, member_id)
                 mycursor.execute(query, value)
                 connection_object.commit() 
-                # query_2 = ("SELECT id FROM account_book WHERE book_name = %s AND host_id = %s")
-                # mycursor.execute(query_2, (book_name, member_id))
-                # result = mycursor.fetchone()
-                # book_id = 
                 book_id = mycursor.lastrowid
                 query_3 = ("""
                     INSERT INTO collaborator (collaborator_id, book_id)
@@ -148,11 +144,11 @@ def book():
             data = request.get_json()
             book_id = data["bookId"]
             decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
-            host_id = decode_data["id"]
+            created_member_id = decode_data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor()
-            query = ("SELECT * FROM account_book WHERE host_id = %s AND id = %s")
-            mycursor.execute(query, (host_id, book_id))
+            query = ("SELECT * FROM account_book WHERE created_member_id = %s AND id = %s")
+            mycursor.execute(query, (created_member_id, book_id))
             result = mycursor.fetchone()
             if not result:
                     return jsonify({
@@ -160,8 +156,8 @@ def book():
                         "data" : "無刪除權限",             
                     }),403
 
-            query = ("DELETE FROM account_book WHERE host_id = %s AND id = %s")
-            mycursor.execute(query, (host_id, book_id))
+            query = ("DELETE FROM account_book WHERE created_member_id = %s AND id = %s")
+            mycursor.execute(query, (created_member_id, book_id))
             connection_object.commit() 
             return jsonify({
                         "ok": True    

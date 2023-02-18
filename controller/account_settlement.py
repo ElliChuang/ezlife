@@ -19,9 +19,18 @@ def checkout(bookId):
                         "data" : "請先登入會員",             
                     }),403
 
-        year = request.args.get("year")
-        month = request.args.get("month")
+        year = int(request.args.get("year"))
+        month = int(request.args.get("month"))
         collaborator_id = request.args.get("collaborator_id")
+        start_dt = ""
+        end_dt = ""
+        if month == 12:
+            start_dt = f'{year}-{month}-01'
+            end_dt = f'{year + 1}-01-01'
+        else:
+            start_dt = f'{year}-{month}-01'
+            end_dt = f'{year}-{month + 1}-01'
+
         if not year or not month:
             return jsonify({
                         "error": True,
@@ -36,15 +45,29 @@ def checkout(bookId):
                 SELECT 
                     m.id, 
                     m.name, 
-                    sum(s.payable) as payable,
-                    sum(s.prepaid) as prepaid
-                FROM account_settlement as s
-                INNER JOIN member as m on m.id = s.collaborator_id
-                INNER JOIN journal_list as j on j.id = s.journal_list_id
-                WHERE j.book_id = %s AND year(s.date) = %s AND month(s.date) = %s AND s.status = %s
-                GROUP By s.collaborator_id;
+                    sum(p.payable) as payable,
+                    sum(p.prepaid) as prepaid
+                FROM journal_list_price as p
+                INNER JOIN journal_list as j on j.id = p.journal_list_id
+                INNER JOIN member as m on m.id = p.member_id
+                INNER JOIN (
+                        SELECT journal_list_id, status
+                        FROM status
+                        WHERE (journal_list_id, created_dt) IN (
+                            SELECT journal_list_id, MAX(created_dt)
+                            FROM status
+                            GROUP BY journal_list_id
+                            )
+                    ) s ON j.id = s.journal_list_id
+                WHERE 	
+                    j.book_id = %s 
+                    AND j.date >= %s 
+                    AND j.date < %s
+                    AND s.status = %s
+                group by
+                    m.id;
             """)
-            mycursor.execute(query, (bookId, year, month, '未結算'))
+            mycursor.execute(query, (bookId, start_dt, end_dt, '未結算'))
             overview = mycursor.fetchall()
             if not overview:
                 return jsonify({
@@ -55,32 +78,52 @@ def checkout(bookId):
                 query_detail_basic = """
                     SELECT 
                         s.journal_list_id, 
-                        s.collaborator_id, 
+                        m.id, 
                         m.name, 
-                        s.payable, 
+                        p.payable, 
                         s.status, 
-                        s.date, 
-                        s.modified_dt as account_dt,
-                        SUM(s.payable) OVER (PARTITION BY s.collaborator_id) AS total_payable,
-                        j.category_main,
-                        j.category_object,
-                        j.category_character,
-                        j.keyword
-                    FROM account_settlement as s
-                    INNER JOIN member as m on m.id = s.collaborator_id
-                    INNER JOIN journal_list as j on j.id = s.journal_list_id
-                    WHERE j.book_id = %s AND year(s.date) = %s AND month(s.date) = %s AND s.status = %s
-                    
+                        j.date, 
+                        s.created_dt as account_dt,
+                        SUM(p.payable) OVER (PARTITION BY m.id) AS total_payable,
+                        c1.name as category_main,
+                        c2.name as category_object,
+                        c3.name as category_character,
+                        k.content as keyword
+                    FROM journal_list_price as p
+                    INNER JOIN journal_list as j on j.id = p.journal_list_id
+                    INNER JOIN member as m on m.id = p.member_id
+                    INNER JOIN journal_list_category jc1 ON j.id = jc1.journal_list_id
+                    INNER JOIN categories c1 ON jc1.categories_id = c1.id AND c1.parent_category_id = 1
+                    INNER JOIN journal_list_category jc2 ON j.id = jc2.journal_list_id
+                    INNER JOIN categories c2 ON jc2.categories_id = c2.id AND c2.parent_category_id = 2
+                    INNER JOIN journal_list_category jc3 ON j.id = jc3.journal_list_id
+                    INNER JOIN categories c3 ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
+                    INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
+                    INNER JOIN keyword k ON jk.keyword_id = k.id 
+                    INNER JOIN (
+                        SELECT journal_list_id, status, created_dt
+                        FROM status
+                        WHERE (journal_list_id, created_dt) IN (
+                            SELECT journal_list_id, MAX(created_dt)
+                            FROM status
+                            GROUP BY journal_list_id
+                            )
+                    ) s ON j.id = s.journal_list_id
+                    WHERE 
+                        j.book_id = %s 
+                        AND j.date >= %s 
+                        AND j.date < %s
+                        AND s.status = %s    
                 """
-                query_detail_end = "Order by s.date DESC, s.journal_list_id DESC;;"
-                value_detail = (bookId, year, month, '未結算')
+                query_detail_end = "Order by j.date DESC, j.id DESC;"
+                value_detail = (bookId, start_dt, end_dt, '未結算')
 
                 condition = []
                 if collaborator_id:
-                    condition.append("s.collaborator_id = %s")
+                    condition.append("m.id = %s")
                 if condition:
                     query_detail_basic += " AND " + " AND ".join(condition)
-                    value_detail = (bookId, year, month, '未結算', collaborator_id)
+                    value_detail = (bookId, start_dt, end_dt, '未結算', collaborator_id)
                 
                 query_detail = (query_detail_basic+ " " + query_detail_end)
                 mycursor.execute(query_detail, value_detail)
@@ -118,7 +161,7 @@ def checkout(bookId):
                                         "overview" : overview,
                                         "status" : results[0]["status"],
                                         "account_day" : account_day,
-                                        "period" : year + "-" + month,
+                                        "period" : str(year) + "-" + str(month),
                                         "journal_list" : journal_list  
                                         }
                             }),200
@@ -138,8 +181,16 @@ def checkout(bookId):
     # 送出結算
     if request.method == "POST":
         data = request.get_json()
-        year = data["year"]
-        month = data["month"]
+        year = int(data["year"])
+        month = int(data["month"])
+        start_dt = ""
+        end_dt = ""
+        if month == 12:
+            start_dt = f'{year}-{month}-01'
+            end_dt = f'{year + 1}-01-01'
+        else:
+            start_dt = f'{year}-{month}-01'
+            end_dt = f'{year}-{month + 1}-01'
 
         if year == "" or month == "":
             return jsonify({
@@ -156,62 +207,45 @@ def checkout(bookId):
         try:
             token = session["token"]
             decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
-            collaborator_id = decode_data["id"]
-            collaborator_name = decode_data["name"]
+            member_id = decode_data["id"]
+            member_name = decode_data["name"]
             connection_object = MySQL.conn_obj()
-            mycursor = connection_object.cursor()
-            status = "已結算"
-
-            # 更新 account_settlement table
-            query_account_settlement = ("""
-                UPDATE account_settlement as s
-                INNER JOIN journal_list as j on j.id =  s.journal_list_id
-                INNER JOIN account_book as b on b.id =  j.book_id
-                INNER JOIN collaborator as c on c.book_id = b.id
-                SET s.status = %s
-                WHERE year(s.date) = %s AND month(s.date) = %s AND j.book_id = %s AND s.status = %s
-                AND c.collaborator_id = %s IN (SELECT collaborator_id FROM collaborator WHERE book_id = %s)
-                AND j.id IN (SELECT id FROM journal_list WHERE book_id = %s AND status = %s);
+            mycursor = connection_object.cursor(dictionary=True)
+            query = ("""
+                SELECT s.journal_list_id
+                FROM status s
+                INNER JOIN journal_list j ON j.id = s.journal_list_id
+                WHERE 
+                    j.book_id = %s 
+                    AND j.date >= %s 
+                    AND j.date < %s
+                    AND s.status = %s    
             """)
-            value_account_settlement = (status, year, month, bookId, "未結算",collaborator_id, bookId, bookId, "未結算")
-            mycursor.execute(query_account_settlement, value_account_settlement)
-            rows_affected = mycursor.rowcount
-            connection_object.commit() 
-            if rows_affected == 0:
+            value = (bookId, start_dt, end_dt, "未結算")
+            mycursor.execute(query, value)
+            results = mycursor.fetchall()
+            if not results:
                 return jsonify({
-                        "data": "無法結算，請洽帳簿管理員。"    
+                        "data": "無未結算項目"    
                     }),200
 
-            # 更新 journal_list table
-            query_journal_list = ("""
-                UPDATE journal_list as j
-                INNER JOIN account_settlement as s on s.journal_list_id = j.id 
-                INNER JOIN account_book as b on b.id =  j.book_id
-                INNER JOIN collaborator as c on c.book_id = b.id
-                SET j.status = %s
-                WHERE year(j.date) = %s AND month(j.date) = %s AND j.book_id = %s AND j.status = %s
-                AND c.collaborator_id = %s IN (SELECT collaborator_id FROM collaborator WHERE book_id = %s)
-                AND j.id IN (SELECT journal_list_id FROM account_settlement WHERE status = %s);
-            """)
-            value_journal_list = (status, year, month, bookId, '未結算', collaborator_id, bookId,  '已結算')
-            mycursor.execute(query_journal_list, value_journal_list)
-            rows_affected = mycursor.rowcount
+            insert_value = []
+            for item in results:
+                insert_value.append((item["journal_list_id"], "已結算", member_id))
+            mycursor.executemany("INSERT INTO status (journal_list_id, status, member_id) VALUES (%s, %s, %s)", insert_value) 
             connection_object.commit() 
-            if rows_affected == 0:
-                return jsonify({
-                        "data": "無法結算，請洽帳簿管理員。"    
-                    }),200
 
             return jsonify({
                         "ok": True,
                         "data":{
-                            "collaborator_id": collaborator_id,
-                            "collaborator_name" : collaborator_name
-                         }          
+                            "collaborator_id": member_id,
+                            "collaborator_name" : member_name
+                        }          
                     }),200
 
         except mysql.connector.Error as err:
             print("Something went wrong when update status: {}".format(err))
+            mycursor.execute("ROLLBACK")
             return jsonify({
                 "error": True,
                 "data" : "INTERNAL_SERVER_ERROR",             

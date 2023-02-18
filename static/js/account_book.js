@@ -1,5 +1,5 @@
 const date = document.querySelector("input[type='date']");
-const price = document.querySelector("input[name='price']");
+const amount = document.querySelector("input[name='price']");
 const keyword = document.querySelector("input[name='keyword']");
 const contentListContainer = document.querySelector(".content-list-container");
 const category_main = document.querySelector("#category_main");
@@ -50,7 +50,6 @@ function setObject(datas) {
     let payableSubgroup = document.createElement("div");
     payableSubgroup.className = "subgroup";
     let payableTitle = document.createElement("span");
-    payableTitle.className = "title";
     payableTitle.innerText = datas[i].name;
     let payableInput = document.createElement("input");
     payableInput.name = "payable";
@@ -62,7 +61,6 @@ function setObject(datas) {
     let prepaySubgroup = document.createElement("div");
     prepaySubgroup.className = "subgroup";
     let prepayTitle = document.createElement("span");
-    prepayTitle.className = "title";
     prepayTitle.innerText = datas[i].name;
     let prepayInput = document.createElement("input");
     prepayInput.name = "prepay";
@@ -104,7 +102,7 @@ async function getData(bookId, year, month) {
       let itemDollarDiv = document.createElement("div");
       itemContainerDiv.appendChild(itemDollarDiv);
       itemDollarDiv.className = "item-dollar";
-      itemDollarDiv.innerText = jsonData.data[i].journal_list.price;
+      itemDollarDiv.innerText = jsonData.data[i].journal_list.amount;
       let itemDeleteDiv = document.createElement("div");
       itemContainerDiv.appendChild(itemDeleteDiv);
       itemDeleteDiv.className = "item-delete";
@@ -143,7 +141,7 @@ async function getData(bookId, year, month) {
 
       // calendar event
       let eventDate = jsonData.data[i].journal_list.date;
-      let eventPrice = jsonData.data[i].journal_list.price;
+      let eventPrice = jsonData.data[i].journal_list.amount;
       if (eventDate in dict) {
         dict[eventDate] = dict[eventDate] + parseInt(eventPrice);
       } else {
@@ -237,7 +235,7 @@ let requestBody = {
   category_object: "",
   category_character: "",
   keyword: "",
-  price: "",
+  amount: "",
   payable: [],
   prepaid: [],
 };
@@ -260,7 +258,7 @@ document.querySelector("#submit").addEventListener("click", addJournalList);
 async function addJournalList() {
   requestBody.date = date.value;
   requestBody.keyword = keyword.value;
-  requestBody.price = parseInt(price.value);
+  requestBody.amount = parseInt(amount.value);
 
   let payableAmount = 0;
   const payablePrice = document.querySelectorAll("input[name='payable']");
@@ -286,9 +284,9 @@ async function addJournalList() {
     requestBody.category_character === ""
   ) {
     return showNoticeWindow("錯誤訊息", "請選擇類別", closeNoticeWindow);
-  } else if (requestBody.price !== payableAmount) {
+  } else if (requestBody.amount !== payableAmount) {
     return showNoticeWindow("錯誤訊息", "分攤金額有誤", closeNoticeWindow);
-  } else if (requestBody.price !== prepaidAmount) {
+  } else if (requestBody.amount !== prepaidAmount) {
     return showNoticeWindow("錯誤訊息", "代墊金額有誤", closeNoticeWindow);
   }
   console.log(requestBody);

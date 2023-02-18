@@ -21,25 +21,58 @@ def journal_list(bookId):
                         "data" : "請先登入會員",             
                     }),403
         try:
-            year = request.args.get("year")
-            month = request.args.get("month")
+            year = int(request.args.get("year"))
+            month = int(request.args.get("month"))
+            start_dt = ""
+            end_dt = ""
+            if month == 12:
+                start_dt = f'{year}-{month}-01'
+                end_dt = f'{year + 1}-01-01'
+            else:
+                start_dt = f'{year}-{month}-01'
+                end_dt = f'{year}-{month + 1}-01'
+
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
+
             query = ("""
                 SELECT 
-                    id,
-                    date, 
-                    category_main, 
-                    category_object,  
-                    category_character,  
-                    keyword, 
-                    price,
-                    status
-                FROM journal_list AS j 
-                WHERE book_id = %s AND YEAR(date) = %s AND MONTH(date) = %s 
-                Order by date DESC, id DESC;
+                    j.id,
+                    j.date,
+                    j.amount,
+                    c1.name as category_main,
+                    c2.name as category_object,
+                    c3.name as category_character,
+                    k.content,
+                    s.status
+                FROM 
+                    journal_list j 
+                    INNER JOIN journal_list_category jc1 ON j.id = jc1.journal_list_id
+                    INNER JOIN categories c1 ON jc1.categories_id = c1.id AND c1.parent_category_id = 1
+                    INNER JOIN journal_list_category jc2 ON j.id = jc2.journal_list_id
+                    INNER JOIN categories c2 ON jc2.categories_id = c2.id AND c2.parent_category_id = 2
+                    INNER JOIN journal_list_category jc3 ON j.id = jc3.journal_list_id
+                    INNER JOIN categories c3 ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
+                    INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
+                    INNER JOIN keyword k ON jk.keyword_id = k.id 
+                    INNER JOIN (
+                        SELECT journal_list_id, status
+                        FROM status
+                        WHERE (journal_list_id, created_dt) IN (
+                            SELECT journal_list_id, MAX(created_dt)
+                            FROM status
+                            GROUP BY journal_list_id
+                            )
+                    ) s ON j.id = s.journal_list_id
+                WHERE 
+                    j.book_id = %s 
+                    AND j.date >= %s 
+                    AND j.date < %s 
+                ORDER BY 
+                    j.date DESC, 
+                    j.id DESC;
             """)
-            mycursor.execute(query, (bookId, year, month))
+            mycursor.execute(query, (bookId, start_dt, end_dt))
             results = mycursor.fetchall()
             if not results:
                 return jsonify({
@@ -60,8 +93,8 @@ def journal_list(bookId):
                                 "category_main" : item["category_main"],
                                 "category_object" : item["category_object"],
                                 "category_character" : item["category_character"],
-                                "keyword" : item["keyword"],
-                                "price" : item["price"],
+                                "keyword" : item["content"],
+                                "amount" : item["amount"],
                                 "status" : item["status"]
                             },
                     }
@@ -90,11 +123,10 @@ def journal_list(bookId):
         category_object = data["category_object"]
         category_character = data["category_character"]
         keyword = data["keyword"]
-        price = data["price"]
+        amount = data["amount"]
         payable = data["payable"]
         prepaid = data["prepaid"]
-        status = "未結算"
-        if date == "" or category_main == "" or category_object == "" or category_character == "" or keyword == "" or price == "":
+        if date == "" or category_main == "" or category_object == "" or category_character == "" or keyword == "" or amount == "":
             return jsonify({
                         "error": True,
                         "data" : "欄位填寫不完整",             
@@ -105,78 +137,59 @@ def journal_list(bookId):
                         "error": True,
                         "data" : "請先登入會員",             
                     }),403
-        
-        # insert into journal list table
+       
         try:
             create_time = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             create_num = random.randrange(100,999)
             journal_list_id = create_time + str(create_num)
-            token = session["token"]
-            decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
-            member_id = decode_data["id"]
+
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor()
-            query = ("""
-                INSERT INTO journal_list (
-                    id,
-                    date, 
-                    category_main, 
-                    category_object, 
-                    category_character, 
-                    keyword, 
-                    price, 
-                    book_id,
-                    created_member_id,
-                    status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """)
-            value = (journal_list_id, date, category_main, category_object, category_character, keyword, price, bookId, member_id, status)
-            mycursor.execute(query, value)
-            connection_object.commit() 
 
-        except mysql.connector.Error as err:
-            print("Something went wrong when create journal list: {}".format(err))
-            return jsonify({
-                "error": True,
-                "data" : "INTERNAL_SERVER_ERROR",             
-            }),500
+            mycursor.execute("START TRANSACTION")
 
-        finally:
-            if connection_object.is_connected():
-                mycursor.close()
-                connection_object.close()
+            journal_list_value = (journal_list_id, date, amount, bookId)
+            mycursor.execute("""
+                INSERT INTO journal_list (id, date, amount, book_id) 
+                VALUES (%s, %s, %s, %s)""", journal_list_value)
 
-        # insert into account_settlement table
-        try:
-            connection_object = MySQL.conn_obj()
-            mycursor = connection_object.cursor()
             prepaid_dict = {item['collaborator_id']: item['price'] for item in prepaid}
             payable_dict = {item['collaborator_id']: item['price'] for item in payable}
             ids = set(prepaid_dict) | set(payable_dict)
-            result = [{'collaborator_id': id, 'prepaid_price': prepaid_dict.get(id, 0), 'payable_price': payable_dict.get(id, 0)} for id in ids]
-            for i in result:
-                collaborator_id = i["collaborator_id"]
-                payable = i["payable_price"]
-                prepaid = i["prepaid_price"]
-                query = ("""
-                    INSERT INTO account_settlement (
-                        journal_list_id,
-                        date, 
-                        collaborator_id,
-                        payable, 
-                        prepaid , 
-                        status)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                """)
-                value = (journal_list_id, date, collaborator_id, payable, prepaid , status)
-                mycursor.execute(query, value)
-                connection_object.commit() 
+            journal_list_price_value = [(journal_list_id, id, prepaid_dict.get(id, 0), payable_dict.get(id, 0)) for id in ids]
+            mycursor.executemany("INSERT INTO journal_list_price (journal_list_id, member_id, prepaid, payable) VALUES (%s, %s, %s, %s)", journal_list_price_value)
+
+            journal_list_category_value = (journal_list_id, category_main, category_object, category_character)
+            mycursor.execute("""
+                INSERT INTO journal_list_category (journal_list_id, categories_id) 
+                SELECT %s, id FROM categories WHERE name IN (%s, %s, %s)""", journal_list_category_value)
+
+            mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
+            keyword_id = mycursor.lastrowid
+            journal_list_keyword_value = (journal_list_id, keyword_id)
+            mycursor.execute("""
+                INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
+                VALUES (%s, %s)""", journal_list_keyword_value)
+
+            token = session["token"]
+            decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
+            member_id = decode_data["id"]
+            status = "未結算"
+            status_value = (journal_list_id, status, member_id)
+            mycursor.execute("""
+                INSERT INTO status (journal_list_id, status, member_id) 
+                VALUES (%s, %s, %s)""", status_value)  
+
+            mycursor.execute("COMMIT")
+            print("Transaction committed successfully!")
+
             return jsonify({
                         "ok": True,          
                     }),200
 
         except mysql.connector.Error as err:
-            print("Something went wrong when insert into account_settlement: {}".format(err))
+            print("Something went wrong when add journal_list: {}".format(err))
+            mycursor.execute("ROLLBACK")
             return jsonify({
                 "error": True,
                 "data" : "INTERNAL_SERVER_ERROR",             
@@ -201,7 +214,19 @@ def journal_list(bookId):
             id = data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor()
-            query = ("DELETE FROM journal_list WHERE id = %s AND status = %s")
+            query = ("""
+                DELETE j FROM journal_list j
+                INNER JOIN (
+                        SELECT journal_list_id, status
+                        FROM status
+                        WHERE (journal_list_id, created_dt) IN (
+                            SELECT journal_list_id, MAX(created_dt)
+                            FROM status
+                            GROUP BY journal_list_id
+                            )
+                    ) s ON j.id = s.journal_list_id
+                WHERE j.id = %s AND s.status = %s
+            """)
             mycursor.execute(query, (id, '未結算'))
             rows_affected = mycursor.rowcount
             connection_object.commit() 

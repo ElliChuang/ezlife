@@ -29,11 +29,11 @@ def set_collaborator():
         try:
             token = session["token"]
             decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
-            host_id = decode_data["id"]
+            created_member_id = decode_data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
-            query = ("SELECT * FROM account_book WHERE host_id = %s AND id = %s")
-            mycursor.execute(query, (host_id, book_id))
+            query = ("SELECT * FROM account_book WHERE created_member_id = %s AND id = %s")
+            mycursor.execute(query, (created_member_id, book_id))
             result = mycursor.fetchone()
             if not result:
                     return jsonify({
@@ -88,11 +88,11 @@ def set_collaborator():
         try:
             token = session["token"]
             decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
-            host_id = decode_data["id"]
+            created_member_id = decode_data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
-            query = ("SELECT * FROM account_book WHERE host_id = %s AND id = %s")
-            mycursor.execute(query, (host_id, book_id))
+            query = ("SELECT * FROM account_book WHERE created_member_id = %s AND id = %s")
+            mycursor.execute(query, (created_member_id, book_id))
             result = mycursor.fetchone()
             if not result:
                     return jsonify({

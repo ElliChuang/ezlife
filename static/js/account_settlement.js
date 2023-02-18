@@ -46,7 +46,7 @@ async function getOverview() {
   const url = `/api/account_book/${bookId}/account_settlement?year=${year}&month=${month}`;
   const fetchData = await fetch(url, { method: "GET" });
   const jsonData = await fetchData.json();
-
+  console.log(jsonData);
   if (jsonData.data === "請先登入會員") {
     return showNoticeWindow("請登入會員", jsonData.data, indexPage);
   } else if (jsonData.data === "請輸入欲查詢的年度及月份") {
@@ -61,7 +61,7 @@ async function getOverview() {
     detailContainer.appendChild(itemDiv);
     return;
   }
-  console.log(jsonData);
+
   let overview = jsonData.data.overview;
   let len = overview.length;
   for (let i = 0; i < len; i++) {
@@ -74,7 +74,6 @@ async function getOverview() {
     let payableSubgroup = document.createElement("div");
     payableSubgroup.className = "subgroup";
     let payableTitle = document.createElement("div");
-    payableTitle.className = "title";
     payableTitle.innerText = "分攤金額";
     let payablePrice = document.createElement("div");
     payablePrice.className = "price";
@@ -85,7 +84,6 @@ async function getOverview() {
     let prepaidSubgroup = document.createElement("div");
     prepaidSubgroup.className = "subgroup";
     let prepaidTitle = document.createElement("div");
-    prepaidTitle.className = "title";
     prepaidTitle.innerText = "墊付金額";
     let prepaidPrice = document.createElement("div");
     prepaidPrice.className = "price";
@@ -97,7 +95,6 @@ async function getOverview() {
     subgroup.className = "subgroup";
     let result = parseInt(overview[i].prepaid - overview[i].payable);
     let title = document.createElement("div");
-    title.className = "title";
     if (result > 0) {
       title.innerText = "應收金額";
     } else {
@@ -162,9 +159,9 @@ async function getJournalList(collaborator_id = "") {
     return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
   } else if (jsonData.data === "該月份無未結算項目") {
     let itemDiv = document.createElement("div");
-    journalListContainer.appendChild(itemDiv);
+    detailContainer.appendChild(itemDiv);
     itemDiv.className = "item";
-    itemDiv.innerText = datas.data;
+    itemDiv.innerText = jsonData.data;
     amount.innerText = total;
     return;
   }
@@ -258,8 +255,8 @@ async function goCheckout() {
     return showNoticeWindow("請登入會員", jsonData.data, indexPage);
   } else if (jsonData.data === "請輸入欲結帳年度及月份") {
     return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
-  } else if (jsonData.data === "無法結算，請洽帳簿管理員") {
-    return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
+  } else if (jsonData.data === "無未結算項目") {
+    return showNoticeWindow("訊息通知", jsonData.data, closeNoticeWindow);
   } else if (jsonData.ok) {
     socket.emit("sumbit_checkout", {
       collaboratorName: jsonData.data.collaborator_name,

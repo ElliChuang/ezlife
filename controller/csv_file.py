@@ -14,18 +14,29 @@ def download(bookId):
                     "error": True,
                     "data" : "請先登入會員",             
                 }),403
-    year = request.args.get("year")
-    month = request.args.get("month")
+
+    year = int(request.args.get("year"))
+    month = int(request.args.get("month"))
     if not year or not month:
         return jsonify({
             "error": True,
             "data" : "請輸入欲查詢的年度及月份",             
         }),403
+
     try:
         category_main = request.args.get("main")
         category_character = request.args.get("character")
         category_object = request.args.get("object")
         keyword = request.args.get("keyword")
+        start_dt = ""
+        end_dt = ""
+        if month == 12:
+            start_dt = f'{year}-{month}-01'
+            end_dt = f'{year + 1}-01-01'
+        else:
+            start_dt = f'{year}-{month}-01'
+            end_dt = f'{year}-{month + 1}-01'
+            
         connection_object = MySQL.conn_obj()
         mycursor = connection_object.cursor(dictionary=True)
         
@@ -34,74 +45,111 @@ def download(bookId):
             SELECT 
                 j.id,
                 j.date, 
-                j.category_object,  
-                j.category_character,  
-                j.keyword, 
-                j.price,
-                subq.category_main, 
-                subq.category_main_sum
-            FROM 
+                j.amount,
+                c1.name as category_main,
+                c2.name as category_object,
+                c3.name as category_character,
+                k.content as keyword,
+        
         """
         subquery_basic = """
-            (SELECT 
-                category_main, 
-                SUM(price) AS category_main_sum
-            FROM 
-                journal_list
-            WHERE 
-                book_id = %s 
-                AND YEAR(date) = %s
-                AND MONTH(date) = %s 
+            (SELECT sum(j.amount) 
+            FROM journal_list j
+            INNER JOIN journal_list_category jc 
+                ON j.id = jc.journal_list_id
+            INNER JOIN categories c 
+                ON jc.categories_id = c.id AND c.parent_category_id = 1
         """
 
         subquery_end = """
+            WHERE 
+                j.book_id = %s 
+                AND j.date >= %s 
+                AND j.date < %s 
+                AND c.name = C1.name 
             GROUP BY 
-                category_main 
-            ) AS subq
+                c.name
+            ) AS category_main_sum
         """
 
         query_middle = """
-            LEFT JOIN 
-                journal_list AS j
-            ON 
-                subq.category_main = j.category_main
+            FROM journal_list AS j
+            INNER JOIN journal_list_category jc1 
+                ON j.id = jc1.journal_list_id
+            INNER JOIN categories C1 
+                ON jc1.categories_id = C1.id AND C1.parent_category_id = 1
+            INNER JOIN journal_list_category jc2 
+                ON j.id = jc2.journal_list_id
+            INNER JOIN categories c2 
+                ON jc2.categories_id = c2.id AND c2.parent_category_id = 2
+            INNER JOIN journal_list_category jc3 
+                ON j.id = jc3.journal_list_id
+            INNER JOIN categories c3 
+                ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
+            INNER JOIN journal_list_keyword jk 
+                ON j.id = jk.journal_list_id
+            INNER JOIN keyword k 
+                ON jk.keyword_id = k.id
             WHERE 
-                book_id = %s AND YEAR(date) = %s AND MONTH(date) = %s 
+                j.book_id = %s 
+                AND j.date >= %s 
+                AND j.date < %s  
         """
 
-        query_end = "Order by date DESC;"
+        query_end = """
+            Order by 
+                j.date DESC,
+                j.id DESC;
+        """
 
         conditions = []
         sub_conditions = []
-        basic_value = (bookId, year, month)
+        basic_value = (bookId, start_dt, end_dt)
+        append_value = ()
         if category_main:
-            conditions.append("subq.category_main= %s")
-            sub_conditions.append("category_main= %s")
-            basic_value += (category_main,)
+            conditions.append("c1.name = %s")
+            sub_conditions.append("""
+                INNER JOIN journal_list_category jc1 
+                ON j.id = jc1.journal_list_id
+                INNER JOIN categories c1 
+                ON jc1.categories_id = c1.id AND c1.name = %s""")
+            append_value += (category_main,)
 
         if category_character:
-            conditions.append("category_character= %s")
-            sub_conditions.append("category_character= %s")
-            basic_value += (category_character,)
+            conditions.append("c3.name = %s")
+            sub_conditions.append("""
+                INNER JOIN journal_list_category jc3
+                ON j.id = jc3.journal_list_id
+                INNER JOIN categories c3 
+                ON jc3.categories_id = c3.id AND c3.name = %s""")
+            append_value += (category_character,) 
 
         if category_object:
-            conditions.append("category_object= %s")
-            sub_conditions.append("category_object= %s")
-            basic_value += (category_object,)
+            conditions.append("c2.name = %s")
+            sub_conditions.append("""
+                INNER JOIN journal_list_category jc2 
+                ON j.id = jc2.journal_list_id
+                INNER JOIN categories c2 
+                ON jc2.categories_id = c2.id AND c2.name = %s""")
+            append_value += (category_object,) 
         
         if keyword:
-            conditions.append("keyword like %s")
-            sub_conditions.append("keyword like %s")
-            basic_value += ("%" + keyword + "%",)
+            conditions.append("k.content like %s")
+            sub_conditions.append("""
+                INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
+                INNER JOIN keyword k ON jk.keyword_id = k.id 
+                AND keyword like %s""")
+            append_value += ("%" + keyword + "%",)
 
         if conditions and sub_conditions:
             query_middle += " AND " + " AND ".join(conditions)
-            subquery_basic += " AND " + " AND ".join(sub_conditions)
+            subquery_basic += " ".join(sub_conditions)
         
         query = (query_basic+ " " + subquery_basic + " " + subquery_end + " " + query_middle + " " + query_end)
-        value = basic_value + basic_value
+        value = append_value + basic_value + basic_value + append_value
         mycursor.execute(query, value)
         results = mycursor.fetchall()
+
         if not results:
             journal_list = {"data": "查無帳目明細"}
             df = pd.DataFrame(journal_list, index = [0])
@@ -118,7 +166,7 @@ def download(bookId):
                     "消費型態" : item["category_object"],
                     "支出對象" : item["category_character"],
                     "關鍵字" : item["keyword"],
-                    "金額" : item["price"],
+                    "金額" : item["amount"],
             }
             journal_list.append(data)
         

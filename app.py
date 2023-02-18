@@ -48,6 +48,10 @@ def chart(id):
 def settlement(id):
     return render_template("account_settlement.html")
 
+@app.route("/loaderio-7e9f416b5d27180cf9704ecd4fd65208.txt")
+def load():
+    return send_from_directory("loaderio", "loaderio-7e9f416b5d27180cf9704ecd4fd65208.txt")
+
 # Socket
 @socketio.on('join_room')
 def handle_join_room_event(data):
