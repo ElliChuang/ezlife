@@ -24,10 +24,10 @@ def download(bookId):
         }),403
 
     try:
-        category_main = request.args.get("main")
-        category_character = request.args.get("character")
-        category_object = request.args.get("object")
-        keyword = request.args.get("keyword")
+        category_main = request.args.get("main").lower()
+        category_character = request.args.get("character").lower()
+        category_object = request.args.get("object").lower()
+        keyword = request.args.get("keyword").lower()
         start_dt = ""
         end_dt = ""
         if month == 12:

@@ -57,7 +57,6 @@ async function modifyInfor(event) {
 
   const formData = new FormData();
   if (file.files.length === 0 && profile.src) {
-    console.log("123");
     formData.append("file", null);
     formData.append("memberId", userList.id);
     formData.append("memberName", memberName.value);
@@ -93,7 +92,7 @@ async function modifyInfor(event) {
 
     // 依所在頁面更新畫面資訊
     const url = location.href;
-    const current = url.split("3000/")[1];
+    const current = url.split("/")[1];
     if (current === "home") {
       userList.src = user.profile;
       userList.value = user.email;
@@ -103,6 +102,12 @@ async function modifyInfor(event) {
       userList.value = user.email;
       welcomeName.innerText = user.name;
       document.getElementById(`member-${user.id}`).innerText = user.name;
+      const payableTitle = document.getElementById(`payableTitle-${user.id}`);
+      const prepayTitle = document.getElementById(`prepayTitle-${user.id}`);
+      if (payableTitle && prepayTitle) {
+        payableTitle.innerText = user.name;
+        prepayTitle.innerText = user.name;
+      }
     }
   } else {
     modifyMessage.innerText = jsonData.data;

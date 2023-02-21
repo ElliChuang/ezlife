@@ -2,6 +2,7 @@ from flask import *
 from mysql.connector import errorcode
 import mysql.connector 
 from model.db import MySQL 
+from model.db import Redis
 import jwt
 import datetime
 import random
@@ -119,10 +120,10 @@ def journal_list(bookId):
     if request.method == "POST":
         data = request.get_json()
         date = data["date"]
-        category_main = data["category_main"]
-        category_object = data["category_object"]
-        category_character = data["category_character"]
-        keyword = data["keyword"]
+        category_main = data["category_main"].lower()
+        category_object = data["category_object"].lower()
+        category_character = data["category_character"].lower()
+        keyword = data["keyword"].lower()
         amount = data["amount"]
         payable = data["payable"]
         prepaid = data["prepaid"]
@@ -164,13 +165,6 @@ def journal_list(bookId):
                 INSERT INTO journal_list_category (journal_list_id, categories_id) 
                 SELECT %s, id FROM categories WHERE name IN (%s, %s, %s)""", journal_list_category_value)
 
-            mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
-            keyword_id = mycursor.lastrowid
-            journal_list_keyword_value = (journal_list_id, keyword_id)
-            mycursor.execute("""
-                INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
-                VALUES (%s, %s)""", journal_list_keyword_value)
-
             token = session["token"]
             decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
             member_id = decode_data["id"]
@@ -179,6 +173,23 @@ def journal_list(bookId):
             mycursor.execute("""
                 INSERT INTO status (journal_list_id, status, member_id) 
                 VALUES (%s, %s, %s)""", status_value)  
+
+            keyword_id_in_redis = Redis.connect_to_redis().get(keyword)
+            print(keyword_id_in_redis)
+            if keyword_id_in_redis:
+                print('I am in redis')
+                journal_list_keyword_value = (journal_list_id, keyword_id_in_redis)
+                mycursor.execute("""
+                INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
+                VALUES (%s, %s)""", journal_list_keyword_value)
+            else:
+                mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
+                keyword_id = mycursor.lastrowid
+                journal_list_keyword_value = (journal_list_id, keyword_id)
+                mycursor.execute("""
+                    INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
+                    VALUES (%s, %s)""", journal_list_keyword_value)
+                Redis.connect_to_redis().set(keyword, keyword_id)
 
             mycursor.execute("COMMIT")
             print("Transaction committed successfully!")

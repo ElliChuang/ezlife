@@ -87,6 +87,7 @@
 .detail {
   margin-left: 30px;
   margin-bottom: 10px;
+  position: relative;
 }
 .group {
   margin-bottom: 10px;
@@ -96,6 +97,28 @@
 }
 .information section {
   width: 310px;
+}
+.keyword-ul {
+  position: absolute;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  right: 14px;
+  box-shadow: 2px 2px 5px gray;
+  display: none;
+  border-radius: 5px;
+}
+.keyword-li {
+  color: #666666;
+  font-size: 16px;
+  padding: 8px;
+  width: 160px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.keyword-li:hover:not(.header) {
+  background-color: rgba(255, 255, 255);
 }
 /* ---------------- journal list -------------- */
 .journal-list {

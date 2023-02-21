@@ -51,6 +51,7 @@ function setObject(datas) {
     payableSubgroup.className = "subgroup";
     let payableTitle = document.createElement("span");
     payableTitle.innerText = datas[i].name;
+    payableTitle.id = `payableTitle-${datas[i].id}`;
     let payableInput = document.createElement("input");
     payableInput.name = "payable";
     payableInput.id = datas[i].id;
@@ -62,6 +63,7 @@ function setObject(datas) {
     prepaySubgroup.className = "subgroup";
     let prepayTitle = document.createElement("span");
     prepayTitle.innerText = datas[i].name;
+    prepayTitle.id = `prepayTitle-${datas[i].id}`;
     let prepayInput = document.createElement("input");
     prepayInput.name = "prepay";
     prepayInput.id = datas[i].id;
@@ -284,6 +286,14 @@ async function addJournalList() {
     requestBody.category_character === ""
   ) {
     return showNoticeWindow("錯誤訊息", "請選擇類別", closeNoticeWindow);
+  } else if (requestBody.keyword.trim().length === 0) {
+    return showNoticeWindow("錯誤訊息", "備註不得空白", closeNoticeWindow);
+  } else if (requestBody.keyword.trim().length > 10) {
+    return showNoticeWindow(
+      "錯誤訊息",
+      "備註字數超過10個字，請重新輸入",
+      closeNoticeWindow
+    );
   } else if (requestBody.amount !== payableAmount) {
     return showNoticeWindow("錯誤訊息", "分攤金額有誤", closeNoticeWindow);
   } else if (requestBody.amount !== prepaidAmount) {
