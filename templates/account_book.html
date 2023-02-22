@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/nav.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/member.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/edit.css" />
     <script src="/static/js/home.calendar.js"></script>
     <title>book</title>
   </head>
@@ -32,8 +33,9 @@
           <section>
             <div class="name">消費明細</div>
             <div class="detail">
-              <span>金額</span><input type="text" name="price" /><br />
-              <span>日期</span><input type="date" /><br />
+              <span>金額</span
+              ><input type="text" name="price" id="input-price" /><br />
+              <span>日期</span><input type="date" id="input-date" /><br />
               <span>生活機能</span>
               <select size="1" id="category_main">
                 <option></option>
@@ -105,6 +107,7 @@
     </main>
     <script src="/static/js/html/html_notice.js"></script>
     <script src="/static/js/html/html_member.js"></script>
+    <script src="/static/js/html/html_edit.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script type="module" src="/static/js/account_book.js"></script>
     <script type="module" src="/static/js/notice.js"></script>

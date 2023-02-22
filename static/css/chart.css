@@ -43,6 +43,10 @@
   padding: 5px;
   width: 100px;
 }
+#year,
+#month {
+  margin-left: 6px;
+}
 .chart-query-box-required > select,
 .chart-query-box-option > select {
   height: 35px;
@@ -64,6 +68,8 @@
   margin-left: 6px;
   margin-top: 10px;
   border-radius: 5px;
+  border: 1px solid;
+  border-color: #2c3e50;
 }
 .chart-query-box-button {
   width: 100px;
@@ -365,5 +371,9 @@ input[type="radio"] {
   }
   .chart-query-box-export {
     width: 100%;
+  }
+  #year,
+  #month {
+    margin-left: 0;
   }
 }
