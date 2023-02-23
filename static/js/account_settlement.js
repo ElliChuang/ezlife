@@ -1,4 +1,4 @@
-const container = document.querySelector(".settlement-container");
+const container = document.querySelector("#settlement-container");
 const detailContainer = document.querySelector(".detail-inner-container");
 const amount = document.getElementById("amount");
 
@@ -266,3 +266,27 @@ async function goCheckout() {
     });
   }
 }
+
+// 結算紀錄／開始結算 切換
+const checkbox = document.querySelectorAll("[type=radio]");
+const startToSettlement = document.getElementById("start-to-settlement");
+const goToRecord = document.getElementById("go-to-record");
+const recordZone = document.getElementById("record-zone");
+const settlementZone = document.getElementById("settlement-zone");
+checkbox.forEach((elem) => {
+  elem.addEventListener("change", (elem) => {
+    if (elem.target.value === "start") {
+      startToSettlement.className = "record-checked";
+      goToRecord.className = "record-unchecked";
+      recordZone.style.display = "none";
+      settlementZone.style.display = "block";
+      // getChart(mainDatas, mainColor);
+    } else if (elem.target.value === "record") {
+      goToRecord.className = "record-checked";
+      startToSettlement.className = "record-unchecked";
+      recordZone.style.display = "block";
+      settlementZone.style.display = "none";
+      // getChart(characterDatas, characterColor);
+    }
+  });
+});

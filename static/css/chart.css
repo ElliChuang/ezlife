@@ -104,9 +104,19 @@
   align-items: center;
   justify-content: center;
 }
-#current-chart {
+.value-chart {
   width: 635px;
   height: 600px;
+  text-align: center;
+  line-height: 600px;
+  font-size: 20px;
+}
+.unvalue-chart {
+  width: 635px;
+  height: 200px;
+  text-align: center;
+  line-height: 200px;
+  font-size: 20px;
 }
 .container {
   flex: none;

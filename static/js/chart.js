@@ -110,12 +110,25 @@ checkbox.forEach((elem) => {
 });
 
 function getChart(datas, color) {
-  removeChart();
   const currentChart = document.getElementById("current-chart");
+  currentChart.innerText = "";
+
+  // 確認是否有明細
+  let values = Object.values(datas);
+  let total = 0;
+  for (let i in values) {
+    total += values[i];
+  }
+  if (total === 0) {
+    currentChart.className = "unvalue-chart";
+    return (currentChart.innerText = "查無帳目明細");
+  }
+
   const canvas = document.createElement("canvas");
   currentChart.appendChild(canvas);
-  canvas.id = `myChart`;
-  const ctx = document.getElementById(`myChart`);
+  canvas.id = "myChart";
+  const ctx = document.getElementById("myChart");
+  currentChart.className = "value-chart";
 
   new Chart(ctx, {
     type: "pie",
@@ -183,12 +196,6 @@ function getChart(datas, color) {
       maintainAspectRatio: false,
     },
   });
-}
-
-function removeChart() {
-  const currentChart = document.getElementById("current-chart");
-  const ctx = document.getElementById(`myChart`);
-  currentChart.removeChild(ctx);
 }
 
 // 明細賬
