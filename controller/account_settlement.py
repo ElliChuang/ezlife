@@ -9,7 +9,7 @@ from config import TOKEN_PW
 account_settlement = Blueprint("account_settlement", __name__)
 
 
-@account_settlement.route("/api/account_book/<int:bookId>/account_settlement", methods=["GET", "POST", "DELETE"])
+@account_settlement.route("/api/account_book/<int:bookId>/account_settlement", methods=["GET", "POST"])
 def checkout(bookId):
     # 取得結帳明細
     if request.method == "GET":
@@ -50,15 +50,7 @@ def checkout(bookId):
                 FROM journal_list_price as p
                 INNER JOIN journal_list as j on j.id = p.journal_list_id
                 INNER JOIN member as m on m.id = p.member_id
-                INNER JOIN (
-                        SELECT journal_list_id, status
-                        FROM status
-                        WHERE (journal_list_id, created_dt) IN (
-                            SELECT journal_list_id, MAX(created_dt)
-                            FROM status
-                            GROUP BY journal_list_id
-                            )
-                    ) s ON j.id = s.journal_list_id
+                INNER JOIN status as s ON j.id = s.journal_list_id
                 WHERE 	
                     j.book_id = %s 
                     AND j.date >= %s 
@@ -83,7 +75,6 @@ def checkout(bookId):
                         p.payable, 
                         s.status, 
                         j.date, 
-                        s.created_dt as account_dt,
                         SUM(p.payable) OVER (PARTITION BY m.id) AS total_payable,
                         c1.name as category_main,
                         c2.name as category_object,
@@ -100,15 +91,7 @@ def checkout(bookId):
                     INNER JOIN categories c3 ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
                     INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
                     INNER JOIN keyword k ON jk.keyword_id = k.id 
-                    INNER JOIN (
-                        SELECT journal_list_id, status, created_dt
-                        FROM status
-                        WHERE (journal_list_id, created_dt) IN (
-                            SELECT journal_list_id, MAX(created_dt)
-                            FROM status
-                            GROUP BY journal_list_id
-                            )
-                    ) s ON j.id = s.journal_list_id
+                    INNER JOIN status as s ON j.id = s.journal_list_id
                     WHERE 
                         j.book_id = %s 
                         AND j.date >= %s 
@@ -151,16 +134,12 @@ def checkout(bookId):
                                 "price" : item["payable"],
                         }
                         journal_list.append(data)
-
-                    account_day = results[0]["account_dt"]
-                    if account_day:
-                        account_day = account_day.strftime('%Y-%m-%d') 
+ 
 
                     return jsonify({
                                 "data":{
                                         "overview" : overview,
                                         "status" : results[0]["status"],
-                                        "account_day" : account_day,
                                         "period" : str(year) + "-" + str(month),
                                         "journal_list" : journal_list  
                                         }
@@ -229,10 +208,15 @@ def checkout(bookId):
                         "data": "無未結算項目"    
                     }),200
 
-            insert_value = []
+            value = []
             for item in results:
-                insert_value.append((item["journal_list_id"], "已結算", member_id))
-            mycursor.executemany("INSERT INTO status (journal_list_id, status, member_id) VALUES (%s, %s, %s)", insert_value) 
+                value.append(("已結算", member_id, item["journal_list_id"]))
+
+            mycursor.executemany("""
+                UPDATE status 
+                SET status = %s, account_member_id = %s
+                WHERE journal_list_id = %s
+            """, value)
             connection_object.commit() 
 
             return jsonify({

@@ -9,6 +9,7 @@ from controller.chart import chart
 from controller.csv_file import csv_file
 from controller.account_settlement import account_settlement
 from controller.keyword import keyword
+from controller.record import record
 from config import SECRET_KEY, JSON_AS_ASCII, TEMPLATES_AUTO_RELOAD, JSON_SORT_KEYS
 from flask_socketio import SocketIO, join_room, leave_room
 
@@ -32,6 +33,7 @@ app.register_blueprint(chart)
 app.register_blueprint(csv_file)
 app.register_blueprint(account_settlement)
 app.register_blueprint(keyword)
+app.register_blueprint(record)
 
 # Pages
 @app.route("/")

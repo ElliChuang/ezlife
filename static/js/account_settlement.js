@@ -1,6 +1,12 @@
-const container = document.querySelector("#settlement-container");
+const settlementContainer = document.getElementById("settlement-container");
 const detailContainer = document.querySelector(".detail-inner-container");
 const amount = document.getElementById("amount");
+const checkbox = document.querySelectorAll("[type=radio]");
+const startToSettlement = document.getElementById("start-to-settlement");
+const goToRecord = document.getElementById("go-to-record");
+const recordZone = document.getElementById("record-zone");
+const recordBoxInner = document.querySelector(".record-box-inner");
+const settlementZone = document.getElementById("settlement-zone");
 
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
 import { indexPage, bookAuth, getStatus } from "./nav.js";
@@ -52,7 +58,7 @@ async function getOverview() {
   } else if (jsonData.data === "請輸入欲查詢的年度及月份") {
     return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
   } else if (jsonData.data === "該月份無未結算項目") {
-    container.innerText = jsonData.data;
+    settlementContainer.innerText = jsonData.data;
     removeJournalList();
     amount.innerText = 0;
     let itemDiv = document.createElement("div");
@@ -114,15 +120,15 @@ async function getOverview() {
     group.appendChild(prepaidSubgroup);
     group.appendChild(subgroup);
     group.appendChild(button);
-    container.appendChild(name);
-    container.appendChild(group);
+    settlementContainer.appendChild(name);
+    settlementContainer.appendChild(group);
   }
   // 結算鈕
   let status = jsonData.data.status;
   let checkout = document.createElement("div");
   checkout.className = "unsettlement";
   checkout.innerText = "送出結算";
-  container.appendChild(checkout);
+  settlementContainer.appendChild(checkout);
 
   // 取得結帳明細
   getJournalList();
@@ -220,19 +226,17 @@ function removeJournalList() {
 }
 
 function removeOverview() {
-  container.innerText = "";
+  settlementContainer.innerText = "";
   const group = document.querySelectorAll(".group");
-  group.forEach((item) => {
-    container.removeChild(item);
-  });
   const name = document.querySelectorAll(".name");
-  name.forEach((item) => {
-    container.removeChild(item);
-  });
-  const settlement = document.querySelectorAll(".settlement");
-  settlement.forEach((item) => {
-    container.removeChild(item);
-  });
+  if (group & name) {
+    group.forEach((item) => {
+      settlementContainer.removeChild(item);
+    });
+    name.forEach((item) => {
+      settlementContainer.removeChild(item);
+    });
+  }
 }
 
 // 送出結算
@@ -268,11 +272,6 @@ async function goCheckout() {
 }
 
 // 結算紀錄／開始結算 切換
-const checkbox = document.querySelectorAll("[type=radio]");
-const startToSettlement = document.getElementById("start-to-settlement");
-const goToRecord = document.getElementById("go-to-record");
-const recordZone = document.getElementById("record-zone");
-const settlementZone = document.getElementById("settlement-zone");
 checkbox.forEach((elem) => {
   elem.addEventListener("change", (elem) => {
     if (elem.target.value === "start") {
@@ -280,13 +279,155 @@ checkbox.forEach((elem) => {
       goToRecord.className = "record-unchecked";
       recordZone.style.display = "none";
       settlementZone.style.display = "block";
-      // getChart(mainDatas, mainColor);
     } else if (elem.target.value === "record") {
       goToRecord.className = "record-checked";
       startToSettlement.className = "record-unchecked";
       recordZone.style.display = "block";
       settlementZone.style.display = "none";
-      // getChart(characterDatas, characterColor);
+      getRecord();
     }
   });
 });
+
+//取得所有結算紀錄
+async function getRecord() {
+  revmoveRecord();
+  const url = `/api/account_book/${bookId}/record`;
+  const fetchData = await fetch(url, { method: "GET" });
+  const jsonData = await fetchData.json();
+  console.log(jsonData);
+  if (jsonData.data === "請先登入會員") {
+    return showNoticeWindow("請登入會員", jsonData.data, indexPage);
+  } else if (jsonData.data === "無結算紀錄") {
+    let record = document.createElement("div");
+    record.className = "no-record";
+    record.id = "no-record";
+    record.innerText = jsonData.data;
+    recordBoxInner.appendChild(record);
+    return;
+  } else if (jsonData.ok) {
+    let len = jsonData.data.length;
+    for (let i = 0; i < len; i++) {
+      let record = document.createElement("div");
+      record.className = "record";
+      recordBoxInner.appendChild(record);
+      let recordDate = document.createElement("div");
+      recordDate.className = "record-date";
+      recordDate.innerText = jsonData.data[i].account_dt;
+      let recordMember = document.createElement("div");
+      recordMember.className = "record-member";
+      recordMember.innerText = jsonData.data[i].account_member;
+      let recordQuery = document.createElement("div");
+      recordQuery.className = "record-query";
+      recordQuery.id = jsonData.data[i].account_dt;
+      record.appendChild(recordDate);
+      record.appendChild(recordMember);
+      record.appendChild(recordQuery);
+    }
+  }
+  const recordQueryButton = document.querySelectorAll(".record-query");
+  recordQueryButton.forEach((elem) => {
+    elem.addEventListener("click", (elem) => {
+      const Id = elem.target.id;
+      recordDashboard(Id);
+    });
+  });
+}
+
+function revmoveRecord() {
+  const noRecord = document.getElementById("no-record");
+  const record = document.querySelectorAll(".record");
+  if (noRecord) {
+    recordBoxInner.removeChild(noRecord);
+  }
+  if (record) {
+    record.forEach((elem) => {
+      recordBoxInner.removeChild(elem);
+    });
+  }
+}
+
+// 取得指定的結算總覽
+async function recordDashboard(dt) {
+  revmoveRecordDashboard();
+  const url = `/api/account_book/${bookId}/record?account_dt=${dt}`;
+  const fetchData = await fetch(url, { method: "GET" });
+  const jsonData = await fetchData.json();
+  console.log(jsonData);
+  if (jsonData.data === "請先登入會員") {
+    return showNoticeWindow("請登入會員", jsonData.data, indexPage);
+  } else if (jsonData.ok) {
+    let recordTitle = document.createElement("div");
+    recordTitle.className = "detail-list";
+    recordTitle.innerText = "結算金額總覽：" + dt;
+    recordTitle.id = "record-dashboard-title";
+    let container = document.createElement("div");
+    container.className = "container";
+    container.id = "record-container";
+    let recordContainer = document.createElement("div");
+    recordContainer.className = "settlement-container";
+    recordZone.appendChild(recordTitle);
+    recordZone.appendChild(container);
+    container.appendChild(recordContainer);
+    let len = jsonData.data[0].records.length;
+    let records = jsonData.data[0].records;
+    for (let i = 0; i < len; i++) {
+      let name = document.createElement("div");
+      name.className = "name";
+      name.innerText = records[i].name;
+      let group = document.createElement("div");
+      group.className = "group";
+      // 分攤金額
+      let payableSubgroup = document.createElement("div");
+      payableSubgroup.className = "subgroup";
+      let payableTitle = document.createElement("div");
+      payableTitle.innerText = "分攤金額";
+      let payablePrice = document.createElement("div");
+      payablePrice.className = "price";
+      payablePrice.innerText = records[i].payable;
+      payableSubgroup.appendChild(payableTitle);
+      payableSubgroup.appendChild(payablePrice);
+      // 代墊金額
+      let prepaidSubgroup = document.createElement("div");
+      prepaidSubgroup.className = "subgroup";
+      let prepaidTitle = document.createElement("div");
+      prepaidTitle.innerText = "墊付金額";
+      let prepaidPrice = document.createElement("div");
+      prepaidPrice.className = "price";
+      prepaidPrice.innerText = records[i].prepaid;
+      prepaidSubgroup.appendChild(prepaidTitle);
+      prepaidSubgroup.appendChild(prepaidPrice);
+      // 應收／應付金額
+      let subgroup = document.createElement("div");
+      subgroup.className = "subgroup";
+      let result = parseInt(records[i].prepaid) - parseInt(records[i].payable);
+      let title = document.createElement("div");
+      title.classList.add("result");
+      if (result > 0) {
+        title.innerText = "應收金額";
+      } else {
+        title.innerText = "應付金額";
+      }
+      let price = document.createElement("div");
+      price.className = "price";
+      price.classList.add("result");
+      price.innerText = Math.abs(result);
+      subgroup.appendChild(title);
+      subgroup.appendChild(price);
+      group.appendChild(payableSubgroup);
+      group.appendChild(prepaidSubgroup);
+      group.appendChild(subgroup);
+      recordContainer.appendChild(name);
+      recordContainer.appendChild(group);
+    }
+  }
+}
+
+function revmoveRecordDashboard() {
+  const title = document.getElementById("record-dashboard-title");
+  const recordContainer = document.getElementById("record-container");
+  if (title && recordContainer) {
+    recordZone.removeChild(title);
+    recordZone.removeChild(recordContainer);
+  }
+}

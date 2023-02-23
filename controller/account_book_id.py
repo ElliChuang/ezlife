@@ -3,7 +3,6 @@ from mysql.connector import errorcode
 import mysql.connector 
 from model.db import MySQL 
 from model.db import Redis
-import jwt
 import datetime
 import random
 import json
@@ -63,15 +62,7 @@ def journal_list(bookId):
                     INNER JOIN categories c3 ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
                     INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
                     INNER JOIN keyword k ON jk.keyword_id = k.id 
-                    INNER JOIN (
-                        SELECT journal_list_id, status
-                        FROM status
-                        WHERE (journal_list_id, created_dt) IN (
-                            SELECT journal_list_id, MAX(created_dt)
-                            FROM status
-                            GROUP BY journal_list_id
-                            )
-                    ) s ON j.id = s.journal_list_id
+                    INNER JOIN status s ON j.id = s.journal_list_id
                     INNER JOIN (
                         SELECT p.journal_list_id, p.member_id, m.name as name, p.payable, p.prepaid
                         FROM journal_list_price p
@@ -187,14 +178,11 @@ def journal_list(bookId):
                 INSERT INTO journal_list_category (journal_list_id, categories_id) 
                 SELECT %s, id FROM categories WHERE name IN (%s, %s, %s)""", journal_list_category_value)
 
-            token = session["token"]
-            decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
-            member_id = decode_data["id"]
             status = "未結算"
-            status_value = (journal_list_id, status, member_id)
+            status_value = (journal_list_id, status)
             mycursor.execute("""
-                INSERT INTO status (journal_list_id, status, member_id) 
-                VALUES (%s, %s, %s)""", status_value)  
+                INSERT INTO status (journal_list_id, status) 
+                VALUES (%s, %s)""", status_value)  
 
             keyword_id_in_redis = Redis.connect_to_redis().get(keyword)
             if keyword_id_in_redis:
@@ -246,15 +234,7 @@ def journal_list(bookId):
             mycursor = connection_object.cursor()
             query = ("""
                 DELETE j FROM journal_list j
-                INNER JOIN (
-                        SELECT journal_list_id, status
-                        FROM status
-                        WHERE (journal_list_id, created_dt) IN (
-                            SELECT journal_list_id, MAX(created_dt)
-                            FROM status
-                            GROUP BY journal_list_id
-                            )
-                    ) s ON j.id = s.journal_list_id
+                INNER JOIN status s ON j.id = s.journal_list_id
                 WHERE j.id = %s AND s.status = %s
             """)
             mycursor.execute(query, (id, '未結算'))
@@ -310,10 +290,9 @@ def journal_list(bookId):
             mycursor = connection_object.cursor()
             status_value = (journal_list_id, "已結算")
             mycursor.execute("""
-                SELECT journal_list_id, MAX(created_dt)
+                SELECT journal_list_id
                 FROM status
                 WHERE journal_list_id = %s AND status = %s
-                GROUP BY journal_list_id
             """, status_value)
             result = mycursor.fetchone()
             if result:
