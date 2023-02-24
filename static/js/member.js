@@ -91,24 +91,24 @@ async function modifyInfor(event) {
     user.profile = jsonData.data.profile;
 
     // 依所在頁面更新畫面資訊
-    const url = location.href;
-    const current = url.split("/")[1];
-    if (current === "home") {
-      userList.src = user.profile;
-      userList.value = user.email;
-      welcomeName.innerText = user.name;
-    } else {
-      userList.src = user.profile;
-      userList.value = user.email;
-      welcomeName.innerText = user.name;
-      document.getElementById(`member-${user.id}`).innerText = user.name;
-      const payableTitle = document.getElementById(`payableTitle-${user.id}`);
-      const prepayTitle = document.getElementById(`prepayTitle-${user.id}`);
-      if (payableTitle && prepayTitle) {
-        payableTitle.innerText = user.name;
-        prepayTitle.innerText = user.name;
-      }
+    // const url = location.href;
+    // const current = url.split("/")[1];
+    // if (current === "home") {
+    //   userList.src = user.profile;
+    //   userList.value = user.email;
+    //   welcomeName.innerText = user.name;
+    // } else {
+    userList.src = user.profile;
+    userList.value = user.email;
+    welcomeName.innerText = user.name;
+    // document.getElementById(`member-${user.id}`).innerText = user.name;
+    const payableTitle = document.getElementById(`payableTitle-${user.id}`);
+    const prepayTitle = document.getElementById(`prepayTitle-${user.id}`);
+    if (payableTitle && prepayTitle) {
+      payableTitle.innerText = user.name;
+      prepayTitle.innerText = user.name;
     }
+    // }
   } else {
     modifyMessage.innerText = jsonData.data;
   }

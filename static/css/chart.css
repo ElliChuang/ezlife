@@ -101,8 +101,6 @@
 .chart {
   display: flex;
   max-width: 1400px;
-  align-items: center;
-  justify-content: center;
 }
 .value-chart {
   width: 635px;

@@ -106,16 +106,13 @@ def user():
 					}),500
 
 
-
+# 修改會員資料
 @user_auth.route("/api/user/auth", methods=["PATCH"])
 def user_modify():
 	id = request.form["memberId"]
 	name = request.form["memberName"]
 	email = request.form["memberEmail"]
-	print(id, name, email)
 	image = request.files.get('file')
-	print(image)
-	print(type(image))
 	if not name or not email:
 		return jsonify({
 					"error": True,
@@ -159,7 +156,7 @@ def user_modify():
 			})
 
 		except mysql.connector.Error as err:
-			print("error while insert to database: {}".format(err))
+			print("error while member update name and email: {}".format(err))
 			return jsonify({
 				"error" : True,
 				"data" : "internal error"
@@ -223,7 +220,7 @@ def user_modify():
 		})
 
 	except mysql.connector.Error as err:
-		print("error while insert to database: {}".format(err))
+		print("error while member update name email and profile : {}".format(err))
 		return jsonify({
 			"error" : True,
 			"data" : "internal error"

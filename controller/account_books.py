@@ -88,6 +88,7 @@ def book():
             member_id = decode_data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
+            
             # 確認帳簿名稱是否重複
             query = ("SELECT book_name FROM account_book WHERE book_name = %s AND created_member_id = %s")
             mycursor.execute(query, (book_name, member_id))
@@ -99,27 +100,32 @@ def book():
                         }),400
 
             else:
-                query = ("""
+                mycursor.execute("START TRANSACTION")
+
+                book_query = ("""
                     INSERT INTO account_book (book_name, created_member_id)
                     VALUES (%s, %s)
                 """)
-                value = (book_name, member_id)
-                mycursor.execute(query, value)
-                connection_object.commit() 
+                book_value = (book_name, member_id)
+                mycursor.execute(book_query, book_value)
                 book_id = mycursor.lastrowid
-                query_3 = ("""
+
+                collaborator_query = ("""
                     INSERT INTO collaborator (collaborator_id, book_id)
                     VALUES (%s, %s)
                 """)
-                value_3 = (member_id, book_id)
-                mycursor.execute(query_3, value_3)
-                connection_object.commit() 
+                collaborator_value = (member_id, book_id)
+                mycursor.execute(collaborator_query, collaborator_value)
+
+                mycursor.execute("COMMIT")
+
                 return jsonify({
                             "ok": True,          
                         }),200
 
         except mysql.connector.Error as err:
             print("Something went wrong when insert into account_book: {}".format(err))
+            mycursor.execute("ROLLBACK")
             return jsonify({
                 "error": True,
                 "data" : "INTERNAL_SERVER_ERROR",             

@@ -81,7 +81,7 @@ function Close() {
 
 popupButton.addEventListener("click", () => {
   let message = popupMessage.value;
-  if (message === "") {
+  if (message.trim() === "") {
     popupButton.disable = true;
   } else {
     popupButton.disable = false;

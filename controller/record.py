@@ -69,10 +69,9 @@ def get_record(bookId):
                 key = i["account_dt"].strftime('%Y-%m-%d %H:%M:%S')
                 if key not in dict:
                     dict[key] = {
-                                "account_dt" : key,
-                                "account_member" : i["account_member"],
-                                "records" : []
-                                }
+                        "account_dt" : key,
+                        "account_member" : i["account_member"],
+                        "records" : []}
                 record = {
                     "name": i["name"],
                     "payable" : i["payable"],
