@@ -11,7 +11,7 @@ main {
   background-color: rgba(210, 180, 140, 0.3);
 }
 .page-name {
-  font-family: "Comic Sans MS", cursive;
+  font-family: "Comic Sans MS", cursive, "Labrada", serif, "Joan", serif;
   font-size: 32px;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -61,7 +61,7 @@ main {
 
 /* -------------- Signin ------------------- */
 .name {
-  font-family: "Comic Sans MS", cursive;
+  font-family: "Comic Sans MS", cursive, "Labrada", serif, "Joan", serif;
   color: grey;
 }
 section {

@@ -16,7 +16,7 @@ function showMemberSection() {
   modifyMessage.innerText = "";
   memberName.value = welcomeName.innerText;
   memberEmail.value = userList.value;
-  profile.src = userList.src;
+  profile.style.backgroundImage = "url(" + userList.src + ")";
 }
 
 const closeMemberButton = document.querySelector(".close-member-button");
@@ -40,7 +40,7 @@ function changeFile(elem) {
     modifyMessage.innerText = "";
     let reader = new FileReader();
     reader.onload = function (e) {
-      profile.src = e.target.result;
+      profile.style.backgroundImage = "url(" + e.target.result + ")";
     };
     reader.readAsDataURL(file);
   } else {

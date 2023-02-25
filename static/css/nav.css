@@ -31,7 +31,7 @@
 }
 .page-name {
   flex: none;
-  font-family: "Comic Sans MS", cursive;
+  font-family: "Comic Sans MS", cursive, "Labrada", serif, "Joan", serif;
   font-size: 32px;
   font-weight: bold;
   cursor: pointer;

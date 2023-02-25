@@ -90,14 +90,16 @@ async function getData(bookId, year, month) {
     method: "GET",
   });
   let jsonData = await fetchData.json();
+  console.log(jsonData);
   let events = [];
   if (jsonData.data === "請先登入會員") {
     return showNoticeWindow("請登入會員", "", indexPage);
-  } else if (jsonData.data.message) {
+  } else if (jsonData.data === "尚無新增項目") {
     let itemDiv = document.createElement("div");
     contentListContainer.appendChild(itemDiv);
     itemDiv.className = "item";
-    itemDiv.innerText = jsonData.data.message;
+    itemDiv.innerText = jsonData.data;
+    return;
   } else if (jsonData.data[0].journal_list) {
     let len = jsonData.data.length;
     let dict = {};
@@ -241,22 +243,9 @@ function getCalendarDate() {
   const calendarDate = document.getElementById("fc-dom-1");
   let dateValue = calendarDate.innerText;
   let year = dateValue.split(" ")[1];
-  let dt = new Date(dateValue);
-  let dt_month = dt.getMonth();
-  let month = new Array(12);
-  month[0] = "1";
-  month[1] = "2";
-  month[2] = "3";
-  month[3] = "4";
-  month[4] = "5";
-  month[5] = "6";
-  month[6] = "7";
-  month[7] = "8";
-  month[8] = "9";
-  month[9] = "10";
-  month[10] = "11";
-  month[11] = "12";
-  getData(bookId, year, month[dt_month]);
+  let dt = new Date(Date.parse("01" + dateValue));
+  let dt_month = dt.getMonth() + 1;
+  getData(bookId, year, dt_month);
 }
 
 // 新增日記帳

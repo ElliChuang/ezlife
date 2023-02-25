@@ -22,8 +22,10 @@ def journal_list(bookId):
                         "data" : "請先登入會員",             
                     }),403
         try:
+            print("sever")
             year = int(request.args.get("year"))
             month = int(request.args.get("month"))
+            print(year, month)
             start_dt = ""
             end_dt = ""
             if month == 12:
@@ -86,8 +88,9 @@ def journal_list(bookId):
             mycursor.execute(query, (bookId, start_dt, end_dt))
             results = mycursor.fetchall()
             if not results:
+                print("here")
                 return jsonify({
-                            "data" : {"message" : "尚無新增項目"}             
+                            "data" : "尚無新增項目"            
                         }),200
             else:
                 # respose data
@@ -115,6 +118,7 @@ def journal_list(bookId):
                     datas.append(data)
                 
                 return jsonify({
+                            "ok" : True,
                             "data": datas
                         }),200
         except mysql.connector.Error as err:

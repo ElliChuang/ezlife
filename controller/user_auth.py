@@ -7,6 +7,7 @@ import jwt
 import datetime
 from werkzeug.utils import secure_filename
 import boto3
+from PIL import Image
 from config import TOKEN_PW, S3_ACCESS_KEY_ID, S3_ACCESS_SECRET_KEY, CLOUDFRONT_PATH, S3_BUCKET_NAME
 
 # 建立 Flask Blueprint
@@ -167,7 +168,8 @@ def user_modify():
 				mycursor.close()
 				connection_object.close()
 
-	# 使用者有更新大頭照 
+	# 使用者有更新大頭照
+	print('要換照片') 
 	allow_file_type = {'png', 'jpg', 'jpeg'}
 	file_type = image.content_type.split("/")[1]
 	if file_type not in allow_file_type:
@@ -176,14 +178,27 @@ def user_modify():
 					"data" : "圖片格式有誤",             
 				}),400
 
-	filename = secure_filename(image.filename)
+	img = Image.open(image)
+	width = img.width
+	height = img.height
+	if width < 200 or height < 200:
+		return jsonify({
+					"error": True,
+					"data" : "圖片寬高低於 200 像素",             
+				}),400
+
+	# resize image
+	img.thumbnail((200,200), Image.Resampling.LANCZOS)
+	rgb_img = img.convert('RGB')
+	rgb_img.save('static/img/profile.jpg')
 	now = datetime.datetime.now()
 	time = now.strftime("%m/%d/%Y-%H:%M:%S")
-	unique_filename = filename + "(" + time + ")"
+	unique_filename = "profile.jpg" + "/" + time 
 
 	# 圖片存 S3
-	s3.upload_fileobj(image, S3_BUCKET_NAME, 'profile/' + unique_filename)
-	profile = f'https://{CLOUDFRONT_PATH}/profile/{unique_filename}'
+	with open('static/img/profile.jpg', 'rb') as file:
+		s3.upload_fileobj(file, S3_BUCKET_NAME, 'profile/' + unique_filename)
+		profile = f'https://{CLOUDFRONT_PATH}/profile/{unique_filename}'
 
 	# 圖片 CDN 網址及會員資料更新到 RDS
 	try:
