@@ -99,6 +99,7 @@ async function getData(bookId, year, month) {
     contentListContainer.appendChild(itemDiv);
     itemDiv.className = "item";
     itemDiv.innerText = jsonData.data;
+    calendar(events, year, month);
     return;
   } else if (jsonData.data[0].journal_list) {
     let len = jsonData.data.length;
@@ -196,8 +197,9 @@ async function getData(bookId, year, month) {
         showSpecificJournal(Id);
       });
     });
+
+    calendar(events, year, month);
   }
-  calendar(events, year, month);
 }
 
 function removeJournalList() {

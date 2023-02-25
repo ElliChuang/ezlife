@@ -3,6 +3,8 @@ from mysql.connector import errorcode
 import mysql.connector 
 from model.db import MySQL 
 import jwt
+import datetime
+import pytz
 from config import TOKEN_PW
 
 # 建立 Flask Blueprint
@@ -209,12 +211,15 @@ def checkout(bookId):
                     }),200
 
             value = []
+            taiwan_tz = pytz.timezone('Asia/Taipei')
+            now_taiwan = datetime.datetime.now(taiwan_tz)
+            account_dt = now_taiwan.strftime('%Y%m%d%H%M%S')
             for item in results:
-                value.append(("已結算", member_id, item["journal_list_id"]))
+                value.append(("已結算", member_id, account_dt, item["journal_list_id"]))
 
             mycursor.executemany("""
                 UPDATE status 
-                SET status = %s, account_member_id = %s
+                SET status = %s, account_member_id = %s, account_dt = %s
                 WHERE journal_list_id = %s
             """, value)
             connection_object.commit() 

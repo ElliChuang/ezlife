@@ -6,6 +6,7 @@ from model.db import Redis
 import datetime
 import random
 import json
+import pytz
 from config import TOKEN_PW
 
 # 建立 Flask Blueprint
@@ -157,9 +158,11 @@ def journal_list(bookId):
                     }),403
        
         try:
-            create_time = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+            taiwan_tz = pytz.timezone('Asia/Taipei')
+            now_taiwan = datetime.datetime.now(taiwan_tz)
+            created_time = now_taiwan.strftime('%Y%m%d%H%M%S')
             create_num = random.randrange(100,999)
-            journal_list_id = create_time + str(create_num)
+            journal_list_id = created_time + str(create_num)
 
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor()
@@ -183,10 +186,10 @@ def journal_list(bookId):
                 SELECT %s, id FROM categories WHERE name IN (%s, %s, %s)""", journal_list_category_value)
 
             status = "未結算"
-            status_value = (journal_list_id, status)
+            status_value = (journal_list_id, status, created_time)
             mycursor.execute("""
-                INSERT INTO status (journal_list_id, status) 
-                VALUES (%s, %s)""", status_value)  
+                INSERT INTO status (journal_list_id, status, created_dt) 
+                VALUES (%s, %s, %s)""", status_value)  
 
             keyword_id_in_redis = Redis.connect_to_redis().get(keyword)
             if keyword_id_in_redis:
@@ -306,20 +309,24 @@ def journal_list(bookId):
  
             mycursor.execute("START TRANSACTION")
 
-            journal_list_value = ( date, amount, bookId, journal_list_id)
+            taiwan_tz = pytz.timezone('Asia/Taipei')
+            now_taiwan = datetime.datetime.now(taiwan_tz)
+            modified_time = now_taiwan.strftime('%Y%m%d%H%M%S')
+
+            journal_list_value = ( date, amount, modified_time ,bookId, journal_list_id)
             mycursor.execute("""
                 UPDATE journal_list 
-                SET date = %s, amount = %s
+                SET date = %s, amount = %s, modified_dt = %s
                 WHERE book_id = %s AND id = %s
             """, journal_list_value)
 
             prepaid_dict = {item['collaborator_id']: item['price'] for item in prepaid}
             payable_dict = {item['collaborator_id']: item['price'] for item in payable}
             ids = set(prepaid_dict) | set(payable_dict)
-            journal_list_price_value = [( prepaid_dict.get(id, 0), payable_dict.get(id, 0), journal_list_id, id ) for id in ids]
+            journal_list_price_value = [( prepaid_dict.get(id, 0), payable_dict.get(id, 0), modified_time ,journal_list_id, id ) for id in ids]
             mycursor.executemany("""
                 UPDATE journal_list_price 
-                SET prepaid = %s, payable=%s
+                SET prepaid = %s, payable = %s, modified_dt = %s
                 WHERE journal_list_id = %s AND member_id = %s
             """, journal_list_price_value)
 

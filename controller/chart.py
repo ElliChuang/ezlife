@@ -69,7 +69,7 @@ def chart_data(bookId):
                 j.id,
                 j.date, 
                 j.amount,
-                c1.name as category_main,
+                C1.name as category_main,
                 c2.name as category_object,
                 c3.name as category_character,
                 k.content as keyword,
@@ -130,7 +130,7 @@ def chart_data(bookId):
         basic_value = (bookId, start_dt, end_dt)
         append_value = ()
         if category_main:
-            conditions.append("c1.name = %s")
+            conditions.append("C1.name = %s")
             sub_conditions.append("""
                 INNER JOIN journal_list_category jc1 
                 ON j.id = jc1.journal_list_id
