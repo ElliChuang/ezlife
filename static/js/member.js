@@ -16,7 +16,8 @@ function showMemberSection() {
   modifyMessage.innerText = "";
   memberName.value = welcomeName.innerText;
   memberEmail.value = userList.value;
-  profile.style.backgroundImage = "url(" + userList.src + ")";
+  // profile.style.backgroundImage = "url(" + userList.src + ")";
+  profile.src = userList.src;
 }
 
 const closeMemberButton = document.querySelector(".close-member-button");
@@ -31,7 +32,9 @@ const file = document.querySelector("#file");
 file.addEventListener("change", changeFile);
 function changeFile(elem) {
   let file = elem.target.files[0];
-  console.log(file);
+  if (!file) {
+    return;
+  }
   if (
     file.type === "image/jpeg" ||
     file.type === "image/jpg" ||
@@ -40,7 +43,8 @@ function changeFile(elem) {
     modifyMessage.innerText = "";
     let reader = new FileReader();
     reader.onload = function (e) {
-      profile.style.backgroundImage = "url(" + e.target.result + ")";
+      // profile.style.backgroundImage = "url(" + e.target.result + ")";
+      profile.src = e.target.result;
     };
     reader.readAsDataURL(file);
   } else {
@@ -56,12 +60,12 @@ async function modifyInfor(event) {
   event.preventDefault();
 
   const formData = new FormData();
-  if (file.files.length === 0 && profile.src) {
+  if (file.files.length === 0) {
     formData.append("file", null);
     formData.append("memberId", userList.id);
     formData.append("memberName", memberName.value);
     formData.append("memberEmail", memberEmail.value);
-    formData.append("profile", profile.src);
+    formData.append("profile", userList.src);
   } else {
     formData.append("file", file.files[0]);
     formData.append("memberId", userList.id);
@@ -78,9 +82,10 @@ async function modifyInfor(event) {
 
   let fetchUrl = await fetch("/api/user/auth", {
     method: "PATCH",
-    hearders: { "Content-Type": "multipart/form-data" },
+    // headers: { "Content-Type": "multipart/form-data" },
     body: formData,
   });
+
   let jsonData = await fetchUrl.json();
   if (jsonData.ok) {
     modifyMessage.innerText = "資料更新成功";

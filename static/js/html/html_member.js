@@ -5,8 +5,7 @@ memberInfor =
             <button class="close-member-button"></button>\
           </div>\
           <div class="profile">\
-            <div class="image" id="profile">\
-            </div>\
+            <img class="image" id="profile"/>\
             <div class="edit"></div>\
             <input type="file" name="file" id=file />\
           </div>\

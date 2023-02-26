@@ -119,4 +119,10 @@
   .confirmToEditJournal {
     width: 220px;
   }
+  .edit-payable-input {
+    margin-left: 5px;
+  }
+  .edit-prepay-input {
+    margin-left: 5px;
+  }
 }

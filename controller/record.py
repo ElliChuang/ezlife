@@ -47,7 +47,7 @@ def get_record(bookId):
                         s.account_member_id,
                         m.name
                     order by 
-                        s.account_dt,
+                        s.account_dt DESC,
                         m.name;
                 """)
 

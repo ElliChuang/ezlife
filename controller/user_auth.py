@@ -181,14 +181,14 @@ def user_modify():
 	img = Image.open(image)
 	width = img.width
 	height = img.height
-	if width < 200 or height < 200:
+	if width < 500 or height < 500:
 		return jsonify({
 					"error": True,
-					"data" : "圖片寬高低於 200 像素",             
+					"data" : "圖片寬高低於 500 像素",             
 				}),400
 
 	# resize image
-	img.thumbnail((200,200), Image.Resampling.LANCZOS)
+	img.thumbnail((500,500), Image.Resampling.LANCZOS)
 	rgb_img = img.convert('RGB')
 	rgb_img.save('static/img/profile.jpg')
 	now = datetime.datetime.now()

@@ -31,7 +31,7 @@ main {
 }
 .cover {
   height: 68vh;
-  margin-right: 150px;
+  margin-right: 120px;
 }
 .cover-image {
   background-image: url(/static/img/co_use.jpg);
@@ -46,7 +46,7 @@ main {
   margin: auto;
   padding: 20px;
   text-align: center;
-  margin-top: 19vh;
+  margin-top: 10vh;
   font-family: "Joan", serif;
 }
 .slogan {
@@ -120,11 +120,11 @@ footer {
   background-color: #d2b48c;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
   .cover {
-    margin-right: 50px;
+    margin-right: 40px;
   }
   .cover-text {
-    margin-top: 45vh;
+    margin-top: 5vh;
   }
 }

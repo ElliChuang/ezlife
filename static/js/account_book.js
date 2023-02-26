@@ -474,7 +474,10 @@ async function editJournalList() {
   });
   let jsonData = await fetchUrl.json();
   if (jsonData.ok) {
-    return showNoticeWindow("訊息通知", "明細賬更新成功", loadPage);
+    socket.emit("modify_journal_list", {
+      userName: user.name,
+    });
+    return;
   } else if (jsonData.data === "欄位填寫不完整") {
     return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
   } else if (jsonData.data === "請先登入會員") {

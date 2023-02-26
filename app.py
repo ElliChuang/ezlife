@@ -87,5 +87,9 @@ def delete_journal_list_event(data):
 def checkout_event(data):
     socketio.emit("checkout_announcement", data)
 
+@socketio.on('modify_journal_list')
+def modify_event(data):
+    socketio.emit("modify_journal_list_announcement", data)
+
 if __name__ == '__main__':
     socketio.run(app, host = '0.0.0.0', port = 3000)

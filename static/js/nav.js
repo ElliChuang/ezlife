@@ -259,3 +259,11 @@ socket.on("checkout_announcement", function (data) {
     loadPage
   );
 });
+
+socket.on("modify_journal_list_announcement", function (data) {
+  showNoticeWindow(
+    "訊息通知",
+    `${data.userName}已更新了一筆帳務明細`,
+    loadPage
+  );
+});
