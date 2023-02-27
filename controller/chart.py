@@ -111,7 +111,7 @@ def chart_data(bookId):
                 ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
             INNER JOIN journal_list_keyword jk 
                 ON j.id = jk.journal_list_id
-            INNER JOIN keyword k 
+            LEFT JOIN keyword k 
                 ON jk.keyword_id = k.id
             WHERE 
                 j.book_id = %s 
@@ -160,8 +160,8 @@ def chart_data(bookId):
             conditions.append("k.content like %s")
             sub_conditions.append("""
                 INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
-                INNER JOIN keyword k ON jk.keyword_id = k.id 
-                AND keyword like %s""")
+                RIGHT JOIN keyword k ON jk.keyword_id = k.id 
+                AND k.content like %s""")
             append_value += ("%" + keyword + "%",)
 
         if conditions and sub_conditions:
@@ -188,18 +188,32 @@ def chart_data(bookId):
         for item in results:
             date = item["date"].strftime('%Y-%m-%d')
             day = item["date"].strftime('%a')
-            data = {
-                    "journal_list" : {
-                        "id" : item["id"],
-                        "date" : date,
-                        "day" : day,
-                        "category_main" : item["category_main"],
-                        "category_object" : item["category_object"],
-                        "category_character" : item["category_character"],
-                        "keyword" : item["keyword"],
-                        "price" : item["amount"],
-                    },
-            }
+            if item["keyword"]:
+                data = {
+                        "journal_list" : {
+                            "id" : item["id"],
+                            "date" : date,
+                            "day" : day,
+                            "category_main" : item["category_main"],
+                            "category_object" : item["category_object"],
+                            "category_character" : item["category_character"],
+                            "keyword" : item["keyword"],
+                            "price" : item["amount"],
+                        },
+                }
+            else:
+                data = {
+                        "journal_list" : {
+                            "id" : item["id"],
+                            "date" : date,
+                            "day" : day,
+                            "category_main" : item["category_main"],
+                            "category_object" : item["category_object"],
+                            "category_character" : item["category_character"],
+                            "keyword" : "",
+                            "price" : item["amount"],
+                        },
+                }
             journal_list.append(data)
             journal_list_main[item["category_main"]] = int(item["category_main_sum"])
         

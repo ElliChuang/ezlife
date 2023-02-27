@@ -64,7 +64,7 @@ def journal_list(bookId):
                     INNER JOIN journal_list_category jc3 ON j.id = jc3.journal_list_id
                     INNER JOIN categories c3 ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
                     INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
-                    INNER JOIN keyword k ON jk.keyword_id = k.id 
+                    LEFT JOIN keyword k ON jk.keyword_id = k.id 
                     INNER JOIN status s ON j.id = s.journal_list_id
                     INNER JOIN (
                         SELECT p.journal_list_id, p.member_id, m.name as name, p.payable, p.prepaid
@@ -101,21 +101,36 @@ def journal_list(bookId):
                     day = item["date"].strftime('%a')
                     situation = item["situation"]
                     situation = situation.replace(',"}', "}")
-
-                    data = {
-                            "journal_list" : {
-                                "id" : item["id"],
-                                "date" : date,
-                                "day" : day,
-                                "category_main" : item["category_main"],
-                                "category_object" : item["category_object"],
-                                "category_character" : item["category_character"],
-                                "keyword" : item["content"],
-                                "amount" : item["amount"],
-                                "status" : item["status"],
-                                "situation" : json.loads("[" + situation + "]")
-                            },
-                    }
+                    if not item["content"]:
+                        data = {
+                                "journal_list" : {
+                                    "id" : item["id"],
+                                    "date" : date,
+                                    "day" : day,
+                                    "category_main" : item["category_main"],
+                                    "category_object" : item["category_object"],
+                                    "category_character" : item["category_character"],
+                                    "keyword" : "",
+                                    "amount" : item["amount"],
+                                    "status" : item["status"],
+                                    "situation" : json.loads("[" + situation + "]")
+                                },
+                        }
+                    else:
+                        data = {
+                                "journal_list" : {
+                                    "id" : item["id"],
+                                    "date" : date,
+                                    "day" : day,
+                                    "category_main" : item["category_main"],
+                                    "category_object" : item["category_object"],
+                                    "category_character" : item["category_character"],
+                                    "keyword" : item["content"],
+                                    "amount" : item["amount"],
+                                    "status" : item["status"],
+                                    "situation" : json.loads("[" + situation + "]")
+                                },
+                        }
                     datas.append(data)
                 
                 return jsonify({
@@ -145,7 +160,7 @@ def journal_list(bookId):
         amount = data["amount"]
         payable = data["payable"]
         prepaid = data["prepaid"]
-        if date == "" or category_main == "" or category_object == "" or category_character == "" or keyword == "" or amount == "":
+        if date == "" or category_main == "" or category_object == "" or category_character == "" or amount == "":
             return jsonify({
                         "error": True,
                         "data" : "欄位填寫不完整",             
@@ -191,20 +206,25 @@ def journal_list(bookId):
                 INSERT INTO status (journal_list_id, status, created_dt) 
                 VALUES (%s, %s, %s)""", status_value)  
 
-            keyword_id_in_redis = Redis.connect_to_redis().get(keyword)
-            if keyword_id_in_redis:
-                journal_list_keyword_value = (journal_list_id, keyword_id_in_redis)
-                mycursor.execute("""
-                INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
-                VALUES (%s, %s)""", journal_list_keyword_value)
-            else:
-                mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
-                keyword_id = mycursor.lastrowid
-                journal_list_keyword_value = (journal_list_id, keyword_id)
-                mycursor.execute("""
+            if keyword:
+                keyword_id_in_redis = Redis.connect_to_redis().get(keyword)
+                if keyword_id_in_redis:
+                    journal_list_keyword_value = (journal_list_id, keyword_id_in_redis)
+                    mycursor.execute("""
                     INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
                     VALUES (%s, %s)""", journal_list_keyword_value)
-                Redis.connect_to_redis().set(keyword, keyword_id)
+                else:
+                    mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
+                    keyword_id = mycursor.lastrowid
+                    journal_list_keyword_value = (journal_list_id, keyword_id)
+                    mycursor.execute("""
+                        INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
+                        VALUES (%s, %s)""", journal_list_keyword_value)
+                    Redis.connect_to_redis().set(keyword, keyword_id)
+            else:
+                mycursor.execute("""
+                        INSERT INTO journal_list_keyword (journal_list_id) 
+                        VALUES (%s)""", (journal_list_id,))
 
             mycursor.execute("COMMIT")
 
@@ -280,7 +300,7 @@ def journal_list(bookId):
         payable = data["payable"]
         prepaid = data["prepaid"]
         journal_list_id = data["journal_list_id"]
-        if date == "" or category_main == "" or category_object == "" or category_character == "" or keyword == "" or amount == "":
+        if date == "" or category_main == "" or category_object == "" or category_character == "" or amount == "":
             return jsonify({
                         "error": True,
                         "data" : "欄位填寫不完整",             
@@ -344,23 +364,31 @@ def journal_list(bookId):
                     AND c.parent_category_id = %s
             """, journal_list_category_value)
 
-            keyword_id_in_redis = Redis.connect_to_redis().get(keyword)
-            if keyword_id_in_redis:
-                journal_list_keyword_value = (keyword_id_in_redis, journal_list_id)
-                mycursor.execute("""
-                    UPDATE journal_list_keyword 
-                    SET keyword_id = %s
-                    WHERE journal_list_id = %s
-                """, journal_list_keyword_value)
+            if keyword:
+                keyword_id_in_redis = Redis.connect_to_redis().get(keyword)
+                if keyword_id_in_redis:
+                    journal_list_keyword_value = (keyword_id_in_redis, journal_list_id)
+                    mycursor.execute("""
+                        UPDATE journal_list_keyword 
+                        SET keyword_id = %s
+                        WHERE journal_list_id = %s
+                    """, journal_list_keyword_value)
+                else:
+                    mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
+                    keyword_id = mycursor.lastrowid
+                    journal_list_keyword_value = (keyword_id, journal_list_id)
+                    mycursor.execute("""
+                        UPDATE journal_list_keyword 
+                        SET keyword_id = %s
+                        WHERE journal_list_id = %s""", journal_list_keyword_value)
+                    Redis.connect_to_redis().set(keyword, keyword_id)
             else:
-                mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
-                keyword_id = mycursor.lastrowid
-                journal_list_keyword_value = (keyword_id, journal_list_id)
-                mycursor.execute("""
-                    UPDATE journal_list_keyword 
-                    SET keyword_id = %s
-                    WHERE journal_list_id = %s""", journal_list_keyword_value)
-                Redis.connect_to_redis().set(keyword, keyword_id)
+                 journal_list_keyword_value = (None, journal_list_id)
+                 mycursor.execute("""
+                        UPDATE journal_list_keyword 
+                        SET keyword_id = %s
+                        WHERE journal_list_id = %s""", journal_list_keyword_value)
+
 
             mycursor.execute("COMMIT")
 

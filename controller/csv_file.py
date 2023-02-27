@@ -88,7 +88,7 @@ def download(bookId):
                 ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
             INNER JOIN journal_list_keyword jk 
                 ON j.id = jk.journal_list_id
-            INNER JOIN keyword k 
+            LEFT JOIN keyword k 
                 ON jk.keyword_id = k.id
             WHERE 
                 j.book_id = %s 
@@ -137,8 +137,8 @@ def download(bookId):
             conditions.append("k.content like %s")
             sub_conditions.append("""
                 INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
-                INNER JOIN keyword k ON jk.keyword_id = k.id 
-                AND keyword like %s""")
+                RIGHT JOIN keyword k ON jk.keyword_id = k.id 
+                AND k.content like %s""")
             append_value += ("%" + keyword + "%",)
 
         if conditions and sub_conditions:
@@ -160,14 +160,24 @@ def download(bookId):
         journal_list = []
         for item in results:
             date = item["date"].strftime('%Y-%m-%d')
-            data = {
-                    "日期" : date,
-                    "生活機能" : item["category_main"],
-                    "消費型態" : item["category_object"],
-                    "支出對象" : item["category_character"],
-                    "關鍵字" : item["keyword"],
-                    "金額" : item["amount"],
-            }
+            if item["keyword"]:
+                data = {
+                        "日期" : date,
+                        "生活機能" : item["category_main"],
+                        "消費型態" : item["category_object"],
+                        "支出對象" : item["category_character"],
+                        "關鍵字" : item["keyword"],
+                        "金額" : item["amount"],
+                }
+            else:
+                data = {
+                        "日期" : date,
+                        "生活機能" : item["category_main"],
+                        "消費型態" : item["category_object"],
+                        "支出對象" : item["category_character"],
+                        "關鍵字" : "",
+                        "金額" : item["amount"],
+                }
             journal_list.append(data)
         
 

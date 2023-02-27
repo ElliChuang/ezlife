@@ -231,7 +231,7 @@ socket.on("connect", function () {
 socket.on("leave_room_announcement", function (data) {
   showNoticeWindow(
     "訊息通知",
-    `${data.collaboratorName}已無編輯權限`,
+    `${data.collaboratorName} 已無編輯權限`,
     loadPage
   );
 });
@@ -241,21 +241,21 @@ socket.on("join_room_announcement", function (data) {
 });
 
 socket.on("add_collaborator_announcement", function (data) {
-  showNoticeWindow("訊息通知", `已邀請${data.collaboratorName}`, loadPage);
+  showNoticeWindow("訊息通知", `已邀請 ${data.collaboratorName}`, loadPage);
 });
 
 socket.on("add_journal_list_announcement", function (data) {
-  showNoticeWindow("訊息通知", `${data.userName}已新增一筆帳務`, loadPage);
+  showNoticeWindow("訊息通知", `${data.userName} 已新增一筆帳務`, loadPage);
 });
 
 socket.on("delete_journal_list_announcement", function (data) {
-  showNoticeWindow("訊息通知", `${data.userName}已刪除一筆帳務`, loadPage);
+  showNoticeWindow("訊息通知", `${data.userName} 已刪除一筆帳務`, loadPage);
 });
 
 socket.on("checkout_announcement", function (data) {
   showNoticeWindow(
     "結算成功",
-    `${data.collaboratorName}已將 ${data.year}-${data.month}月 送出結算`,
+    `${data.collaboratorName} 已將 ${data.year}-${data.month}月 送出結算`,
     loadPage
   );
 });
@@ -263,7 +263,7 @@ socket.on("checkout_announcement", function (data) {
 socket.on("modify_journal_list_announcement", function (data) {
   showNoticeWindow(
     "訊息通知",
-    `${data.userName}已更新了一筆帳務明細`,
+    `${data.userName} 已更新了一筆帳務明細`,
     loadPage
   );
 });

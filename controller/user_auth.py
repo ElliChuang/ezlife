@@ -181,10 +181,10 @@ def user_modify():
 	img = Image.open(image)
 	width = img.width
 	height = img.height
-	if width < 500 or height < 500:
+	if width < 300 or height < 300:
 		return jsonify({
 					"error": True,
-					"data" : "圖片寬高低於 500 像素",             
+					"data" : "圖片寬高低於 300 像素",             
 				}),400
 
 	# resize image

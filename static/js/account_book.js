@@ -19,7 +19,7 @@ const editPrice = document.getElementById("edit-price");
 const editDate = document.getElementById("edit-date");
 
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
-import { indexPage, loadPage, bookAuth, getStatus } from "./nav.js";
+import { indexPage, bookAuth, getStatus } from "./nav.js";
 
 const socket = io();
 
@@ -262,10 +262,11 @@ let requestBody = {
   prepaid: [],
 };
 
-document.querySelector("#submit").addEventListener("click", addJournalList);
+const addButton = document.querySelector("#submit");
+addButton.addEventListener("click", addJournalList);
 async function addJournalList() {
   requestBody.date = date.value;
-  requestBody.keyword = keyword.value;
+  requestBody.keyword = keyword.value.trim();
   requestBody.amount = parseInt(amount.value);
   requestBody.category_main = category_main.value;
   requestBody.category_object = category_object.value;
@@ -287,6 +288,14 @@ async function addJournalList() {
 
   if (requestBody.amount === "") {
     return showNoticeWindow("錯誤訊息", "請輸入金額", closeNoticeWindow);
+  } else if (requestBody.amount <= 0) {
+    return showNoticeWindow("錯誤訊息", "輸入的金額有誤", closeNoticeWindow);
+  } else if (/[^\d]/g.test(requestBody.amount)) {
+    return showNoticeWindow(
+      "錯誤訊息",
+      "輸入的金額格式有誤",
+      closeNoticeWindow
+    );
   } else if (requestBody.date === "") {
     return showNoticeWindow("錯誤訊息", "請輸入日期", closeNoticeWindow);
   } else if (
@@ -295,20 +304,23 @@ async function addJournalList() {
     requestBody.category_character === ""
   ) {
     return showNoticeWindow("錯誤訊息", "請選擇類別", closeNoticeWindow);
-  } else if (requestBody.keyword.trim().length === 0) {
-    return showNoticeWindow("錯誤訊息", "備註不得空白", closeNoticeWindow);
-  } else if (requestBody.keyword.trim().length > 10) {
+  } else if (requestBody.keyword.length > 15) {
     return showNoticeWindow(
       "錯誤訊息",
-      "備註以10個字為上限",
+      "備註以15個字為上限",
       closeNoticeWindow
     );
+  } else if (/[^\d]/g.test(payableAmount)) {
+    return showNoticeWindow("錯誤訊息", "分攤金額格式有誤", closeNoticeWindow);
   } else if (requestBody.amount !== payableAmount) {
     return showNoticeWindow("錯誤訊息", "分攤金額有誤", closeNoticeWindow);
+  } else if (/[^\d]/g.test(prepaidAmount)) {
+    return showNoticeWindow("錯誤訊息", "代墊金額格式有誤", closeNoticeWindow);
   } else if (requestBody.amount !== prepaidAmount) {
     return showNoticeWindow("錯誤訊息", "代墊金額有誤", closeNoticeWindow);
   }
   console.log(requestBody);
+  addButton.disabled = true;
   let url = "/api/account_book/" + bookId;
   let fetchUrl = await fetch(url, {
     method: "POST",
@@ -319,6 +331,7 @@ async function addJournalList() {
   if (jsonData.ok) {
     socket.emit("add_journal_list", {
       userName: user.name,
+      roomId: bookId,
     });
   } else if (jsonData.data === "欄位填寫不完整") {
     showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
@@ -344,6 +357,7 @@ async function deleteJournalList(elem) {
   } else if (jsonData.ok) {
     socket.emit("delete_journal_list", {
       userName: user.name,
+      roomId: bookId,
     });
   }
 }
@@ -413,13 +427,12 @@ closeEditButton.addEventListener("click", () => {
 });
 
 // 修改日記帳
-document
-  .querySelector(".confirmToEditJournal")
-  .addEventListener("click", editJournalList);
+const confirmToEdit = document.querySelector(".confirmToEditJournal");
+confirmToEdit.addEventListener("click", editJournalList);
 
 async function editJournalList() {
   requestBody.date = editDate.value;
-  requestBody.keyword = editKeyword.value;
+  requestBody.keyword = editKeyword.value.trim();
   requestBody.amount = parseInt(editPrice.value);
   requestBody.category_main = editCategoryMain.value;
   requestBody.category_object = editCategoryObject.value;
@@ -444,6 +457,14 @@ async function editJournalList() {
 
   if (requestBody.amount === "") {
     return showNoticeWindow("錯誤訊息", "請輸入金額", closeNoticeWindow);
+  } else if (requestBody.amount <= 0) {
+    return showNoticeWindow("錯誤訊息", "輸入的金額有誤", closeNoticeWindow);
+  } else if (/[^\d]/g.test(requestBody.amount)) {
+    return showNoticeWindow(
+      "錯誤訊息",
+      "輸入的金額格式有誤",
+      closeNoticeWindow
+    );
   } else if (requestBody.date === "") {
     return showNoticeWindow("錯誤訊息", "請輸入日期", closeNoticeWindow);
   } else if (
@@ -452,20 +473,23 @@ async function editJournalList() {
     requestBody.category_character === ""
   ) {
     return showNoticeWindow("錯誤訊息", "請選擇類別", closeNoticeWindow);
-  } else if (requestBody.keyword.trim().length === 0) {
-    return showNoticeWindow("錯誤訊息", "備註不得空白", closeNoticeWindow);
-  } else if (requestBody.keyword.trim().length > 10) {
+  } else if (requestBody.keyword.length > 15) {
     return showNoticeWindow(
       "錯誤訊息",
-      "備註以10個字為上限",
+      "備註以15個字為上限",
       closeNoticeWindow
     );
+  } else if (/[^\d]/g.test(payableAmount)) {
+    return showNoticeWindow("錯誤訊息", "分攤金額格式有誤", closeNoticeWindow);
   } else if (requestBody.amount !== payableAmount) {
     return showNoticeWindow("錯誤訊息", "分攤金額有誤", closeNoticeWindow);
+  } else if (/[^\d]/g.test(prepaidAmount)) {
+    return showNoticeWindow("錯誤訊息", "代墊金額格式有誤", closeNoticeWindow);
   } else if (requestBody.amount !== prepaidAmount) {
     return showNoticeWindow("錯誤訊息", "代墊金額有誤", closeNoticeWindow);
   }
   console.log(requestBody);
+  confirmToEdit.disabled = true;
   let url = "/api/account_book/" + bookId;
   let fetchUrl = await fetch(url, {
     method: "PATCH",
@@ -476,6 +500,7 @@ async function editJournalList() {
   if (jsonData.ok) {
     socket.emit("modify_journal_list", {
       userName: user.name,
+      roomId: bookId,
     });
     return;
   } else if (jsonData.data === "欄位填寫不完整") {

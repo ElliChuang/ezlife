@@ -59,37 +59,44 @@ def load():
 # Socket
 @socketio.on('join_room')
 def handle_join_room_event(data):
-    print(f"{data['username']} has joined the room")
-    join_room(data["roomId"])
-    socketio.emit("join_room_announcement", data)
+    print(f"{data['username']} has joined the room {data['roomId']}")
+    room = data["roomId"]
+    join_room(room)
+    socketio.emit("join_room_announcement", data, room = room)
 
 @socketio.on('leave_room',)
 def handle_leave_room_event(data):
-    print(f"{data['collaboratorName']} has leaved the room")
-    leave_room(data["roomId"])
-    socketio.emit("leave_room_announcement", data)
+    print(f"{data['collaboratorName']} has leaved the room {data['roomId']}")
+    room = data["roomId"]
+    leave_room(room)
+    socketio.emit("leave_room_announcement", data, room = room)
 
 @socketio.on('add_collaborator',)
 def handle_invited_event(data):
-    print(f"{data['collaboratorName']} has invited into the room")
-    join_room(data["roomId"])
-    socketio.emit("add_collaborator_announcement", data)
+    print(f"{data['collaboratorName']} has invited into the room  {data['roomId']}")
+    room = data["roomId"]
+    join_room(room)
+    socketio.emit("add_collaborator_announcement", data, room = room)
 
 @socketio.on('add_journal_list')
 def add_journal_list_event(data):
-    socketio.emit("add_journal_list_announcement", data)
+    room = data["roomId"]
+    socketio.emit("add_journal_list_announcement", data, room = room)
 
 @socketio.on('delete_journal_list')
 def delete_journal_list_event(data):
-    socketio.emit("delete_journal_list_announcement", data)
+    room = data["roomId"]
+    socketio.emit("delete_journal_list_announcement", data, room = room)
 
 @socketio.on('sumbit_checkout')
 def checkout_event(data):
-    socketio.emit("checkout_announcement", data)
+    room = data["roomId"]
+    socketio.emit("checkout_announcement", data, room = room)
 
 @socketio.on('modify_journal_list')
 def modify_event(data):
-    socketio.emit("modify_journal_list_announcement", data)
+    room = data["roomId"]
+    socketio.emit("modify_journal_list_announcement", data, room = room)
 
 if __name__ == '__main__':
     socketio.run(app, host = '0.0.0.0', port = 3000)

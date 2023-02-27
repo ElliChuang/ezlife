@@ -16,7 +16,6 @@ function showMemberSection() {
   modifyMessage.innerText = "";
   memberName.value = welcomeName.innerText;
   memberEmail.value = userList.value;
-  // profile.style.backgroundImage = "url(" + userList.src + ")";
   profile.src = userList.src;
 }
 
@@ -43,7 +42,6 @@ function changeFile(elem) {
     modifyMessage.innerText = "";
     let reader = new FileReader();
     reader.onload = function (e) {
-      // profile.style.backgroundImage = "url(" + e.target.result + ")";
       profile.src = e.target.result;
     };
     reader.readAsDataURL(file);
@@ -58,7 +56,6 @@ memberForm.addEventListener("submit", modifyInfor);
 
 async function modifyInfor(event) {
   event.preventDefault();
-
   const formData = new FormData();
   if (file.files.length === 0) {
     formData.append("file", null);
@@ -80,9 +77,11 @@ async function modifyInfor(event) {
     return (modifyMessage.innerText = "請輸入有效的電子信箱");
   }
 
+  const confirmToModify = document.getElementById("confirmToModify");
+  confirmToModify.disabled = true;
+  console.log(confirmToModify.disabled);
   let fetchUrl = await fetch("/api/user/auth", {
     method: "PATCH",
-    // headers: { "Content-Type": "multipart/form-data" },
     body: formData,
   });
 
@@ -96,24 +95,15 @@ async function modifyInfor(event) {
     user.profile = jsonData.data.profile;
 
     // 依所在頁面更新畫面資訊
-    // const url = location.href;
-    // const current = url.split("/")[1];
-    // if (current === "home") {
-    //   userList.src = user.profile;
-    //   userList.value = user.email;
-    //   welcomeName.innerText = user.name;
-    // } else {
     userList.src = user.profile;
     userList.value = user.email;
     welcomeName.innerText = user.name;
-    // document.getElementById(`member-${user.id}`).innerText = user.name;
     const payableTitle = document.getElementById(`payableTitle-${user.id}`);
     const prepayTitle = document.getElementById(`prepayTitle-${user.id}`);
     if (payableTitle && prepayTitle) {
       payableTitle.innerText = user.name;
       prepayTitle.innerText = user.name;
     }
-    // }
   } else {
     modifyMessage.innerText = jsonData.data;
   }
