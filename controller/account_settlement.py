@@ -92,7 +92,7 @@ def checkout(bookId):
                     INNER JOIN journal_list_category jc3 ON j.id = jc3.journal_list_id
                     INNER JOIN categories c3 ON jc3.categories_id = c3.id AND c3.parent_category_id = 3
                     INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
-                    INNER JOIN keyword k ON jk.keyword_id = k.id 
+                    LEFT JOIN keyword k ON jk.keyword_id = k.id 
                     INNER JOIN status as s ON j.id = s.journal_list_id
                     WHERE 
                         j.book_id = %s 
@@ -123,18 +123,30 @@ def checkout(bookId):
                     for item in results:
                         date = item["date"].strftime('%Y-%m-%d')
                         day = item["date"].strftime('%a')
-                        
-                        data = {
-                                "id" : item["journal_list_id"],
-                                "date" : date,
-                                "day" : day,
-                                "category_main" : item["category_main"],
-                                "category_object" : item["category_object"],
-                                "category_character" : item["category_character"],
-                                "name" : item["name"],
-                                "keyword" : item["keyword"],
-                                "price" : item["payable"],
-                        }
+                        if item["keyword"]:
+                            data = {
+                                    "id" : item["journal_list_id"],
+                                    "date" : date,
+                                    "day" : day,
+                                    "category_main" : item["category_main"],
+                                    "category_object" : item["category_object"],
+                                    "category_character" : item["category_character"],
+                                    "name" : item["name"],
+                                    "keyword" : item["keyword"],
+                                    "price" : item["payable"],
+                            }
+                        else:
+                            data = {
+                                    "id" : item["journal_list_id"],
+                                    "date" : date,
+                                    "day" : day,
+                                    "category_main" : item["category_main"],
+                                    "category_object" : item["category_object"],
+                                    "category_character" : item["category_character"],
+                                    "name" : item["name"],
+                                    "keyword" : "",
+                                    "price" : item["payable"],
+                            }
                         journal_list.append(data)
  
 

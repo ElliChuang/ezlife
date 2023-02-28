@@ -189,14 +189,14 @@ def user_modify():
 
 	# resize image
 	img.thumbnail((500,500), Image.Resampling.LANCZOS)
-	rgb_img = img.convert('RGB')
-	rgb_img.save('static/img/profile.jpg')
+	rgb_img = img.convert('RGBA')
+	rgb_img.save('static/img/profile.png')
 	now = datetime.datetime.now()
 	time = now.strftime("%m/%d/%Y-%H:%M:%S")
-	unique_filename = "profile.jpg" + "/" + time 
+	unique_filename = "profile.png" + "/" + time 
 
 	# 圖片存 S3
-	with open('static/img/profile.jpg', 'rb') as file:
+	with open('static/img/profile.png', 'rb') as file:
 		s3.upload_fileobj(file, S3_BUCKET_NAME, 'profile/' + unique_filename)
 		profile = f'https://{CLOUDFRONT_PATH}/profile/{unique_filename}'
 

@@ -79,7 +79,7 @@ async function modifyInfor(event) {
 
   const confirmToModify = document.getElementById("confirmToModify");
   confirmToModify.disabled = true;
-  console.log(confirmToModify.disabled);
+  modifyMessage.innerText = "";
   let fetchUrl = await fetch("/api/user/auth", {
     method: "PATCH",
     body: formData,
@@ -107,4 +107,5 @@ async function modifyInfor(event) {
   } else {
     modifyMessage.innerText = jsonData.data;
   }
+  confirmToModify.disabled = false;
 }

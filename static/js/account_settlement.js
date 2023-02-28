@@ -241,6 +241,8 @@ function removeOverview() {
 
 // 送出結算
 async function goCheckout() {
+  const checkoutButton = document.querySelector(".unsettlement");
+  checkoutButton.disabled = true;
   const year = document.getElementById("year").value;
   const month = document.getElementById("month").value;
   let requestBody = {
