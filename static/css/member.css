@@ -61,8 +61,6 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  /* background-position: center center;
-  background-size: cover; */
   object-fit: cover;
   object-position: center;
 }

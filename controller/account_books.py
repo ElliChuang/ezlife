@@ -9,7 +9,7 @@ from config import TOKEN_PW
 # 建立 Flask Blueprint
 account_books = Blueprint("account_books", __name__)
 
-@account_books.route("/api/account_books", methods=["GET", "POST", "DELETE"])
+@account_books.route("/api/account_books", methods=["GET", "POST", "DELETE", "PUT"])
 def book():
     # 取得帳簿資訊
     if request.method == "GET":
@@ -96,7 +96,7 @@ def book():
             if result:
                 return jsonify({
                             "error": True,
-                            "data" : "帳簿名稱已重複，請重新輸入名稱",             
+                            "data" : "帳簿名稱已重複，請重新輸入",             
                         }),400
 
             else:
@@ -153,18 +153,17 @@ def book():
             created_member_id = decode_data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor()
-            query = ("SELECT * FROM account_book WHERE created_member_id = %s AND id = %s")
-            mycursor.execute(query, (created_member_id, book_id))
-            result = mycursor.fetchone()
-            if not result:
-                    return jsonify({
-                        "error": True,
-                        "data" : "無刪除權限",             
-                    }),403
 
             query = ("DELETE FROM account_book WHERE created_member_id = %s AND id = %s")
             mycursor.execute(query, (created_member_id, book_id))
             connection_object.commit() 
+            rows_affected = mycursor.rowcount
+            if rows_affected == 0:
+                return jsonify({
+                        "error": True,
+                        "data": "無刪除權限，請洽帳簿管理員"    
+                    }),200 
+            
             return jsonify({
                         "ok": True    
                     }),200
@@ -182,3 +181,59 @@ def book():
                 connection_object.close()
 
 
+    # 修改帳簿名稱
+    if request.method == "PUT":
+        if "token" not in session:
+            return jsonify({
+                        "error": True,
+                        "data" : "請先登入會員",             
+                    }),403
+        
+        data = request.get_json()
+        book_name = data["bookName"]
+        book_id = data["bookId"]
+        if book_name == "":
+            return jsonify({
+                        "error": True,
+                        "data" : "請輸入帳簿名稱",             
+                    }),400
+
+        try:
+            token = session["token"]
+            decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
+            created_member_id = decode_data["id"]
+            connection_object = MySQL.conn_obj()
+            mycursor = connection_object.cursor()
+
+            query = ("""
+                UPDATE account_book 
+                SET book_name = %s
+                WHERE created_member_id = %s AND id = %s""")
+            mycursor.execute(query, (book_name, created_member_id, book_id))
+            connection_object.commit()
+            rows_affected = mycursor.rowcount
+            if rows_affected == 0:
+                return jsonify({
+                        "error": True,
+                        "data": "無編輯權限，請洽帳簿管理員"    
+                    }),200 
+            
+            return jsonify({
+                        "ok": True,
+                        "data":{
+                            "book_name" : book_name,
+                            "book_id" : book_id
+                        }
+                    }),200
+
+        except mysql.connector.Error as err:
+            print("Something went wrong when modify book name: {}".format(err))
+            return jsonify({
+                "error" : True,
+                "data" : "INTERNAL_SERVER_ERROR"
+            }),500
+
+        finally:
+            if connection_object.is_connected():
+                mycursor.close()
+                connection_object.close()
