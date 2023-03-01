@@ -2,7 +2,7 @@ nav =
   '<nav class="nav">\
     <div class="nav-bar">\
         <div class="nav-left">\
-            <div class="page-name" id="ezlife">EzLife ></div>\
+            <div class="page-name" id="ezlife">EzLife</div>\
             <div class="book-name"></div>\
         </div>\
         <div class="nav-right">\

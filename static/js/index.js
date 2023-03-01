@@ -1,4 +1,3 @@
-const ezlife = document.querySelector("#ezlife");
 const joinUs = document.querySelector(".join-us");
 const loginSection = document.querySelector(".login-section");
 const closeLoginButton = document.querySelector("#close-login-button");
@@ -17,10 +16,6 @@ const loginPassword = document.querySelector("#login-password");
 const loginMessage = document.querySelector("#login-message");
 const continueWithGoogle = document.querySelector("#continue-with-google");
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
-
-ezlife.addEventListener("click", () => {
-  window.location.href = "/";
-});
 
 // 取得會員狀態
 getStatus();

@@ -118,7 +118,7 @@ async function getStatus() {
 }
 
 function getBookName(Data) {
-  bookName.innerText = Data.data[0].book_name;
+  bookName.innerText = " > " + Data.data[0].book_name;
 }
 
 bookName.addEventListener("click", () => {

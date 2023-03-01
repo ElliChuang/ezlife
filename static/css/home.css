@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cantata+One&family=Comic+Neue:ital,wght@1,700&family=DM+Serif+Text&family=Labrada&display=swap");
 
 * {
   box-sizing: border-box;
@@ -18,13 +18,11 @@
   align-items: center;
   max-width: 1400px;
   margin: auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
 }
 .page-name {
   flex: none;
-  font-family: "Comic Sans MS", cursive;
-  font-size: 32px;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  font-size: 36px;
   font-weight: bold;
   cursor: pointer;
 }

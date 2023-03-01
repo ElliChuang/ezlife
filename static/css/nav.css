@@ -11,8 +11,6 @@
   align-items: center;
   max-width: 1400px;
   margin: auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
 }
 .nav-bar-second {
   display: flex;
@@ -31,8 +29,8 @@
 }
 .page-name {
   flex: none;
-  font-family: "Comic Sans MS", cursive, "Labrada", serif, "Joan", serif;
-  font-size: 32px;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  font-size: 36px;
   font-weight: bold;
   cursor: pointer;
 }

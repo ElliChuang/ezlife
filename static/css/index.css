@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Cantata+One&family=Comic+Neue:ital,wght@1,700&family=DM+Serif+Text&family=Labrada&display=swap");
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,50 +9,43 @@ body,
 main {
   background-color: rgba(210, 180, 140, 0.3);
 }
-.page-name {
-  font-family: "Comic Sans MS", cursive, "Labrada", serif, "Joan", serif;
-  font-size: 32px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  font-weight: bold;
-  color: #8b4513;
-  cursor: pointer;
-}
 .join-us {
+  position: absolute;
+  right: 20px;
+  top: 20px;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 800;
-  color: #8b4513;
-  font-family: "Joan", serif;
+  color: white;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
 }
 .nav {
   background-color: rgba(210, 180, 140, 0.3);
 }
-.cover {
-  height: 68vh;
-  margin-right: 120px;
-}
+
 .cover-image {
+  position: relative;
   background-image: url(/static/img/co_use.jpg);
-  width: 100%;
-  height: 100%;
+  height: 100vh;
   background-size: cover;
-  background-position: bottom;
-  opacity: 0.7;
+  background-position: top;
 }
 .cover-text {
-  max-width: 700px;
-  margin: auto;
+  max-width: 500px;
+  margin-left: 200px;
   padding: 20px;
-  text-align: center;
-  margin-top: 10vh;
-  font-family: "Joan", serif;
+  margin-bottom: 30vh;
+}
+.page-name {
+  font-size: 140px;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  color: white;
+  font-weight: 900;
 }
 .slogan {
-  font-size: 32px;
-  font-family: "Joan", serif;
-  color: beige;
-  text-shadow: 0 0 1px #fff;
+  font-size: 48px;
+  font-family: "Labrada", serif, "Joan", serif;
+  color: white;
 }
 .github {
   padding-left: 10px;
@@ -61,14 +53,15 @@ main {
 
 /* -------------- Signin ------------------- */
 .name {
-  font-family: "Comic Sans MS", cursive, "Labrada", serif, "Joan", serif;
-  color: grey;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  font-size: 52px;
 }
 section {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
@@ -97,9 +90,6 @@ section {
 }
 
 /* -------------- index ------------------- */
-.subcontainer {
-  height: 680px;
-}
 .co-edit {
   width: 100%;
   height: 100%;
@@ -119,12 +109,32 @@ section {
 footer {
   background-color: #d2b48c;
 }
-
-@media (max-width: 1000px) {
-  .cover {
-    margin-right: 40px;
+.title {
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  font-size: 56px;
+}
+.describe {
+  font-family: "Labrada", serif, "Joan", serif;
+}
+@media (max-width: 1920px) {
+  .subcontainer {
+    height: 680px;
   }
+}
+@media (max-width: 1000px) {
   .cover-text {
-    margin-top: 5vh;
+    margin-bottom: 55vh;
+    margin-left: 120px;
+  }
+}
+
+@media (max-width: 576px) {
+  .cover-text {
+    padding: 5px;
+    margin-bottom: 12vh;
+    margin-left: 0;
+  }
+  .page-name {
+    padding-bottom: 53vh;
   }
 }
