@@ -63,10 +63,24 @@ editInfor =
               </div>\
             </section>\
             <section class="edit-price-setting">\
-              <div class="name">分攤金額</div>\
+              <div class="name">分攤金額\
+                  <img \
+                  class="query"\
+                  id="edit-query-payable"\
+                  src="../static/img/question-mark.png"\
+                />\
+              </div>\
+              <div class="edit-note">此筆消費每人『需』支付多少金額</div>\
               <div class="edit-price-setting-group" id="edit-payable-group">\
               </div>\
-              <div class="name">代墊金額</div>\
+              <div class="name">支付金額\
+               <img \
+                class="query"\
+                id="edit-query-prepaid"\
+                src="../static/img/question-mark.png"\
+              />\
+              </div>\
+              <div class="edit-note">此筆消費每人『已』支付多少金額</div>\
               <div class="edit-price-setting-group" id="edit-prepay-group">\
               </div>\
             </section>\

@@ -549,6 +549,8 @@ function removeEdit() {
 // 分攤、代墊說明
 const queryPayable = document.getElementById("query-payable");
 const queryPrepaid = document.getElementById("query-prepaid");
+const editQueryPayable = document.getElementById("edit-query-payable");
+const editQueryPrepaid = document.getElementById("edit-query-prepaid");
 queryPayable.addEventListener("click", () => {
   showNoticeWindow(
     "分攤金額說明",
@@ -562,4 +564,80 @@ queryPrepaid.addEventListener("click", () => {
     "支付金額合計數＝消費金額",
     closeNoticeWindow
   );
+});
+editQueryPayable.addEventListener("click", () => {
+  showNoticeWindow(
+    "分攤金額說明",
+    "分攤金額合計數＝消費金額",
+    closeNoticeWindow
+  );
+});
+editQueryPrepaid.addEventListener("click", () => {
+  showNoticeWindow(
+    "支付金額說明",
+    "支付金額合計數＝消費金額",
+    closeNoticeWindow
+  );
+});
+
+// 預設分攤、代墊金額
+let typingTimer;
+const doneTypingInterval = 500;
+function setDefault(elem, elem2) {
+  if (elem.target.value.trim().length > 0) {
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(elem2, doneTypingInterval);
+  }
+}
+
+function defaultValue() {
+  const prepaidPrice = document.querySelectorAll("input[name='prepay']");
+  const payablePrice = document.querySelectorAll("input[name='payable']");
+  prepaidPrice.forEach((elem) => {
+    if (parseInt(elem.id) === user.id && parseInt(amount.value) > 0) {
+      elem.value = amount.value;
+    } else {
+      elem.value = 0;
+    }
+  });
+  payablePrice.forEach((elem) => {
+    if (parseInt(elem.id) === user.id && parseInt(amount.value) > 0) {
+      elem.value = amount.value;
+    } else {
+      elem.value = 0;
+    }
+  });
+}
+
+function editDefaultValue() {
+  const editPayablePrice = document.querySelectorAll(
+    "input[name='edit-payable']"
+  );
+  const editprepaidPrice = document.querySelectorAll(
+    "input[name='edit-prepay']"
+  );
+  editPayablePrice.forEach((elem) => {
+    let id = elem.id.split("-")[1];
+    if (parseInt(id) === user.id && parseInt(editPrice.value) > 0) {
+      elem.value = editPrice.value;
+    } else {
+      elem.value = 0;
+    }
+  });
+  editprepaidPrice.forEach((elem) => {
+    let id = elem.id.split("-")[1];
+    if (parseInt(id) === user.id && parseInt(editPrice.value) > 0) {
+      elem.value = editPrice.value;
+    } else {
+      elem.value = 0;
+    }
+  });
+}
+
+amount.addEventListener("keyup", (elem) => {
+  setDefault(elem, defaultValue);
+});
+
+editPrice.addEventListener("keyup", (elem) => {
+  setDefault(elem, editDefaultValue);
 });
