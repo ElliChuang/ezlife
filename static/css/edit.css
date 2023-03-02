@@ -88,7 +88,7 @@
   border-radius: 5px;
   width: 110px;
   border: 1px solid;
-  border-color: #2c3e50;
+  border-color: #971919;
 }
 .confirmToEditJournal {
   width: 420px;
@@ -107,7 +107,7 @@
 }
 .edit-note {
   font-size: 10px;
-  color: #465927;
+  color: #8b0000;
 }
 
 @media (max-width: 768px) {

@@ -99,7 +99,7 @@ async function getOverview(year, month) {
     let prepaidSubgroup = document.createElement("div");
     prepaidSubgroup.className = "subgroup";
     let prepaidTitle = document.createElement("div");
-    prepaidTitle.innerText = "墊付金額";
+    prepaidTitle.innerText = "已付金額";
     let prepaidPrice = document.createElement("div");
     prepaidPrice.className = "price";
     prepaidPrice.innerText = overview[i].prepaid;
@@ -110,6 +110,7 @@ async function getOverview(year, month) {
     subgroup.className = "subgroup";
     let result = parseInt(overview[i].prepaid - overview[i].payable);
     let title = document.createElement("div");
+    title.classList.add("result");
     if (result > 0) {
       title.innerText = "應收金額";
     } else {
@@ -117,6 +118,7 @@ async function getOverview(year, month) {
     }
     let price = document.createElement("div");
     price.className = "price";
+    price.classList.add("result");
     price.innerText = Math.abs(result);
     subgroup.appendChild(title);
     subgroup.appendChild(price);
@@ -402,7 +404,7 @@ async function recordDashboard(dt) {
       let prepaidSubgroup = document.createElement("div");
       prepaidSubgroup.className = "subgroup";
       let prepaidTitle = document.createElement("div");
-      prepaidTitle.innerText = "墊付金額";
+      prepaidTitle.innerText = "已付金額";
       let prepaidPrice = document.createElement("div");
       prepaidPrice.className = "price";
       prepaidPrice.innerText = records[i].prepaid;

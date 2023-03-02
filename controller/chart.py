@@ -23,10 +23,10 @@ def chart_data(bookId):
         }),403
 
     try:
-        category_main = request.args.get("main").lower()
-        category_character = request.args.get("character").lower()
-        category_object = request.args.get("object").lower()
-        keyword = request.args.get("keyword").lower()
+        category_main = request.args.get("main")
+        category_character = request.args.get("character")
+        category_object = request.args.get("object")
+        keyword = request.args.get("keyword")
         start_dt = ""
         end_dt = ""
         if month == 12:
@@ -157,11 +157,11 @@ def chart_data(bookId):
             append_value += (category_object,) 
         
         if keyword:
-            conditions.append("k.content like %s")
+            conditions.append("k.content like %s COLLATE utf8mb4_general_ci")
             sub_conditions.append("""
                 INNER JOIN journal_list_keyword jk ON j.id = jk.journal_list_id
                 RIGHT JOIN keyword k ON jk.keyword_id = k.id 
-                AND k.content like %s""")
+                AND k.content like %s COLLATE utf8mb4_general_ci""")
             append_value += ("%" + keyword + "%",)
 
         if conditions and sub_conditions:

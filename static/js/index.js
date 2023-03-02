@@ -186,8 +186,8 @@ if (clientWidth < 390) {
       theme: "outline",
       type: "standard",
       size: "large",
-      width: 204,
-      height: 48,
+      width: 252,
+      height: 56,
       shape: "rectangular",
     });
   };
@@ -203,7 +203,7 @@ if (clientWidth < 390) {
       type: "standard",
       size: "large",
       width: 254,
-      height: 48,
+      height: 56,
       shape: "rectangular",
     });
   };

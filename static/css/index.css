@@ -91,11 +91,12 @@ section {
   width: 100%;
 }
 .window {
-  width: 350px;
+  width: 360px;
+  padding: 48px;
 }
 hr {
   border: 1px solid;
-  width: 110px;
+  width: 139px;
   vertical-align: text-top;
 }
 /* -------------- index ------------------- */
@@ -154,6 +155,8 @@ footer {
 @media (max-width: 389px) {
   .window {
     width: 300px;
+    padding: 24px;
+    padding-bottom: 40px;
   }
   .page-name {
     padding-bottom: 40vh;

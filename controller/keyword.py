@@ -1,5 +1,4 @@
 from flask import *
-import json
 from model.db import Redis
 
 
@@ -9,7 +8,7 @@ keyword= Blueprint("keyword", __name__)
 
 @keyword.route("/api/keywords", methods=["GET"])
 def search_keyword():
-    keyword = request.args.get("keyword").lower()
+    keyword = request.args.get("keyword")
     if not keyword:
         return jsonify({
                     "data": None         
@@ -23,6 +22,7 @@ def search_keyword():
         return jsonify({
                     "data": None         
                 }),200
+    
     return jsonify({
             "ok": True, 
             "data": results         

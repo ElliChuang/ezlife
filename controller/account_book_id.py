@@ -4,6 +4,7 @@ import mysql.connector
 from model.db import MySQL 
 from model.db import Redis
 import datetime
+from datetime import timedelta 
 import random
 import json
 import pytz
@@ -23,10 +24,8 @@ def journal_list(bookId):
                         "data" : "請先登入會員",             
                     }),403
         try:
-            print("sever")
             year = int(request.args.get("year"))
             month = int(request.args.get("month"))
-            print(year, month)
             start_dt = ""
             end_dt = ""
             if month == 12:
@@ -153,10 +152,10 @@ def journal_list(bookId):
     if request.method == "POST":
         data = request.get_json()
         date = data["date"]
-        category_main = data["category_main"].lower()
-        category_object = data["category_object"].lower()
-        category_character = data["category_character"].lower()
-        keyword = data["keyword"].lower()
+        category_main = data["category_main"]
+        category_object = data["category_object"]
+        category_character = data["category_character"]
+        keyword = data["keyword"]
         amount = data["amount"]
         payable = data["payable"]
         prepaid = data["prepaid"]
@@ -214,13 +213,18 @@ def journal_list(bookId):
                     INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
                     VALUES (%s, %s)""", journal_list_keyword_value)
                 else:
-                    mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
+                    mycursor.execute("""
+                        INSERT INTO keyword (content) 
+                        VALUES (BINARY %s)
+                        ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)
+                        """, (keyword,))
                     keyword_id = mycursor.lastrowid
                     journal_list_keyword_value = (journal_list_id, keyword_id)
                     mycursor.execute("""
                         INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
                         VALUES (%s, %s)""", journal_list_keyword_value)
                     Redis.connect_to_redis().set(keyword, keyword_id)
+                    Redis.connect_to_redis().expire(keyword.lower(), timedelta(weeks=1))
             else:
                 mycursor.execute("""
                         INSERT INTO journal_list_keyword (journal_list_id) 
@@ -292,10 +296,10 @@ def journal_list(bookId):
     if request.method == "PATCH":
         data = request.get_json()
         date = data["date"]
-        category_main = data["category_main"].lower()
-        category_object = data["category_object"].lower()
-        category_character = data["category_character"].lower()
-        keyword = data["keyword"].lower()
+        category_main = data["category_main"]
+        category_object = data["category_object"]
+        category_character = data["category_character"]
+        keyword = data["keyword"]
         amount = data["amount"]
         payable = data["payable"]
         prepaid = data["prepaid"]
@@ -374,14 +378,20 @@ def journal_list(bookId):
                         WHERE journal_list_id = %s
                     """, journal_list_keyword_value)
                 else:
-                    mycursor.execute("INSERT INTO keyword (content) VALUES (%s)", (keyword,))
+                    mycursor.execute("""
+                        INSERT INTO keyword (content) 
+                        VALUES (%s)
+                        ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)
+                        """, (keyword,))
                     keyword_id = mycursor.lastrowid
+                    print(keyword_id)
                     journal_list_keyword_value = (keyword_id, journal_list_id)
                     mycursor.execute("""
                         UPDATE journal_list_keyword 
                         SET keyword_id = %s
                         WHERE journal_list_id = %s""", journal_list_keyword_value)
                     Redis.connect_to_redis().set(keyword, keyword_id)
+                    Redis.connect_to_redis().expire(keyword, timedelta(weeks=1))
             else:
                  journal_list_keyword_value = (None, journal_list_id)
                  mycursor.execute("""
