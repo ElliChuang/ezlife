@@ -81,8 +81,19 @@
 .information button:hover {
   background-color: rgba(139, 69, 19, 0.7);
 }
+.note {
+  font-size: 14px;
+  color: #2f4f4f;
+}
 .name {
   font-weight: bold;
+}
+.query {
+  width: 24px;
+  height: 24px;
+  border: none;
+  vertical-align: text-top;
+  cursor: pointer;
 }
 .detail {
   margin-left: 30px;
@@ -90,7 +101,7 @@
   position: relative;
 }
 .group {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .subgroup {
   margin-left: 30px;

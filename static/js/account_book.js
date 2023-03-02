@@ -275,6 +275,9 @@ async function addJournalList() {
   let payableAmount = 0;
   const payablePrice = document.querySelectorAll("input[name='payable']");
   payablePrice.forEach((elem) => {
+    if (elem.value.trim().length === 0) {
+      elem.value = 0;
+    }
     payableAmount += parseInt(elem.value);
     requestBody.payable.push({ collaborator_id: elem.id, price: elem.value });
   });
@@ -282,6 +285,9 @@ async function addJournalList() {
   let prepaidAmount = 0;
   const prepaidPrice = document.querySelectorAll("input[name='prepay']");
   prepaidPrice.forEach((elem) => {
+    if (elem.value.trim().length === 0) {
+      elem.value = 0;
+    }
     prepaidAmount += parseInt(elem.value);
     requestBody.prepaid.push({ collaborator_id: elem.id, price: elem.value });
   });
@@ -442,6 +448,9 @@ async function editJournalList() {
   let payableAmount = 0;
   const payablePrice = document.querySelectorAll("input[name='edit-payable']");
   payablePrice.forEach((elem) => {
+    if (elem.value.trim().length === 0) {
+      elem.value = 0;
+    }
     payableAmount += parseInt(elem.value);
     let id = elem.id.split("-")[1];
     requestBody.payable.push({ collaborator_id: id, price: elem.value });
@@ -450,6 +459,9 @@ async function editJournalList() {
   let prepaidAmount = 0;
   const prepaidPrice = document.querySelectorAll("input[name='edit-prepay']");
   prepaidPrice.forEach((elem) => {
+    if (elem.value.trim().length === 0) {
+      elem.value = 0;
+    }
     prepaidAmount += parseInt(elem.value);
     let id = elem.id.split("-")[1];
     requestBody.prepaid.push({ collaborator_id: id, price: elem.value });
@@ -533,3 +545,21 @@ function removeEdit() {
     prepayGroup.removeChild(item);
   });
 }
+
+// 分攤、代墊說明
+const queryPayable = document.getElementById("query-payable");
+const queryPrepaid = document.getElementById("query-prepaid");
+queryPayable.addEventListener("click", () => {
+  showNoticeWindow(
+    "分攤金額說明",
+    "分攤金額合計數＝消費金額",
+    closeNoticeWindow
+  );
+});
+queryPrepaid.addEventListener("click", () => {
+  showNoticeWindow(
+    "支付金額說明",
+    "支付金額合計數＝消費金額",
+    closeNoticeWindow
+  );
+});

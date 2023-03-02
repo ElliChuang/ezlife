@@ -82,13 +82,22 @@ section {
 #sign-up-message,
 #login-message {
   color: #dc3545;
-  padding: 10px;
 }
 #register,
 #go-login {
   cursor: pointer;
 }
-
+#buttonDiv {
+  width: 100%;
+}
+.window {
+  width: 350px;
+}
+hr {
+  border: 1px solid;
+  width: 110px;
+  vertical-align: text-top;
+}
 /* -------------- index ------------------- */
 .co-edit {
   width: 100%;
@@ -107,7 +116,7 @@ section {
   box-shadow: 2px 2px 5px 5px gray;
 }
 footer {
-  background-color: #d2b48c;
+  background-color: #ae7d5a;
 }
 .title {
   font-family: "DM Serif Text", serif, "Cantata One", serif;
@@ -135,6 +144,18 @@ footer {
     margin-left: 0;
   }
   .page-name {
-    padding-bottom: 53vh;
+    font-size: 110px;
+    padding-bottom: 50vh;
+  }
+  .slogan {
+    font-size: 38px;
+  }
+}
+@media (max-width: 389px) {
+  .window {
+    width: 300px;
+  }
+  .page-name {
+    padding-bottom: 40vh;
   }
 }

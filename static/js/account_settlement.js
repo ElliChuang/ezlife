@@ -35,20 +35,29 @@ bookAuthCheck.then((data) => {
       userList.id = user.id;
       userList.value = user.email;
     });
-    getOverview();
+    let dt = new Date();
+    let dt_year = dt.getFullYear();
+    let dt_month = dt.getMonth() + 1;
+    const year = document.getElementById("year");
+    const month = document.getElementById("month");
+    year.value = dt_year;
+    month.value = dt_month;
+    getOverview(dt_year, dt_month);
     console.log("Let's start");
   }
 });
 
 // 取得帳務資訊
 const queryBoxClick = document.querySelector(".query-box-click");
-queryBoxClick.addEventListener("click", getOverview);
-
-async function getOverview() {
-  removeOverview();
-  // 取得篩選條件
+queryBoxClick.addEventListener("click", () => {
   const year = document.getElementById("year").value;
   const month = document.getElementById("month").value;
+  getOverview(year, month);
+});
+
+async function getOverview(year, month) {
+  removeOverview();
+  // 取得篩選條件
   const url = `/api/account_book/${bookId}/account_settlement?year=${year}&month=${month}`;
   const fetchData = await fetch(url, { method: "GET" });
   const jsonData = await fetchData.json();
@@ -349,7 +358,7 @@ function revmoveRecord() {
   }
 }
 
-// 取得指定的結算總覽
+// 取得指定的結算紀錄總覽
 async function recordDashboard(dt) {
   revmoveRecordDashboard();
   const url = `/api/account_book/${bookId}/record?account_dt=${dt}`;

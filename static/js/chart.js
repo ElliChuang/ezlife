@@ -23,7 +23,14 @@ bookAuthCheck.then((data) => {
       userList.id = user.id;
       userList.value = user.email;
     });
-    getData();
+    let dt = new Date();
+    let dt_year = dt.getFullYear();
+    let dt_month = dt.getMonth() + 1;
+    const year = document.getElementById("year");
+    const month = document.getElementById("month");
+    year.value = dt_year;
+    month.value = dt_month;
+    getData(dt_year, dt_month);
     console.log("Let's start");
   }
 });
@@ -52,12 +59,14 @@ const main = document.getElementById("main");
 const character = document.getElementById("character");
 const queryBoxButton = document.querySelector(".chart-query-box-button");
 
-queryBoxButton.addEventListener("click", getData);
-
-async function getData() {
-  // 取得篩選條件
+queryBoxButton.addEventListener("click", () => {
   const year = document.getElementById("year").value;
   const month = document.getElementById("month").value;
+  getData(year, month);
+});
+
+async function getData(year, month) {
+  // 取得篩選條件
   const categoryMain = document.getElementById("category_main").value;
   const categoryCharacter = document.getElementById("category_character").value;
   const categoryObject = document.getElementById("category_object").value;

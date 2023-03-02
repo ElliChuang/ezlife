@@ -14,7 +14,6 @@ const loginButton = document.querySelector("#login-button");
 const loginEmail = document.querySelector("#login-email");
 const loginPassword = document.querySelector("#login-password");
 const loginMessage = document.querySelector("#login-message");
-const continueWithGoogle = document.querySelector("#continue-with-google");
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
 
 // 取得會員狀態
@@ -154,23 +153,6 @@ function homePage() {
 
 // google 登入
 
-continueWithGoogle.addEventListener("click", () => {
-  closeLogin();
-  google.accounts.id.initialize({
-    client_id:
-      "1003610386354-npah7dg43lgjilmt05b0fp08atopsf92.apps.googleusercontent.com",
-    callback: handleCredentialResponse,
-  });
-  google.accounts.id.prompt((notification) => {
-    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-      console.log(notification.getNotDisplayedReason());
-      document.cookie =
-        "g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      google.accounts.id.prompt();
-    }
-  });
-});
-
 function handleCredentialResponse(response) {
   if (response.credential) {
     // Handle signed-in state
@@ -185,8 +167,44 @@ function handleCredentialResponse(response) {
         return response.json();
       })
       .then(function (Data) {
+        closeLogin();
         console.log("Signed in with google:", Data);
         showNoticeWindow("登入成功", "點選確定，繼續編輯帳簿", homePage);
       });
   }
+}
+
+let clientWidth = document.body.offsetWidth;
+if (clientWidth < 390) {
+  window.onload = function () {
+    google.accounts.id.initialize({
+      client_id:
+        "1003610386354-npah7dg43lgjilmt05b0fp08atopsf92.apps.googleusercontent.com",
+      callback: handleCredentialResponse,
+    });
+    google.accounts.id.renderButton(document.getElementById("buttonDiv"), {
+      theme: "outline",
+      type: "standard",
+      size: "large",
+      width: 204,
+      height: 48,
+      shape: "rectangular",
+    });
+  };
+} else {
+  window.onload = function () {
+    google.accounts.id.initialize({
+      client_id:
+        "1003610386354-npah7dg43lgjilmt05b0fp08atopsf92.apps.googleusercontent.com",
+      callback: handleCredentialResponse,
+    });
+    google.accounts.id.renderButton(document.getElementById("buttonDiv"), {
+      theme: "outline",
+      type: "standard",
+      size: "large",
+      width: 254,
+      height: 48,
+      shape: "rectangular",
+    });
+  };
 }
