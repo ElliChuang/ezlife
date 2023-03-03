@@ -58,7 +58,7 @@ editInfor =
                   <option>旅行</option></select\
                 ><br />\
                 <span>備註說明</span\
-                ><input type="text" name="keyword" class="keyword-input" id="edit-keyword" />\
+                ><input type="text" name="keyword" id="edit-keyword" />\
                 <ul class="keyword-ul"></ul>\
               </div>\
             </section>\

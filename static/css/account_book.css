@@ -124,7 +124,7 @@
 .keyword-ul {
   position: absolute;
   top: 32px;
-  left: 6px;
+  left: 0;
   width: 160px;
   list-style-type: none;
   padding: 0;
@@ -300,17 +300,12 @@
   .information select {
     margin-left: 6px;
   }
-  /* #input-price,
-  #input-date {
-    margin-left: 12px;
-  } */
   .keyword-input {
     margin-left: 6px;
   }
-}
-/* @media (max-width: 440px) {
-  #input-price,
-  #input-date {
-    margin-left: 6px;
+  .keyword-ul {
+    position: absolute;
+    top: 32px;
+    left: 6px;
   }
-} */
+}
