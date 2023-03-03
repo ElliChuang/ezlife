@@ -1,13 +1,18 @@
 const keyword = document.querySelector("input[name='keyword']");
 const ul = document.querySelector(".keyword-ul");
+let removing = false;
 keyword.addEventListener("keyup", searchKeyword);
 async function searchKeyword() {
+  if (removing) return;
   removeUl();
+  removing = true;
+  console.log("remove");
   const url = `/api/keywords?keyword=${keyword.value}`;
   const fetchData = await fetch(url, { method: "GET" });
   const jsonData = await fetchData.json();
   console.log(jsonData);
   if (!jsonData.data) {
+    removing = false;
     return;
   }
   if (jsonData.ok) {
@@ -20,6 +25,7 @@ async function searchKeyword() {
       li.innerText = jsonData.data[i];
     }
     ul.style.display = "block";
+    removing = false;
   }
   const options = document.querySelectorAll(".keyword-li");
   options.forEach((elem) => {
@@ -31,9 +37,12 @@ async function searchKeyword() {
 }
 
 function removeUl() {
-  const li = document.querySelectorAll(".keyword-li");
-  li.forEach((item) => {
-    ul.removeChild(item);
+  return new Promise((resolve) => {
+    const li = document.querySelectorAll(".keyword-li");
+    li.forEach((item) => {
+      ul.removeChild(item);
+    });
+    resolve(); // resolve the promise when the list is removed
   });
 }
 

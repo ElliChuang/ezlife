@@ -49,9 +49,18 @@
   font-size: 18px;
   width: 100px;
 }
-.information input {
+.input {
   padding: 5px;
   margin-left: 6px;
+  margin-top: 10px;
+  border-radius: 5px;
+  width: 160px;
+  border: 1px solid;
+  border-color: #2c3e50;
+  font-size: 18px;
+}
+.keyword-input {
+  padding: 5px;
   margin-top: 10px;
   border-radius: 5px;
   width: 160px;
@@ -109,12 +118,18 @@
 .information section {
   width: 310px;
 }
+.keyword-zone {
+  position: relative;
+}
 .keyword-ul {
   position: absolute;
+  top: 32px;
+  left: 6px;
+  width: 160px;
   list-style-type: none;
   padding: 0;
   margin: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   right: 14px;
   box-shadow: 2px 2px 5px gray;
   display: none;
@@ -278,8 +293,24 @@
     margin-left: auto;
   }
 }
-@media (max-width: 440px) {
+@media (max-width: 490px) {
+  .information span {
+    width: 120px;
+  }
   .information select {
     margin-left: 6px;
   }
+  /* #input-price,
+  #input-date {
+    margin-left: 12px;
+  } */
+  .keyword-input {
+    margin-left: 6px;
+  }
 }
+/* @media (max-width: 440px) {
+  #input-price,
+  #input-date {
+    margin-left: 6px;
+  }
+} */

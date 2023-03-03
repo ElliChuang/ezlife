@@ -64,6 +64,7 @@ function setObject(datas) {
     payableTitle.id = `payableTitle-${datas[i].id}`;
     let payableInput = document.createElement("input");
     payableInput.name = "payable";
+    payableInput.className = "input";
     payableInput.id = datas[i].id;
     payableSubgroup.appendChild(payableTitle);
     payableSubgroup.appendChild(payableInput);
@@ -76,6 +77,7 @@ function setObject(datas) {
     prepayTitle.id = `prepayTitle-${datas[i].id}`;
     let prepayInput = document.createElement("input");
     prepayInput.name = "prepay";
+    prepayInput.className = "input";
     prepayInput.id = datas[i].id;
     prepaySubgroup.appendChild(prepayTitle);
     prepaySubgroup.appendChild(prepayInput);

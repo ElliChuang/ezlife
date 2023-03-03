@@ -34,8 +34,14 @@
             <div class="name">消費明細</div>
             <div class="detail">
               <span>金額</span
-              ><input type="text" name="price" id="input-price" /><br />
-              <span>日期</span><input type="date" id="input-date" /><br />
+              ><input
+                type="text"
+                name="price"
+                id="input-price"
+                class="input"
+              /><br />
+              <span>日期</span
+              ><input type="date" id="input-date" class="input" /><br />
               <span>生活機能</span>
               <select size="1" id="category_main">
                 <option></option>
@@ -86,9 +92,11 @@
                 <option>宿舍</option>
                 <option>旅行</option></select
               ><br />
-              <span>備註說明</span
-              ><input type="text" name="keyword" class="keyword-input" />
-              <ul class="keyword-ul"></ul>
+              <span>備註說明</span>
+              <label class="keyword-zone"
+                ><input type="text" name="keyword" class="keyword-input" />
+                <ul class="keyword-ul"></ul>
+              </label>
             </div>
           </section>
           <section class="price-setting">
