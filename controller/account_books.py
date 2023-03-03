@@ -28,13 +28,13 @@ def book():
                 SELECT 
                     b.id, 
                     b.book_name, 
-                    b.created_member_id 
+                    b.created_member_id
                 FROM account_book AS b 
-                LEFT JOIN collaborator as c ON b.id = c.book_id
-                WHERE b.created_member_id = %s OR c.collaborator_id = %s
+                INNER JOIN collaborator as c ON b.id = c.book_id
+                WHERE c.collaborator_id = %s
                 GROUP BY b.id
             """)
-            mycursor.execute(query, (member_id, member_id))
+            mycursor.execute(query, (member_id,))
             results = mycursor.fetchall()
             # 尚無預訂行程
             if not results: 

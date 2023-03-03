@@ -221,6 +221,16 @@ main {
   text-align: center;
   border-top: 3px solid #a8a8a8;
 }
+.crown {
+  position: absolute;
+  bottom: 0;
+  left: -10px;
+  transform: rotate(-10deg);
+  width: 35px;
+  height: 35px;
+  background-image: url(/static/img/crown.png);
+  background-size: cover;
+}
 /*--------- pop up message ---------*/
 .popup-window-outer {
   display: none;

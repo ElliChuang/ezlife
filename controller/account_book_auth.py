@@ -22,10 +22,12 @@ def book_auth(bookId):
         connection_object = MySQL.conn_obj()
         mycursor = connection_object.cursor(dictionary=True)
         query = ("""
-            SELECT m.id, m.name, b.book_name FROM member AS m
-            INNER JOIN collaborator AS c ON m.id = c.collaborator_id
+            SELECT m.id, m.name, b.book_name, m2.name as host_member FROM collaborator AS c
+            INNER JOIN member AS m ON m.id = c.collaborator_id
             INNER JOIN account_book AS b ON c.book_id = b.id
+            INNER JOIN member AS m2 ON b.created_member_id = m2.id
             WHERE c.book_id = %s 
+            ORDER BY m.name
         """)
         mycursor.execute(query, (bookId,))
         result = mycursor.fetchall()

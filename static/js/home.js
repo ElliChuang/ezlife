@@ -174,6 +174,11 @@ function showBook(datas) {
     fileNameDiv.id = `file-name-${datas.data[i].account_book.id}`;
     fileNameDiv.value = datas.data[i].account_book.id;
     fileNameDiv.innerText = datas.data[i].account_book.book_name;
+    if (datas.data[i].account_book.created_member_id === user.id) {
+      let hostDiv = document.createElement("div");
+      bookListFileDiv.appendChild(hostDiv);
+      hostDiv.className = "crown";
+    }
   }
 
   // delete

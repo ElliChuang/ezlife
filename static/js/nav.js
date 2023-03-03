@@ -138,6 +138,7 @@ function getEditor(data) {
   const len = data.data.length;
   for (let i = 0; i < len; i++) {
     const Div = document.createElement("div");
+    Div.classList.add("nav-member-group");
     memberList.appendChild(Div);
     const deleteDiv = document.createElement("div");
     deleteDiv.className = "member-delete";
@@ -149,6 +150,11 @@ function getEditor(data) {
     memberDiv.className = "collaborator";
     memberDiv.id = `member-${data.data[i].id}`;
     Div.appendChild(memberDiv);
+    if (data.data[i].name === data.data[i].host_member) {
+      const hostDiv = document.createElement("div");
+      hostDiv.className = "host";
+      Div.appendChild(hostDiv);
+    }
   }
 
   // delete collaborator
