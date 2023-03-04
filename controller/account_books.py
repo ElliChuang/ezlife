@@ -162,7 +162,7 @@ def book():
                 return jsonify({
                         "error": True,
                         "data": "無刪除權限，請洽帳簿管理員"    
-                    }),200 
+                    }),400 
             
             return jsonify({
                         "ok": True    
@@ -216,7 +216,7 @@ def book():
                 return jsonify({
                         "error": True,
                         "data": "無編輯權限，請洽帳簿管理員"    
-                    }),200 
+                    }),400 
             
             return jsonify({
                         "ok": True,

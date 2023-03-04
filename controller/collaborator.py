@@ -57,7 +57,9 @@ def set_collaborator():
             connection_object.commit() 
             return jsonify({
                         "ok": True, 
-                        "data": result["name"]         
+                        "data": {
+                            "name" : result["name"]
+                            }         
                     }),200
 
         except mysql.connector.Error as err:

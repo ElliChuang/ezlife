@@ -68,7 +68,6 @@ def handle_join_room_event(data):
 def handle_leave_room_event(data):
     print(f"{data['collaboratorName']} has leaved the room {data['roomId']}")
     room = data["roomId"]
-    leave_room(room)
     socketio.emit("leave_room_announcement", data, room = room)
 
 @socketio.on('add_collaborator',)

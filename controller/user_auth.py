@@ -19,7 +19,7 @@ s3 = boto3.client('s3',
                     aws_secret_access_key= S3_ACCESS_SECRET_KEY,
                 )
 
-@user_auth.route("/api/user/auth", methods=["GET", "PUT", "DELETE"])
+@user_auth.route("/api/user/auth", methods=["GET", "POST", "DELETE"])
 def user():
 	# 取得當前會員資訊
 	if request.method == "GET":
@@ -36,12 +36,12 @@ def user():
 							}
 						}),200
 			except:
-				return jsonify({"data": "token is not valid."})
+				return jsonify({"data": "token is not valid."}),400
 		else:
 			return jsonify({"data": None}),400
 
 	# 使用者登入
-	if request.method == "PUT":
+	if request.method == "POST":
 		data = request.get_json()
 		email = data["email"]
 		password = data["password"]

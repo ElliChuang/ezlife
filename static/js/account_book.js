@@ -506,7 +506,7 @@ async function editJournalList() {
   confirmToEdit.disabled = true;
   let url = "/api/account_book/" + bookId;
   let fetchUrl = await fetch(url, {
-    method: "PATCH",
+    method: "PUT",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(requestBody),
   });

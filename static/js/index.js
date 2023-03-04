@@ -132,7 +132,7 @@ async function memberLogin() {
     password: loginPassword.value,
   };
   let fetchData = await fetch(url, {
-    method: "PUT",
+    method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(requestBody),
   });

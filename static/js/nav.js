@@ -215,7 +215,7 @@ async function addCollaborator() {
     if (jsonData.ok) {
       console.log(jsonData);
       socket.emit("add_collaborator", {
-        collaboratorName: jsonData.data,
+        collaboratorName: jsonData.data.name,
         roomId: book.id,
       });
     } else if (jsonData.data === "請先登入會員") {
@@ -235,6 +235,8 @@ socket.on("connect", function () {
 });
 
 socket.on("leave_room_announcement", function (data) {
+  console.log(data);
+  console.log(data.collaboratorName);
   showNoticeWindow(
     "訊息通知",
     `${data.collaboratorName} 已無編輯權限`,

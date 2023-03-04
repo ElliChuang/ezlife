@@ -14,7 +14,7 @@ from config import TOKEN_PW
 account_book_id = Blueprint("account_book_id", __name__)
 
 
-@account_book_id.route("/api/account_book/<int:bookId>", methods=["GET", "POST", "DELETE", "PATCH"])
+@account_book_id.route("/api/account_book/<int:bookId>", methods=["GET", "POST", "DELETE", "PUT"])
 def journal_list(bookId):
     # 取得日記帳明細
     if request.method == "GET":
@@ -293,7 +293,7 @@ def journal_list(bookId):
 
     
     # 修改日記帳
-    if request.method == "PATCH":
+    if request.method == "PUT":
         data = request.get_json()
         date = data["date"]
         category_main = data["category_main"]
