@@ -247,12 +247,15 @@ async function editBook(msg) {
     body: JSON.stringify(requestBody),
   });
   let jsonData = await fetchUrl.json();
+  console.log(jsonData);
   if (jsonData.ok) {
-    popupStatus.innerText = "更新成功";
+    // popupStatus.innerText = "更新成功";
     const bookTitle = document.getElementById(
       `file-name-${jsonData.data.book_id}`
     );
     bookTitle.innerText = jsonData.data.book_name;
+    closePopup();
+    showNoticeWindow("訊息通知", "更新成功", closeNoticeWindow);
   } else if (jsonData.data === "請先登入會員") {
     showNoticeWindow("請登入會員", "", indexPage);
   } else {

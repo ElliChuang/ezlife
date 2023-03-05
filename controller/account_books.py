@@ -204,7 +204,15 @@ def book():
             created_member_id = decode_data["id"]
             connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor()
-
+            query = ("SELECT book_name FROM account_book WHERE book_name = %s AND created_member_id = %s")
+            mycursor.execute(query, (book_name, created_member_id))
+            result = mycursor.fetchone()
+            if result:
+                return jsonify({
+                            "error": True,
+                            "data" : "帳簿名稱已重複，請重新輸入",             
+                        }),400
+            
             query = ("""
                 UPDATE account_book 
                 SET book_name = %s
@@ -212,11 +220,12 @@ def book():
             mycursor.execute(query, (book_name, created_member_id, book_id))
             connection_object.commit()
             rows_affected = mycursor.rowcount
+            print(rows_affected)
             if rows_affected == 0:
                 return jsonify({
-                        "error": True,
-                        "data": "無編輯權限，請洽帳簿管理員"    
-                    }),400 
+                            "error": True,
+                            "data": "無編輯權限，請洽帳簿管理員"    
+                        }),400 
             
             return jsonify({
                         "ok": True,

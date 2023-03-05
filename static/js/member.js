@@ -1,3 +1,5 @@
+import { closeNoticeWindow, showNoticeWindow } from "./notice.js";
+
 const memberSection = document.querySelector(".member-section");
 const memberName = document.querySelector("[name = memberName]");
 const memberEmail = document.querySelector("[name = memberEmail]");
@@ -87,7 +89,6 @@ async function modifyInfor(event) {
 
   let jsonData = await fetchUrl.json();
   if (jsonData.ok) {
-    modifyMessage.innerText = "資料更新成功";
     let user = { id: "", name: "", email: "", profile: "" };
     user.id = jsonData.data.id;
     user.name = jsonData.data.name;
@@ -104,6 +105,8 @@ async function modifyInfor(event) {
       payableTitle.innerText = user.name;
       prepayTitle.innerText = user.name;
     }
+    memberSection.style.display = "none";
+    showNoticeWindow("訊息通知", "更新成功", closeNoticeWindow);
   } else {
     modifyMessage.innerText = jsonData.data;
   }
