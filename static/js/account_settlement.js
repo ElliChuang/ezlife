@@ -43,7 +43,6 @@ bookAuthCheck.then((data) => {
     year.value = dt_year;
     month.value = dt_month;
     getOverview(dt_year, dt_month);
-    console.log("Let's start");
   }
 });
 
@@ -61,7 +60,6 @@ async function getOverview(year, month) {
   const url = `/api/account_book/${bookId}/account_settlement?year=${year}&month=${month}`;
   const fetchData = await fetch(url, { method: "GET" });
   const jsonData = await fetchData.json();
-  console.log(jsonData);
   if (jsonData.data === "請先登入會員") {
     return showNoticeWindow("請登入會員", jsonData.data, indexPage);
   } else if (jsonData.data === "請輸入欲查詢的年度及月份") {
@@ -267,7 +265,6 @@ async function goCheckout() {
     body: JSON.stringify(requestBody),
   });
   const jsonData = await fetchData.json();
-  console.log(jsonData);
   if (jsonData.data === "請先登入會員") {
     return showNoticeWindow("請登入會員", jsonData.data, indexPage);
   } else if (jsonData.data === "請輸入欲結帳年度及月份") {
@@ -308,7 +305,6 @@ async function getRecord() {
   const url = `/api/account_book/${bookId}/record`;
   const fetchData = await fetch(url, { method: "GET" });
   const jsonData = await fetchData.json();
-  console.log(jsonData);
   if (jsonData.data === "請先登入會員") {
     return showNoticeWindow("請登入會員", jsonData.data, indexPage);
   } else if (jsonData.data === "無結算紀錄") {
@@ -366,7 +362,6 @@ async function recordDashboard(dt) {
   const url = `/api/account_book/${bookId}/record?account_dt=${dt}`;
   const fetchData = await fetch(url, { method: "GET" });
   const jsonData = await fetchData.json();
-  console.log(jsonData);
   if (jsonData.data === "請先登入會員") {
     return showNoticeWindow("請登入會員", jsonData.data, indexPage);
   } else if (jsonData.ok) {

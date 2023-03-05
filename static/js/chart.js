@@ -31,7 +31,6 @@ bookAuthCheck.then((data) => {
     year.value = dt_year;
     month.value = dt_month;
     getData(dt_year, dt_month);
-    console.log("Let's start");
   }
 });
 

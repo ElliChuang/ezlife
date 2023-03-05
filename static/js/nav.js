@@ -86,7 +86,6 @@ async function bookAuth(bookId) {
     method: "GET",
   });
   let jsonData = await fetchData.json();
-  console.log(jsonData);
   if (jsonData.ok) {
     getBookName(jsonData);
     getEditor(jsonData);
@@ -173,7 +172,6 @@ function getEditor(data) {
 
 async function deletCollaborator(Id, name) {
   let requestBody = { collaboratorId: Id, bookId: book.id };
-  console.log(requestBody);
   let url = "/api/collaborator";
   let fetchUrl = await fetch(url, {
     method: "DELETE",
@@ -186,7 +184,6 @@ async function deletCollaborator(Id, name) {
   } else if (jsonData.data === "無刪除權限，請洽帳簿管理員") {
     showNoticeWindow("訊息通知", jsonData.data, closeNoticeWindow);
   } else {
-    console.log("delete");
     socket.emit("leave_room", {
       collaboratorId: Id,
       collaboratorName: name,
@@ -204,7 +201,6 @@ async function addCollaborator() {
     showNoticeWindow("錯誤訊息", "請確認信箱格式", closeNoticeWindow);
   } else {
     let requestBody = { email: inviteEmail.value, bookId: book.id };
-    console.log(requestBody);
     let url = "/api/collaborator";
     let fetchUrl = await fetch(url, {
       method: "POST",
@@ -213,7 +209,6 @@ async function addCollaborator() {
     });
     let jsonData = await fetchUrl.json();
     if (jsonData.ok) {
-      console.log(jsonData);
       socket.emit("add_collaborator", {
         collaboratorName: jsonData.data.name,
         roomId: book.id,
@@ -231,12 +226,9 @@ socket.on("connect", function () {
     username: user.name,
     roomId: book.id,
   });
-  console.log("connect");
 });
 
 socket.on("leave_room_announcement", function (data) {
-  console.log(data);
-  console.log(data.collaboratorName);
   showNoticeWindow(
     "訊息通知",
     `${data.collaboratorName} 已無編輯權限`,

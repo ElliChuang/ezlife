@@ -25,7 +25,6 @@ async function getStatus() {
   });
   let jsonData = await fetchData.json();
   if (jsonData.data !== null && jsonData.data.id) {
-    console.log(jsonData);
     homePage();
   }
 }
@@ -91,7 +90,6 @@ async function memberSignUp() {
     email: signUpEmail.value,
     password: signUpPassword.value,
   };
-  console.log(requestBody);
   let fetchUrl = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -137,7 +135,6 @@ async function memberLogin() {
     body: JSON.stringify(requestBody),
   });
   let jsonData = await fetchData.json();
-  console.log("會員登入:", jsonData);
   if (jsonData.ok) {
     closeLogin();
     showNoticeWindow("登入成功", "點選確定，繼續編輯帳簿", homePage);
@@ -152,7 +149,6 @@ function homePage() {
 }
 
 // google 登入
-
 function handleCredentialResponse(response) {
   if (response.credential) {
     // Handle signed-in state
@@ -168,7 +164,6 @@ function handleCredentialResponse(response) {
       })
       .then(function (Data) {
         closeLogin();
-        console.log("Signed in with google:", Data);
         showNoticeWindow("登入成功", "點選確定，繼續編輯帳簿", homePage);
       });
   }

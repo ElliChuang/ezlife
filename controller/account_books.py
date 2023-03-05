@@ -220,7 +220,6 @@ def book():
             mycursor.execute(query, (book_name, created_member_id, book_id))
             connection_object.commit()
             rows_affected = mycursor.rowcount
-            print(rows_affected)
             if rows_affected == 0:
                 return jsonify({
                             "error": True,

@@ -27,7 +27,6 @@ async function getStatus() {
     method: "GET",
   });
   let jsonData = await fetchData.json();
-  console.log(jsonData);
   if (jsonData.data !== null && jsonData.data.id) {
     welcomeName.innerText = jsonData.data.name;
     user.id = jsonData.data.id;
@@ -51,7 +50,6 @@ async function memberLogout() {
     method: "DELETE",
   });
   let jsonData = await fetchUrl.json();
-  console.log("登出", jsonData);
   if (jsonData.ok) {
     indexPage();
   }
@@ -247,9 +245,7 @@ async function editBook(msg) {
     body: JSON.stringify(requestBody),
   });
   let jsonData = await fetchUrl.json();
-  console.log(jsonData);
   if (jsonData.ok) {
-    // popupStatus.innerText = "更新成功";
     const bookTitle = document.getElementById(
       `file-name-${jsonData.data.book_id}`
     );

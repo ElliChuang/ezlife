@@ -11,7 +11,7 @@ from controller.account_settlement import account_settlement
 from controller.keyword import keyword
 from controller.record import record
 from config import SECRET_KEY, JSON_AS_ASCII, TEMPLATES_AUTO_RELOAD, JSON_SORT_KEYS
-from flask_socketio import SocketIO, join_room, leave_room
+from flask_socketio import SocketIO, join_room
 
 
 app = Flask(__name__, static_folder = "static", static_url_path = "/static")
@@ -35,7 +35,7 @@ app.register_blueprint(account_settlement)
 app.register_blueprint(keyword)
 app.register_blueprint(record)
 
-# Pages
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -52,27 +52,21 @@ def chart(id):
 def settlement(id):
     return render_template("account_settlement.html")
 
-@app.route("/loaderio-7e9f416b5d27180cf9704ecd4fd65208.txt")
-def load():
-    return send_from_directory("loaderio", "loaderio-7e9f416b5d27180cf9704ecd4fd65208.txt")
 
-# Socket
+
 @socketio.on('join_room')
 def handle_join_room_event(data):
-    print(f"{data['username']} has joined the room {data['roomId']}")
     room = data["roomId"]
     join_room(room)
     socketio.emit("join_room_announcement", data, room = room)
 
 @socketio.on('leave_room',)
 def handle_leave_room_event(data):
-    print(f"{data['collaboratorName']} has leaved the room {data['roomId']}")
     room = data["roomId"]
     socketio.emit("leave_room_announcement", data, room = room)
 
 @socketio.on('add_collaborator',)
 def handle_invited_event(data):
-    print(f"{data['collaboratorName']} has invited into the room  {data['roomId']}")
     room = data["roomId"]
     join_room(room)
     socketio.emit("add_collaborator_announcement", data, room = room)

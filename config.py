@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# SESSION_PW = os.environ.get("SESSION_PW")
 MYSQL_USER = os.environ.get("MYSQL_USER")
 MYSQL_PW = os.environ.get("MYSQL_PW")
 MYSQL_HOST = os.environ.get("MYSQL_HOST")

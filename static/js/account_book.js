@@ -92,7 +92,6 @@ async function getData(bookId, year, month) {
     method: "GET",
   });
   let jsonData = await fetchData.json();
-  console.log(jsonData);
   let events = [];
   if (jsonData.data === "請先登入會員") {
     return showNoticeWindow("請登入會員", "", indexPage);
@@ -327,7 +326,6 @@ async function addJournalList() {
   } else if (requestBody.amount !== prepaidAmount) {
     return showNoticeWindow("錯誤訊息", "代墊金額有誤", closeNoticeWindow);
   }
-  console.log(requestBody);
   addButton.disabled = true;
   let url = "/api/account_book/" + bookId;
   let fetchUrl = await fetch(url, {
@@ -502,7 +500,6 @@ async function editJournalList() {
   } else if (requestBody.amount !== prepaidAmount) {
     return showNoticeWindow("錯誤訊息", "代墊金額有誤", closeNoticeWindow);
   }
-  console.log(requestBody);
   confirmToEdit.disabled = true;
   let url = "/api/account_book/" + bookId;
   let fetchUrl = await fetch(url, {

@@ -169,7 +169,6 @@ def user_modify():
 				connection_object.close()
 
 	# 使用者有更新大頭照
-	print('要換照片') 
 	allow_file_type = {'png', 'jpg', 'jpeg'}
 	file_type = image.content_type.split("/")[1]
 	if file_type not in allow_file_type:

@@ -384,7 +384,6 @@ def journal_list(bookId):
                         ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)
                         """, (keyword,))
                     keyword_id = mycursor.lastrowid
-                    print(keyword_id)
                     journal_list_keyword_value = (keyword_id, journal_list_id)
                     mycursor.execute("""
                         UPDATE journal_list_keyword 
