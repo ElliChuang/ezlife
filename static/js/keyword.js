@@ -14,7 +14,6 @@ async function searchKeyword() {
     return;
   }
   if (jsonData.ok) {
-    const ul = document.querySelector(".keyword-ul");
     const len = jsonData.data.length;
     for (let i = 0; i < len; i++) {
       const li = document.createElement("li");

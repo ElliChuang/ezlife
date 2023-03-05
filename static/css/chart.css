@@ -57,6 +57,34 @@
   margin-top: 10px;
   border-radius: 5px;
 }
+.keyword-zone {
+  position: relative;
+}
+.keyword-ul {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  width: 200px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  right: 14px;
+  box-shadow: 2px 2px 5px gray;
+  display: none;
+  border-radius: 5px;
+}
+.keyword-li {
+  color: #666666;
+  font-size: 16px;
+  padding: 8px;
+  width: 200px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.keyword-li:hover:not(.header) {
+  background-color: rgba(255, 255, 255);
+}
 .chart-query-box-keyword {
   height: 35px;
   width: 200px;
@@ -64,7 +92,6 @@
   text-align: center;
   cursor: pointer;
   padding: 6px;
-  margin-left: 6px;
   margin-top: 10px;
   border-radius: 5px;
   border: 1px solid;
@@ -369,6 +396,10 @@ input[type="radio"] {
   .chart-query-box-keyword {
     width: 100%;
     margin-left: 0;
+  }
+  .keyword-ul,
+  .keyword-li {
+    width: 100%;
   }
   .chart-query-box-click {
     width: 100%;

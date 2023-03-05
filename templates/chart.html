@@ -102,13 +102,16 @@
             <option>保險</option>
             <option>其他</option></select
           ><br />
-          <span class="chart-query-box-subtitle">關鍵字</span
-          ><input
-            type="text"
-            class="chart-query-box-keyword"
-            id="keyword"
-            name="keyword"
-          />
+          <span class="chart-query-box-subtitle">關鍵字</span>
+          <label class="keyword-zone">
+            <input
+              type="text"
+              class="chart-query-box-keyword"
+              id="keyword"
+              name="keyword"
+            />
+            <ul class="keyword-ul"></ul>
+          </label>
         </section>
         <section class="chart-query-box-click">
           <div class="chart-query-box-button">查詢</div>
@@ -179,5 +182,6 @@
     <script type="module" src="/static/js/nav.js"></script>
     <script type="module" src="/static/js/notice.js"></script>
     <script type="module" src="/static/js/member.js"></script>
+    <script src="/static/js/keyword.js"></script>
   </body>
 </html>
