@@ -36,11 +36,24 @@ def signup():
 		else: 
 			# 將使用者密碼加密
 			hash_password = generate_password_hash(data['password'], method='sha256')
-			initial_profile = 'https://d12sr6yglyx2x4.cloudfront.net/profile/cow.png(02/17/2023-12:32:06)'
+			initial_profile = 'https://d12sr6yglyx2x4.cloudfront.net/profile/user+(2023.03.05).png'
 			query = "INSERT INTO member (name, email, password, profile) VALUES (%s, %s, %s, %s)"
 			value = (data["name"], data["email"], hash_password, initial_profile)
 			mycursor.execute(query, value)
 			connection_object.commit() 
+
+			# 取得 user id
+			user_id = mycursor.lastrowid
+			payload = {
+					"id" : user_id,
+					"name" : data["name"],
+					"email" : data["email"],
+					"profile" : initial_profile,
+					'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=3)
+				}
+			token = jwt.encode(payload, TOKEN_PW, algorithm="HS256")
+			session["token"] = token
+
 			return jsonify({
 						"ok": True,          
 					}),200
@@ -83,7 +96,7 @@ def google_user():
 		if not user:
 			# 未註冊，將會員資料建入資料庫
 			password = secrets.token_hex(16)
-			initial_profile = 'https://d12sr6yglyx2x4.cloudfront.net/profile/cow.png(02/17/2023-12:32:06)'
+			initial_profile = 'https://d12sr6yglyx2x4.cloudfront.net/profile/user+(2023.03.05).png'
 			query = "INSERT INTO member (name, email, password, profile) VALUES (%s, %s, %s, %s)"
 			value = (name, email, password, initial_profile)
 			mycursor.execute(query, value)

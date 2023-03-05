@@ -46,8 +46,8 @@ function showLogin() {
 
 function closeLogin() {
   loginSection.style.display = "none";
-  loginEmail.value = "";
-  loginPassword.value = "";
+  loginEmail.value = "test@mail.com";
+  loginPassword.value = "test123";
 }
 
 function showSignUp() {
@@ -99,7 +99,7 @@ async function memberSignUp() {
 
   if (jsonData.ok) {
     closeSignUp();
-    showNoticeWindow("註冊成功", "請登入會員", showLogin);
+    showNoticeWindow("註冊成功", "點選確定，開始編輯帳簿", homePage);
   } else {
     signUpMessage.innerText = jsonData.data;
   }
@@ -137,7 +137,7 @@ async function memberLogin() {
   let jsonData = await fetchData.json();
   if (jsonData.ok) {
     closeLogin();
-    showNoticeWindow("登入成功", "點選確定，繼續編輯帳簿", homePage);
+    showNoticeWindow("登入成功", "點選確定，開始編輯帳簿", homePage);
   } else {
     loginMessage.innerText = jsonData.data;
   }

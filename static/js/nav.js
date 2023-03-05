@@ -236,10 +236,6 @@ socket.on("leave_room_announcement", function (data) {
   );
 });
 
-socket.on("join_room_announcement", function (data) {
-  console.log(data);
-});
-
 socket.on("add_collaborator_announcement", function (data) {
   showNoticeWindow("訊息通知", `已邀請 ${data.collaboratorName}`, loadPage);
 });

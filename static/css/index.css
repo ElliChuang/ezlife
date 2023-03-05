@@ -32,12 +32,12 @@ main {
 }
 .cover-text {
   max-width: 500px;
-  margin-left: 200px;
+  margin-left: 180px;
   padding: 20px;
   margin-bottom: 30vh;
 }
 .page-name {
-  font-size: 140px;
+  font-size: 150px;
   font-family: "DM Serif Text", serif, "Cantata One", serif;
   color: white;
   font-weight: 900;
@@ -117,7 +117,7 @@ hr {
   box-shadow: 2px 2px 5px 5px gray;
 }
 footer {
-  background-color: #ae7d5a;
+  background-color: rgba(210, 180, 140);
 }
 .title {
   font-family: "DM Serif Text", serif, "Cantata One", serif;
@@ -132,6 +132,9 @@ footer {
   }
 }
 @media (max-width: 1000px) {
+  .page-name {
+    font-size: 140px;
+  }
   .cover-text {
     margin-bottom: 55vh;
     margin-left: 120px;
