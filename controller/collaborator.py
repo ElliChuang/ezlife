@@ -51,16 +51,26 @@ def set_collaborator():
                     }),403
             
             collaborator_id = result["id"]
-            query = ("INSERT INTO collaborator (collaborator_id, book_id) VALUE (%s, %s) ")
-            value = (collaborator_id, book_id)
+            query = ("""
+                INSERT INTO collaborator (collaborator_id, book_id) 
+                VALUE (%s, %s) 
+                ON DUPLICATE KEY UPDATE collaborator_id = %s, book_id = %s
+            """)
+            value = (collaborator_id, book_id, collaborator_id, book_id)
             mycursor.execute(query, value)
+            rows_affected = mycursor.rowcount
             connection_object.commit() 
+            if rows_affected:
+                return jsonify({
+                            "ok": True, 
+                            "data": {
+                                "name" : result["name"]
+                                }         
+                        }),200
             return jsonify({
-                        "ok": True, 
-                        "data": {
-                            "name" : result["name"]
-                            }         
-                    }),200
+                            "error": True, 
+                            "data": "該會員已經是帳簿成員"     
+                        }),403
 
         except mysql.connector.Error as err:
             print("Something went wrong when insert into collaborator: {}".format(err))
