@@ -38,7 +38,8 @@ Test **account** and **password** :
 - Analyze and Export as CSV file
   - Supports multi-condition filtering for analyzing.
   - Exports expenses as CSV file.
-- Settle Accounts and Trace Records
+- Financial Settlement
+  - User can settle their account easily at their fingertips and access their records anytime.
 
 ## Backend Technique
 
