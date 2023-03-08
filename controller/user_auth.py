@@ -1,11 +1,8 @@
 from flask import *
-from mysql.connector import errorcode
-import mysql.connector 
 from werkzeug.security import check_password_hash
-from model.db import MySQL 
+from model.user_db import userModel
 import jwt
 import datetime
-from werkzeug.utils import secure_filename
 import boto3
 from PIL import Image
 from config import TOKEN_PW, S3_ACCESS_KEY_ID, S3_ACCESS_SECRET_KEY, CLOUDFRONT_PATH, S3_BUCKET_NAME
@@ -50,47 +47,38 @@ def user():
 						"error": True,
 						"data" : "請輸入電子郵件及密碼",             
 					}),400
-		try:
-			connection_object = MySQL.conn_obj()
-			mycursor = connection_object.cursor(dictionary=True)
-			query = ("SELECT id, name, email, password, profile FROM member WHERE email = %s")
-			mycursor.execute(query, (email,))
-			result = mycursor.fetchone()
-			if not result: 
-				return jsonify({
-							"error": True,
-							"data" : "電子郵件輸入錯誤",             
-						}),400
-			elif check_password_hash(result["password"], password):
-				payload = {
-					"id" : result["id"],
-					"name" : result["name"],
-					"email" : result["email"],
-					"profile" : result["profile"],
-					'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=3)
-				}
-				token = jwt.encode(payload, TOKEN_PW, algorithm="HS256")
-				session["token"] = token
-				return jsonify({
-							"ok": True    
-						}),200
-			else:
-				return jsonify({
-							"error": True,
-							"data" : "密碼輸入錯誤",             
-						}),400
 
-		except mysql.connector.Error as err:
-			print("Something went wrong when user login: {}".format(err))
+		existing_user = userModel.get_user_by_email(email)
+		if not existing_user: 
 			return jsonify({
-				"error": True,
-				"data" : "INTERNAL_SERVER_ERROR",             
-			}),500
-
-		finally:
-			if connection_object.is_connected():
-				mycursor.close()
-				connection_object.close()
+						"error": True,
+						"data" : "電子郵件輸入錯誤",             
+					}),400
+		
+		if existing_user == "INTERNAL_SERVER_ERROR":
+			return jsonify({
+				"error" : True,
+				"data" : "INTERNAL_SERVER_ERROR"
+			})
+		
+		if check_password_hash(existing_user["password"], password):
+			payload = {
+				"id" : existing_user["id"],
+				"name" : existing_user["name"],
+				"email" : existing_user["email"],
+				"profile" : existing_user["profile"],
+				'exp' : datetime.datetime.utcnow() + datetime.timedelta(days=3)
+			}
+			token = jwt.encode(payload, TOKEN_PW, algorithm="HS256")
+			session["token"] = token
+			return jsonify({
+						"ok": True    
+					}),200
+		else:
+			return jsonify({
+						"error": True,
+						"data" : "密碼輸入錯誤",             
+					}),400
 
 
 	# 登出會員
@@ -122,19 +110,9 @@ def user_modify():
 	
 	# 使用者未更新大頭照
 	if not image:
-		try:
-			profile = request.form["profile"]
-			connection_object = MySQL.conn_obj()
-			mycursor = connection_object.cursor(dictionary=True)
-			query = """
-				UPDATE member 
-				SET name = %s, email = %s
-				WHERE id = %s
-			"""
-			value = (name, email, id)
-			mycursor.execute(query, value)
-			connection_object.commit() 
-
+		profile = request.form["profile"]
+		update_user = userModel.update_user_without_profile(name, email, id)
+		if update_user == "SUCCESS":
 			# 更新 token 資料
 			payload = {
 						"id" : id,
@@ -145,28 +123,21 @@ def user_modify():
 					}
 			token = jwt.encode(payload, TOKEN_PW, algorithm="HS256")
 			session["token"] = token
-
 			return jsonify({
-				"ok" : True,
-				"data":{
-					"id" : id,
-					"name" : name,
-					"email" : email,
-					"profile" : profile
-				}
-			})
-
-		except mysql.connector.Error as err:
-			print("error while member update name and email: {}".format(err))
+						"ok" : True,
+						"data":{
+							"id" : id,
+							"name" : name,
+							"email" : email,
+							"profile" : profile
+						}
+					})
+		else:
 			return jsonify({
-				"error" : True,
-				"data" : "internal error"
-			})
+						"error" : True,
+						"data" : "INTERNAL_SERVER_ERROR"
+					})
 
-		finally:
-			if connection_object.is_connected():
-				mycursor.close()
-				connection_object.close()
 
 	# 使用者有更新大頭照
 	allow_file_type = {'png', 'jpg', 'jpeg'}
@@ -200,18 +171,8 @@ def user_modify():
 		profile = f'https://{CLOUDFRONT_PATH}/profile/{unique_filename}'
 
 	# 圖片 CDN 網址及會員資料更新到 RDS
-	try:
-		connection_object = MySQL.conn_obj()
-		mycursor = connection_object.cursor(dictionary=True)
-		query = """
-			UPDATE member 
-			SET name = %s, email = %s, profile = %s 
-			WHERE id = %s
-		"""
-		value = (name, email, profile, id)
-		mycursor.execute(query, value)
-		connection_object.commit() 
-
+	update_user = userModel.update_user_with_profile(name, email, profile, id)
+	if update_user == "SUCCESS":
 		# 更新 token 資料
 		payload = {
 					"id" : id,
@@ -222,25 +183,18 @@ def user_modify():
 				}
 		token = jwt.encode(payload, TOKEN_PW, algorithm="HS256")
 		session["token"] = token
-
 		return jsonify({
-			"ok" : True,
-			"data":{
-				"id" : id,
-				"name" : name,
-				"email" : email,
-				"profile" : profile
-			}
-		})
-
-	except mysql.connector.Error as err:
-		print("error while member update name email and profile : {}".format(err))
+					"ok" : True,
+					"data":{
+						"id" : id,
+						"name" : name,
+						"email" : email,
+						"profile" : profile
+					}
+				})
+	else:
 		return jsonify({
-			"error" : True,
-			"data" : "internal error"
-		})
+					"error" : True,
+					"data" : "INTERNAL_SERVER_ERROR"
+				})
 
-	finally:
-		if connection_object.is_connected():
-			mycursor.close()
-			connection_object.close()

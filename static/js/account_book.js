@@ -518,7 +518,7 @@ async function editJournalList() {
     return showNoticeWindow("錯誤訊息", jsonData.data, closeNoticeWindow);
   } else if (jsonData.data === "請先登入會員") {
     return showNoticeWindow("請登入會員", "", indexPage);
-  } else if (jsonData.data === "支出已結算，無法編輯。") {
+  } else if (jsonData.data === "支出已結算，無法編輯") {
     editZone.style.display = "none";
     return showNoticeWindow("訊息通知", jsonData.data, closeNoticeWindow);
   }

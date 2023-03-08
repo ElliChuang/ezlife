@@ -18,3 +18,10 @@ JSON_SORT_KEYS = False
 
 CLOUDFRONT_PATH = 'd12sr6yglyx2x4.cloudfront.net'
 S3_BUCKET_NAME = 'week1bucket'
+
+DB_CONFIG = {
+    "user" : MYSQL_USER,
+    "password" : MYSQL_PW,
+    "host" : MYSQL_HOST,
+    "database" : "ezlife",
+}
