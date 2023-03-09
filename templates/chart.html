@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/chart.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/nav.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/member.css" />
     <title>chart</title>
   </head>
   <body>
@@ -23,8 +24,8 @@
           <div class="chart-query-box-title">請輸入年度、月份（必填）</div>
           <span class="chart-query-box-subtitle">年度</span
           ><select size="1" id="year" name="year">
-            <option value="2022">2022</option>
-            <option value="2023" selected>2023</option>
+            <option>2022</option>
+            <option>2023</option>
             <option>2024</option>
             <option>2025</option>
             <option>2026</option>
@@ -35,7 +36,7 @@
           ><br />
           <span class="chart-query-box-subtitle">月份</span
           ><select size="1" id="month" name="month">
-            <option selected>1</option>
+            <option>1</option>
             <option>2</option>
             <option>3</option>
             <option>4</option>
@@ -101,13 +102,16 @@
             <option>保險</option>
             <option>其他</option></select
           ><br />
-          <span class="chart-query-box-subtitle">關鍵字</span
-          ><input
-            type="text"
-            class="chart-query-box-keyword"
-            id="keyword"
-            name="keyword"
-          />
+          <span class="chart-query-box-subtitle">關鍵字</span>
+          <label class="keyword-zone">
+            <input
+              type="text"
+              class="chart-query-box-keyword"
+              id="keyword"
+              name="keyword"
+            />
+            <ul class="keyword-ul"></ul>
+          </label>
         </section>
         <section class="chart-query-box-click">
           <div class="chart-query-box-button">查詢</div>
@@ -125,9 +129,7 @@
               >支出對象</span
             >
           </div>
-          <div id="current-chart">
-            <canvas id="myChart"></canvas>
-          </div>
+          <div id="current-chart" class="value-chart"></div>
         </div>
         <div class="container">
           <div class="journal-list">
@@ -167,6 +169,7 @@
       </div>
     </main>
     <script src="/static/js/html/html_notice.js"></script>
+    <script src="/static/js/html/html_member.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script
@@ -178,5 +181,7 @@
     <script type="module" src="/static/js/chart.js"></script>
     <script type="module" src="/static/js/nav.js"></script>
     <script type="module" src="/static/js/notice.js"></script>
+    <script type="module" src="/static/js/member.js"></script>
+    <script src="/static/js/keyword.js"></script>
   </body>
 </html>

@@ -1,89 +1,70 @@
-@import url("https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Cantata+One&family=Comic+Neue:ital,wght@1,700&family=DM+Serif+Text&family=Labrada&display=swap");
 * {
   box-sizing: border-box;
-  font-family: "Joan", serif;
   margin: 0;
   padding: 0;
-}
-
-.container .row img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 50%;
-  border-radius: 10px;
-}
-.page-name {
-  font-family: "Comic Sans MS", cursive;
-  font-size: 32px;
-  padding-left: 5px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-weight: bold;
   color: #8b4513;
-  cursor: pointer;
+}
+body,
+main {
+  background-color: rgba(210, 180, 140, 0.3);
 }
 .join-us {
+  position: absolute;
+  right: 20px;
+  top: 20px;
   cursor: pointer;
-  font-size: 24px;
-  padding-right: 10px;
+  font-size: 32px;
   font-weight: 800;
-  color: #8b4513;
+  color: white;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
 }
 .nav {
   background-color: rgba(210, 180, 140, 0.3);
 }
-.kv {
-  display: flex;
-  align-items: center;
-  background-color: rgba(210, 180, 140, 0.3);
-}
+
 .cover-image {
-  height: 65vh;
-  width: 900px;
-}
-.cover {
-  height: 70vh;
-}
-.cover-image img {
-  background-image: url(/static/img/index.png);
-  width: 100%;
-  height: 100%;
+  position: relative;
+  background-image: url(/static/img/co_use.jpg);
+  height: 100vh;
   background-size: cover;
   background-position: top;
 }
 .cover-text {
-  flex: none;
-  max-width: 400px;
-  margin: auto;
+  max-width: 500px;
+  margin-left: 180px;
   padding: 20px;
-  text-align: center;
-  color: #8b4513;
-  margin-top: 19vh;
+  margin-bottom: 30vh;
+}
+.page-name {
+  font-size: 150px;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  color: white;
+  font-weight: 900;
 }
 .slogan {
-  font-size: 42px;
-  font-family: "Joan", serif;
-}
-main {
-  margin-bottom: 50px;
+  font-size: 48px;
+  font-family: "Labrada", serif, "Joan", serif;
+  color: white;
 }
 .github {
   padding-left: 10px;
 }
+
 /* -------------- Signin ------------------- */
 .name {
-  font-family: "Comic Sans MS", cursive;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  font-size: 52px;
 }
 section {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 .login {
   position: absolute;
@@ -100,26 +81,97 @@ section {
 }
 #sign-up-message,
 #login-message {
-  color: red;
-  padding: 10px;
+  color: #dc3545;
 }
 #register,
 #go-login {
   cursor: pointer;
 }
-
-@media (max-width: 1200px) {
-  .cover {
-    height: 65vh;
+#buttonDiv {
+  width: 100%;
+}
+.window {
+  width: 360px;
+  padding: 48px;
+}
+hr {
+  border: 1px solid;
+  width: 139px;
+  vertical-align: text-top;
+}
+/* -------------- index ------------------- */
+.co-edit {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 15% 20%;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px 5px gray;
+}
+.analyze {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px 5px gray;
+}
+footer {
+  background-color: rgba(210, 180, 140);
+}
+.title {
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  font-size: 56px;
+}
+.describe {
+  font-family: "Labrada", serif, "Joan", serif;
+}
+@media (max-width: 1920px) {
+  .subcontainer {
+    height: 680px;
   }
-  .cover-image {
-    width: auto;
-  }
-  .kv {
-    display: block;
+}
+@media (max-width: 1000px) {
+  .page-name {
+    font-size: 140px;
   }
   .cover-text {
-    padding: 40px;
-    margin-top: 0;
+    margin-bottom: 55vh;
+    margin-left: 120px;
+  }
+}
+@media (max-width: 1200px) {
+  .subcontainer {
+    height: 870px;
+  }
+}
+@media (max-width: 1050px) {
+  .subcontainer {
+    height: 750px;
+  }
+}
+@media (max-width: 576px) {
+  .cover-text {
+    padding: 5px;
+    margin-bottom: 12vh;
+    margin-left: 20px;
+  }
+  .page-name {
+    font-size: 120px;
+    padding-bottom: 40vh;
+  }
+  .slogan {
+    font-size: 38px;
+    font-weight: 800;
+  }
+  .subcontainer {
+    height: 680px;
+  }
+}
+@media (max-width: 389px) {
+  .window {
+    width: 300px;
+    padding: 24px;
+    padding-bottom: 40px;
   }
 }

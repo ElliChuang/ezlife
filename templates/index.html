@@ -16,40 +16,58 @@
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
       crossorigin="anonymous"
     />
-    <title>home</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>EzLife</title>
   </head>
   <body>
-    <nav class="navbar nav">
-      <div class="container-fluid d-flex justify-content-between">
-        <span class="page-name" id="ezlife"> EzLife</span>
-        <span class="join-us">Login</span>
-      </div>
-    </nav>
     <main>
-      <div class="kv">
-        <div class="cover">
-          <div class="cover-image">
-            <img />
-          </div>
-        </div>
+      <div
+        class="container-fluid d-flex align-items-end align-items-sm-center justify-content-start cover-image"
+        id="cover-image"
+      >
+        <div class="join-us">Login</div>
         <div class="cover-text">
-          <div class="slogan">easy</div>
-          <div class="slogan">to</div>
-          <div class="slogan">Share your life</div>
+          <div class="page-name">EzLife</div>
+          <div class="slogan">easy to share</div>
+          <div class="slogan">your life together</div>
         </div>
       </div>
       <!---------------- 說明 -------------------------->
-      <div class="container">
-        <div class="row row-cols-md-1 mt-5">
-          <div class="col-lg-5">共享賬本</div>
-          <div class="col-lg-7 p-5">
-            <img src="/static/img/home/bookkeeping.png" />
+      <div class="container-fluid pb-5 pt-5">
+        <div class="row row-cols-md-1 subcontainer">
+          <div class="col-xl-5 m-auto ps-3 ps-lg-5">
+            <div class="title">Shared Account Book</div>
+            <p class="pt-3 fs-2 describe">
+              Provide a platform for family and friends who live or travel
+              together to easily keep track of expenses.
+            </p>
+          </div>
+          <div class="col-xl-7 p-3 p-md-4 p-lg-5">
+            <img src="/static/img/co-edit.gif" class="co-edit" />
           </div>
         </div>
-        <div class="row row-cols-sm-1 mt-5">
-          <div class="col-md-5">費用分析</div>
-          <div class="col-md-7 p-5">
-            <img src="/static/img/home/analyse.png" />
+        <div class="row row-cols-sm-1 mt-5 subcontainer">
+          <div class="col-xl-5 m-auto ps-3 ps-lg-5">
+            <div class="title">Analyze and Export as CSV</div>
+            <p class="pt-3 fs-2 describe">
+              Supports multi-condition filtering for analyzing expenses and
+              exporting as CSV files.
+            </p>
+          </div>
+          <div class="col-xl-7 p-3 p-md-4 p-lg-5">
+            <img src="/static/img/analyze.gif" class="analyze" />
+          </div>
+        </div>
+        <div class="row row-cols-sm-1 mt-5 subcontainer">
+          <div class="col-xl-5 m-auto ps-3 ps-lg-5">
+            <div class="title">Financial Settlement</div>
+            <p class="pt-3 fs-2 describe">
+              Settle accounts easily at your fingertips and access your records
+              anytime!
+            </p>
+          </div>
+          <div class="col-xl-7 p-3 p-md-4 p-lg-5">
+            <img src="/static/img/settlement.gif" class="analyze" />
           </div>
         </div>
       </div>
@@ -57,11 +75,8 @@
     <!----------------- signin ------------------------->
     <section class="login-section">
       <div class="container-fluid h-custom login">
-        <div class="row d-flex justify-content-center align-items-center">
-          <div
-            class="col-10 col-sm-8 col-md-5 col-lg-4 shadow-lg mb-5 rounded p-4"
-            style="background: #ffffff"
-          >
+        <div class="d-flex justify-content-center align-items-center">
+          <div class="window rounded" style="background: #ffffff">
             <div>
               <div class="d-flex justify-content-end">
                 <button
@@ -74,17 +89,18 @@
               <div
                 class="d-flex justify-content-center align-items-center mb-3 pb-1"
               >
-                <span class="h1 fw-bold mb-0 name">EzLife</span>
+                <span class="fw-bold mb-0 name">EzLife</span>
               </div>
 
               <!-- Email input -->
               <div class="form-outline mb-4">
                 <input
                   type="email"
+                  value="test@mail.com"
                   class="form-control form-control-lg"
                   placeholder="email"
-                  required
                   id="login-email"
+                  required
                 />
               </div>
 
@@ -93,36 +109,47 @@
                 <input
                   type="password"
                   class="form-control form-control-lg"
+                  value="test123"
                   placeholder="password"
                   required
-                  pattern="[A-Za-z0-9]{6,}"
+                  pattern="^[A-Za-z0-9_\-!?@#$%&*]{6,}$"
                   id="login-password"
                 />
               </div>
-              <div class="d-flex justify-content-center align-items-center">
+              <div
+                class="d-flex justify-content-center align-items-center pb-1"
+              >
                 <div id="login-message"></div>
               </div>
               <div class="d-flex justify-content-center align-items-center">
                 <button
                   type="submit"
-                  class="btn btn-secondary btn-lg btn-block flex-grow-1"
+                  class="btn btn-lg btn-block flex-grow-1"
                   id="login-button"
+                  style="background: rgba(139, 69, 19, 0.8); color: #ffffff"
+                  onmouseover="this.style.background='rgba(139, 69, 19)'"
+                  onmouseout="this.style.background='rgba(139, 69, 19, 0.8)'"
                 >
                   Sign in
                 </button>
               </div>
-              <a
-                class="btn btn-secondary btn-lg d-flex justify-content-center align-items-center my-3"
-                role="button"
-              >
-                <i></i>Continue with Google
-              </a>
               <div class="d-flex justify-content-center align-items-center">
-                <p class="small fw-bold mt-2 pt-1 mb-0">
+                <p class="small fw-bold pt-1 mb-0">
                   Don't have an account?
                   <a class="link-danger" id="register">Register</a>
                 </p>
               </div>
+              <div
+                class="d-flex justify-content-center align-items-center my-3"
+              >
+                <hr />
+                <span class="px-2">or</span>
+                <hr />
+              </div>
+              <div
+                id="buttonDiv"
+                class="d-flex justify-content-center align-items-center mb-2"
+              ></div>
             </div>
           </div>
         </div>
@@ -131,11 +158,8 @@
     <!----------------- signUp ------------------------->
     <section class="sign-up-section">
       <div class="container-fluid h-custom sign-up">
-        <div class="row d-flex justify-content-center align-items-center">
-          <div
-            class="col-10 col-sm-8 col-md-6 col-lg-6 col-xl-4 shadow-lg mb-5 rounded p-4"
-            style="background: #ffffff"
-          >
+        <div class="d-flex justify-content-center align-items-center">
+          <div class="window rounded" style="background: #ffffff">
             <div>
               <div class="d-flex justify-content-end">
                 <button
@@ -148,7 +172,7 @@
               <div
                 class="d-flex justify-content-center align-items-center mb-3 pb-1"
               >
-                <span class="h1 fw-bold mb-0 name">EzLife</span>
+                <span class="fw-bold mb-0 name">EzLife</span>
               </div>
 
               <!-- Name input -->
@@ -181,7 +205,7 @@
                   class="form-control form-control-lg"
                   placeholder="password"
                   required
-                  pattern="[A-Za-z0-9]{6,}"
+                  pattern="^[A-Za-z0-9_\-!?@#$%&*]{6,}$"
                 />
               </div>
               <div class="d-flex justify-content-center align-items-center">
@@ -190,18 +214,15 @@
               <div class="d-flex justify-content-center align-items-center">
                 <button
                   type="submit"
-                  class="btn btn-secondary btn-lg btn-block flex-grow-1"
+                  class="btn btn-lg btn-block flex-grow-1 mybutton"
                   id="sign-up-button"
+                  style="background: rgba(139, 69, 19, 0.8); color: #ffffff"
+                  onmouseover="this.style.background='rgba(139, 69, 19)'"
+                  onmouseout="this.style.background='rgba(139, 69, 19, 0.8)'"
                 >
                   Sign up
                 </button>
               </div>
-              <a
-                class="btn btn-secondary btn-lg d-flex justify-content-center align-items-center my-3"
-                role="button"
-              >
-                <i></i>Continue with Google
-              </a>
               <div class="d-flex justify-content-center align-items-center">
                 <p class="small fw-bold mt-2 pt-1 mb-0">
                   Already have an account?
@@ -214,11 +235,11 @@
       </div>
     </section>
     <script src="/static/js/html/html_notice.js"></script>
-    <footer class="footer mt-auto py-4 bg-light">
+    <footer class="footer mt-auto py-4">
       <div class="d-flex justify-content-center align-items-center">
-        <span class="text-muted">@ 2023 ElliChunag</span>
+        <span class="fs-6 text-dark">COPYRIGHT @ 2023 EzLife</span>
         <a href="https://github.com/ElliChuang">
-          <img class="github" src="/static/img/github.png" width="30" />
+          <img class="github" src="/static/img/github.png" width="33" />
         </a>
       </div>
     </footer>

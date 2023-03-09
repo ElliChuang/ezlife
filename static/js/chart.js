@@ -6,17 +6,31 @@ const url = location.href;
 const bookId = url.split("account_book/")[1].split("/")[0];
 
 // 取得帳簿權限、使用者權限
+const userList = document.querySelector(".user-list");
+const welcomeName = document.querySelector("#welcome-name");
 const bookAuthCheck = bookAuth(bookId);
-let user = { name: "", id: "" };
+let user = { name: "", id: "", email: "", profile: "" };
 bookAuthCheck.then((data) => {
   if (data.ok) {
     const userAuthCheck = getStatus();
     userAuthCheck.then((data) => {
+      welcomeName.innerText = data.name;
       user.id = data.id;
       user.name = data.name;
+      user.email = data.email;
+      user.profile = data.profile;
+      userList.src = user.profile;
+      userList.id = user.id;
+      userList.value = user.email;
     });
-    getData();
-    console.log("Let's start");
+    let dt = new Date();
+    let dt_year = dt.getFullYear();
+    let dt_month = dt.getMonth() + 1;
+    const year = document.getElementById("year");
+    const month = document.getElementById("month");
+    year.value = dt_year;
+    month.value = dt_month;
+    getData(dt_year, dt_month);
   }
 });
 
@@ -44,12 +58,14 @@ const main = document.getElementById("main");
 const character = document.getElementById("character");
 const queryBoxButton = document.querySelector(".chart-query-box-button");
 
-queryBoxButton.addEventListener("click", getData);
-
-async function getData() {
-  // 取得篩選條件
+queryBoxButton.addEventListener("click", () => {
   const year = document.getElementById("year").value;
   const month = document.getElementById("month").value;
+  getData(year, month);
+});
+
+async function getData(year, month) {
+  // 取得篩選條件
   const categoryMain = document.getElementById("category_main").value;
   const categoryCharacter = document.getElementById("category_character").value;
   const categoryObject = document.getElementById("category_object").value;
@@ -102,12 +118,25 @@ checkbox.forEach((elem) => {
 });
 
 function getChart(datas, color) {
-  removeChart();
   const currentChart = document.getElementById("current-chart");
+  currentChart.innerText = "";
+
+  // 確認是否有明細
+  let values = Object.values(datas);
+  let total = 0;
+  for (let i in values) {
+    total += values[i];
+  }
+  if (total === 0) {
+    currentChart.className = "unvalue-chart";
+    return (currentChart.innerText = "查無帳目明細");
+  }
+
   const canvas = document.createElement("canvas");
   currentChart.appendChild(canvas);
-  canvas.id = `myChart`;
-  const ctx = document.getElementById(`myChart`);
+  canvas.id = "myChart";
+  const ctx = document.getElementById("myChart");
+  currentChart.className = "value-chart";
 
   new Chart(ctx, {
     type: "pie",
@@ -175,12 +204,6 @@ function getChart(datas, color) {
       maintainAspectRatio: false,
     },
   });
-}
-
-function removeChart() {
-  const currentChart = document.getElementById("current-chart");
-  const ctx = document.getElementById(`myChart`);
-  currentChart.removeChild(ctx);
 }
 
 // 明細賬

@@ -1,12 +1,9 @@
 .nav {
-  /* background-color: #fdf5e6; */
   background-color: rgba(210, 180, 140, 0.8);
   padding: 10px;
 }
 .nav-second {
-  /* background-color: #fffaf0; */
   background-color: rgba(210, 180, 140, 0.3);
-  /* background-color: rgba(184, 134, 11, 0.3); */
 }
 .nav-bar {
   display: flex;
@@ -14,8 +11,6 @@
   align-items: center;
   max-width: 1400px;
   margin: auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
 }
 .nav-bar-second {
   display: flex;
@@ -25,8 +20,6 @@
   margin: auto;
   padding-bottom: 5px;
   padding-top: 5px;
-  /* background-color: #fffaf0; */
-  /* background-color: rgba(184, 134, 11, 0.3); */
 }
 .nav-left {
   flex: none;
@@ -36,8 +29,8 @@
 }
 .page-name {
   flex: none;
-  font-family: "Comic Sans MS", cursive;
-  font-size: 32px;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  font-size: 36px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -73,8 +66,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background-color: #fffaf0; */
-  /* background-color: rgba(184, 134, 11, 0.3); */
   height: 50px;
   width: 70px;
   font-size: 20px;
@@ -98,12 +89,23 @@
   z-index: 2;
   display: none;
 }
-.member-list div {
+.nav-member-group {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
   border-radius: 5px;
+}
+.host {
+  position: absolute;
+  top: 37%;
+  right: 3px;
+  transform: translate(-37%);
+  width: 15px;
+  height: 15px;
+  background-image: url(/static/img/star.png);
+  background-size: cover;
 }
 .collaborator {
   flex: none;
@@ -112,6 +114,7 @@
   font-size: 20px;
   font-weight: 500;
   text-align: center;
+  line-height: 60px;
 }
 .member-delete {
   flex: none;
@@ -120,7 +123,6 @@
   cursor: pointer;
   background-image: url(/static/img/close.png);
   background-size: cover;
-  background-position: cover;
 }
 .invite {
   position: relative;
@@ -157,12 +159,14 @@
   border-radius: 5px;
 }
 .user-list {
-  width: 36px;
-  height: 36px;
-  background-image: url(/static/img/user-profile.png);
-  background-position: center;
-  background-size: cover;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid;
+  border-color: #ffffff;
+  object-fit: cover;
   cursor: pointer;
+  background-color: #ffffff;
 }
 .user-list-content {
   background-color: #ffffff;
@@ -223,5 +227,21 @@
   }
   .nav {
     border-bottom: 0px;
+  }
+  .invite-list {
+    position: absolute;
+    background-color: #ffffff;
+    top: 50px;
+    right: 0;
+    transform: translate(-160px);
+    border-radius: 5px;
+    box-shadow: 3px 3px 8px rgba(33, 33, 33, 0.7);
+    border: 2px solid;
+    border-color: #8b4513;
+    z-index: 2;
+    padding: 8px;
+    display: none;
+    width: 220px;
+    height: 85px;
   }
 }

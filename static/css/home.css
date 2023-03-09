@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cantata+One&family=Comic+Neue:ital,wght@1,700&family=DM+Serif+Text&family=Labrada&display=swap");
 
 * {
   box-sizing: border-box;
@@ -9,7 +9,6 @@
 .nav {
   border-bottom: 2px solid;
   border-color: #8b4513;
-  /* background-color: #fdf5e6; */
   background-color: rgba(210, 180, 140, 0.8);
   padding: 10px;
 }
@@ -19,14 +18,13 @@
   align-items: center;
   max-width: 1400px;
   margin: auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
 }
 .page-name {
   flex: none;
-  font-family: "Comic Sans MS", cursive;
-  font-size: 32px;
+  font-family: "DM Serif Text", serif, "Cantata One", serif;
+  font-size: 36px;
   font-weight: bold;
+  cursor: pointer;
 }
 .book {
   flex: none;
@@ -70,12 +68,14 @@
   cursor: pointer;
 }
 .user-list {
-  width: 36px;
-  height: 36px;
-  background-image: url(/static/img/user-profile.png);
-  background-position: center;
-  background-size: cover;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid;
+  border-color: #ffffff;
+  object-fit: cover;
   cursor: pointer;
+  background-color: #ffffff;
 }
 .user-list-content {
   background-color: #ffffff;
@@ -143,6 +143,15 @@ main {
   margin: 40px;
   margin-left: 60px;
 }
+.add-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background-color: #f2f2f2;
+  border-radius: 50%;
+}
 .add {
   border: none;
   cursor: pointer;
@@ -150,7 +159,6 @@ main {
   height: 30px;
   background-image: url(/static/img/add.png);
   background-size: cover;
-  background-position: cover;
 }
 .new-book:hover,
 .book-list-file:hover {
@@ -171,6 +179,16 @@ main {
   margin: 20px;
   cursor: pointer;
 }
+.edit-file {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  background-image: url(/static/img/edit.png);
+  background-size: cover;
+}
 .delete-file {
   position: absolute;
   top: 5px;
@@ -180,7 +198,6 @@ main {
   cursor: pointer;
   background-image: url(/static/img/delete.png);
   background-size: cover;
-  background-position: cover;
 }
 .file {
   border: none;
@@ -203,6 +220,16 @@ main {
   font-size: 18px;
   text-align: center;
   border-top: 3px solid #a8a8a8;
+}
+.crown {
+  position: absolute;
+  bottom: 0;
+  left: -10px;
+  transform: rotate(-10deg);
+  width: 35px;
+  height: 35px;
+  background-image: url(/static/img/crown.png);
+  background-size: cover;
 }
 /*--------- pop up message ---------*/
 .popup-window-outer {
@@ -283,7 +310,11 @@ main {
 .popup-button:hover {
   box-shadow: 2px 2px 5px rgba(33, 33, 33);
 }
-
+.popup-status {
+  text-align: center;
+  color: red;
+  padding-bottom: 10px;
+}
 @media (max-width: 1400px) {
   .nav-bar {
     padding-left: 10px;

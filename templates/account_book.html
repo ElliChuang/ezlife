@@ -17,6 +17,8 @@
     />
     <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/member.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/edit.css" />
     <script src="/static/js/home.calendar.js"></script>
     <title>book</title>
   </head>
@@ -31,8 +33,15 @@
           <section>
             <div class="name">消費明細</div>
             <div class="detail">
-              <span>金額</span><input type="text" name="price" /><br />
-              <span>日期</span><input type="date" /><br />
+              <span>金額</span
+              ><input
+                type="text"
+                name="price"
+                id="input-price"
+                class="input"
+              /><br />
+              <span>日期</span
+              ><input type="date" id="input-date" class="input" /><br />
               <span>生活機能</span>
               <select size="1" id="category_main">
                 <option></option>
@@ -83,13 +92,34 @@
                 <option>宿舍</option>
                 <option>旅行</option></select
               ><br />
-              <span>備註說明</span><input type="text" name="keyword" />
+              <span>備註說明</span>
+              <label class="keyword-zone"
+                ><input type="text" name="keyword" class="keyword-input" />
+                <ul class="keyword-ul"></ul>
+              </label>
             </div>
           </section>
           <section class="price-setting">
-            <div class="name">分攤金額</div>
+            <div class="name">
+              分攤金額
+              <img
+                class="query"
+                id="query-payable"
+                src="../static/img/question-mark.png"
+              />
+            </div>
+            <div class="note">此筆消費每人『需』支付多少金額</div>
+
             <div class="group" id="payable-group"></div>
-            <div class="name">代墊金額</div>
+            <div class="name">
+              支付金額
+              <img
+                class="query"
+                id="query-prepaid"
+                src="../static/img/question-mark.png"
+              />
+            </div>
+            <div class="note">此筆消費每人『已』支付多少金額</div>
             <div class="group" id="prepay-group"></div>
           </section>
           <button type="button" id="submit">送出</button>
@@ -101,9 +131,13 @@
       </section>
     </main>
     <script src="/static/js/html/html_notice.js"></script>
+    <script src="/static/js/html/html_member.js"></script>
+    <script src="/static/js/html/html_edit.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script type="module" src="/static/js/account_book.js"></script>
     <script type="module" src="/static/js/notice.js"></script>
     <script type="module" src="/static/js/nav.js"></script>
+    <script type="module" src="/static/js/member.js"></script>
+    <script src="/static/js/keyword.js"></script>
   </body>
 </html>

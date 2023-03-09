@@ -17,65 +17,82 @@
     />
     <link rel="stylesheet" type="text/css" href="/static/css/nav.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/member.css" />
     <title>settlement</title>
   </head>
   <body>
     <script src="/static/js/html/html_nav.js"></script>
     <main class="main">
-      <div class="query-box">
-        <section class="query-box-required">
-          <div class="query-box-title">請輸入年度、月份</div>
-          <span class="query-box-subtitle">年度</span
-          ><select size="1" id="year" name="year">
-            <option>2022</option>
-            <option selected>2023</option>
-            <option>2024</option>
-            <option>2025</option>
-            <option>2026</option>
-            <option>2027</option>
-            <option>2028</option>
-            <option>2029</option>
-            <option>2030</option></select
-          ><br />
-          <span class="query-box-subtitle">月份</span
-          ><select size="1" id="month" name="month">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-            <option>9</option>
-            <option>10</option>
-            <option>11</option>
-            <option>12</option></select
-          ><br />
-        </section>
-        <section class="query-box-click">
-          <div class="query-box-button">查詢</div>
-        </section>
+      <div class="record-mode">
+        <input type="radio" name="radio" value="start" checked />
+        <span class="record-checked" id="start-to-settlement">開始結算</span>
+        <input type="radio" name="radio" value="record" />
+        <span class="record-unchecked" id="go-to-record">結算紀錄</span>
       </div>
-      <div class="detail-list">
-        <div>待結算金額總覽</div>
-      </div>
-      <div class="container">
-        <div class="settlement-container"></div>
-      </div>
+      <div id="settlement-zone">
+        <div class="query-box">
+          <section class="query-box-required">
+            <div class="query-box-title">請輸入年度、月份</div>
+            <span class="query-box-subtitle">年度</span
+            ><select size="1" id="year" name="year">
+              <option>2022</option>
+              <option>2023</option>
+              <option>2024</option>
+              <option>2025</option>
+              <option>2026</option>
+              <option>2027</option>
+              <option>2028</option>
+              <option>2029</option>
+              <option>2030</option></select
+            ><br />
+            <span class="query-box-subtitle">月份</span
+            ><select size="1" id="month" name="month">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option></select
+            ><br />
+          </section>
+          <section class="query-box-click">
+            <div class="query-box-button">查詢</div>
+          </section>
+        </div>
+        <div class="detail-list">
+          <div>待結算金額總覽</div>
+        </div>
+        <div class="container">
+          <div class="settlement-container" id="settlement-container"></div>
+        </div>
 
-      <div class="detail-list">
-        <div>分攤明細</div>
-        <div>合計：<span id="amount"></span>元</div>
+        <div class="detail-list">
+          <div>分攤明細</div>
+          <div>合計：<span id="amount"></span>元</div>
+        </div>
+        <div class="detail-container">
+          <div class="detail-inner-container"></div>
+        </div>
       </div>
-      <div class="detail-container">
-        <div class="detail-inner-container"></div>
+      <!-------------------------- 結算紀錄 -------------------------->
+      <div id="record-zone">
+        <div class="record-box" id="record-box">
+          <div class="record-box-inner"></div>
+        </div>
       </div>
     </main>
     <script src="/static/js/html/html_notice.js"></script>
+    <script src="/static/js/html/html_member.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script type="module" src="/static/js/account_settlement.js"></script>
     <script type="module" src="/static/js/nav.js"></script>
     <script type="module" src="/static/js/notice.js"></script>
+    <script type="module" src="/static/js/member.js"></script>
   </body>
 </html>

@@ -2,13 +2,13 @@ nav =
   '<nav class="nav">\
     <div class="nav-bar">\
         <div class="nav-left">\
-            <div class="page-name" id="ezlife">EzLife ></div>\
+            <div class="page-name" id="ezlife">EzLife</div>\
             <div class="book-name"></div>\
         </div>\
         <div class="nav-right">\
-            <div class="user-list"></div>\
+            <img class="user-list"/>\
             <div class="user-list-content">\
-                <div>會員資料</div>\
+                <div id=go-member-section>會員資料</div>\
                 <div id="logout">登出系統</div>\
             </div>\
         </div>\

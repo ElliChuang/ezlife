@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cute+Font&family=Joan&family=Merienda&family=Merriweather:ital@1&family=Roboto+Condensed&family=Satisfy&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Cantata+One&family=Comic+Neue:ital,wght@1,700&family=DM+Serif+Text&family=Labrada&display=swap");
 * {
   box-sizing: border-box;
   color: #8b4513;
@@ -43,6 +42,10 @@
   padding: 5px;
   width: 100px;
 }
+#year,
+#month {
+  margin-left: 6px;
+}
 .chart-query-box-required > select,
 .chart-query-box-option > select {
   height: 35px;
@@ -54,6 +57,34 @@
   margin-top: 10px;
   border-radius: 5px;
 }
+.keyword-zone {
+  position: relative;
+}
+.keyword-ul {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  width: 200px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  right: 14px;
+  box-shadow: 2px 2px 5px gray;
+  display: none;
+  border-radius: 5px;
+}
+.keyword-li {
+  color: #666666;
+  font-size: 16px;
+  padding: 8px;
+  width: 200px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.keyword-li:hover:not(.header) {
+  background-color: rgba(255, 255, 255);
+}
 .chart-query-box-keyword {
   height: 35px;
   width: 200px;
@@ -61,9 +92,10 @@
   text-align: center;
   cursor: pointer;
   padding: 6px;
-  margin-left: 6px;
   margin-top: 10px;
   border-radius: 5px;
+  border: 1px solid;
+  border-color: #2c3e50;
 }
 .chart-query-box-button {
   width: 100px;
@@ -95,12 +127,20 @@
 .chart {
   display: flex;
   max-width: 1400px;
-  align-items: center;
-  justify-content: center;
 }
-#current-chart {
+.value-chart {
   width: 635px;
   height: 600px;
+  text-align: center;
+  line-height: 600px;
+  font-size: 20px;
+}
+.unvalue-chart {
+  width: 635px;
+  height: 200px;
+  text-align: center;
+  line-height: 200px;
+  font-size: 20px;
 }
 .container {
   flex: none;
@@ -357,6 +397,10 @@ input[type="radio"] {
     width: 100%;
     margin-left: 0;
   }
+  .keyword-ul,
+  .keyword-li {
+    width: 100%;
+  }
   .chart-query-box-click {
     width: 100%;
   }
@@ -365,5 +409,9 @@ input[type="radio"] {
   }
   .chart-query-box-export {
     width: 100%;
+  }
+  #year,
+  #month {
+    margin-left: 0;
   }
 }

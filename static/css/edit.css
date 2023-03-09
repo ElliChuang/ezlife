@@ -1,0 +1,132 @@
+.edit-zone {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.25);
+  z-index: 1;
+}
+.edit-group {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  width: 530px;
+  box-shadow: 0px 4px 60px #aaaaaa;
+  background: #ffffff;
+  border-radius: 6px;
+  z-index: 2;
+}
+.close-edit {
+  width: 15px;
+  height: 15px;
+  margin-left: auto;
+  margin-bottom: 20px;
+}
+.close-edit-button {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-image: url(/static/img/close.png);
+  background-color: #ffffff;
+  background-size: cover;
+  background-position: cover;
+  cursor: pointer;
+}
+.edit-section {
+  display: flex;
+}
+.edit-section section {
+  max-width: 225px;
+}
+.edit-group span {
+  padding: 5px;
+  display: inline-block;
+  width: 80px;
+}
+.edit-detail input {
+  padding: 5px;
+  margin-left: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  width: 110px;
+  border: 1px solid;
+  border-color: #2c3e50;
+}
+.edit-group select {
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  width: 110px;
+}
+.edit-detail {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.edit-price-setting {
+  margin-left: 10px;
+}
+.edit-price-setting-group {
+  margin-left: 10px;
+  margin-bottom: 12px;
+}
+.edit-payable-input {
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  width: 110px;
+  border: 1px solid;
+  border-color: #2c3e50;
+}
+.edit-prepay-input {
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  width: 110px;
+  border: 1px solid;
+  border-color: #2c3e50;
+}
+.confirmToEditJournal {
+  width: 420px;
+  height: 40px;
+  border: 0;
+  margin-top: 20px;
+  background-color: rgba(139, 69, 19, 0.7);
+  color: #ffffff;
+  border-radius: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px gray;
+}
+.confirmToEditJournal:hover {
+  background-color: rgba(139, 69, 19);
+}
+.edit-note {
+  font-size: 10px;
+  color: #8b0000;
+}
+
+@media (max-width: 768px) {
+  .edit-section {
+    display: block;
+  }
+  .edit-group {
+    width: 310px;
+  }
+  .edit-price-setting {
+    margin-left: 0;
+  }
+  .confirmToEditJournal {
+    width: 220px;
+  }
+  .edit-payable-input {
+    margin-left: 5px;
+  }
+  .edit-prepay-input {
+    margin-left: 5px;
+  }
+}

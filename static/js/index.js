@@ -1,4 +1,3 @@
-const ezlife = document.querySelector("#ezlife");
 const joinUs = document.querySelector(".join-us");
 const loginSection = document.querySelector(".login-section");
 const closeLoginButton = document.querySelector("#close-login-button");
@@ -17,10 +16,6 @@ const loginPassword = document.querySelector("#login-password");
 const loginMessage = document.querySelector("#login-message");
 import { showNoticeWindow, closeNoticeWindow } from "./notice.js";
 
-ezlife.addEventListener("click", () => {
-  window.location.href = "/";
-});
-
 // 取得會員狀態
 getStatus();
 async function getStatus() {
@@ -30,7 +25,6 @@ async function getStatus() {
   });
   let jsonData = await fetchData.json();
   if (jsonData.data !== null && jsonData.data.id) {
-    console.log(jsonData);
     homePage();
   }
 }
@@ -45,14 +39,15 @@ goLogin.addEventListener("click", showLogin);
 
 function showLogin() {
   closeSignUp();
+  closeNoticeWindow();
   loginMessage.innerText = "";
   loginSection.style.display = "block";
 }
 
 function closeLogin() {
   loginSection.style.display = "none";
-  loginEmail.value = "";
-  loginPassword.value = "";
+  loginEmail.value = "test@mail.com";
+  loginPassword.value = "test123";
 }
 
 function showSignUp() {
@@ -71,66 +66,140 @@ function closeSignUp() {
 // 註冊會員
 signUpButton.addEventListener("click", memberSignUp);
 async function memberSignUp() {
-  if (
-    !signUpName.validity.valid ||
-    !signUpEmail.validity.valid ||
-    !signUpPassword.validity.valid
-  ) {
-    signUpMessage.innerText = "請輸入姓名、電子郵件及密碼或確認格式";
-  } else {
-    let url = "/api/user";
-    let requestBody = {
-      name: signUpName.value,
-      email: signUpEmail.value,
-      password: signUpPassword.value,
-    };
-    console.log(requestBody);
-    let fetchUrl = await fetch(url, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-    let jsonData = await fetchUrl.json();
+  if (signUpName.value.trim() === "") {
+    signUpMessage.innerText = "請輸入姓名";
+    return;
+  }
+  if (signUpEmail.value === "") {
+    signUpMessage.innerText = "請輸入信箱";
+    return;
+  }
+  if (signUpPassword.value === "") {
+    signUpMessage.innerText = "請輸入密碼";
+    return;
+  }
+  if (!signUpEmail.validity.valid) {
+    return (signUpMessage.innerText = "請輸入有效的電子郵件");
+  }
+  if (!signUpPassword.validity.valid) {
+    return (signUpMessage.innerText = "密碼應包含6位數以上的字母或數字");
+  }
+  let url = "/api/user";
+  let requestBody = {
+    name: signUpName.value,
+    email: signUpEmail.value,
+    password: signUpPassword.value,
+  };
+  let fetchUrl = await fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(requestBody),
+  });
+  let jsonData = await fetchUrl.json();
 
-    if (jsonData.ok) {
-      console.log(jsonData);
-      signUpMessage.innerText = "註冊成功";
-      closeSignUp();
-      showNoticeWindow("註冊成功", "請登入會員", closeNoticeWindow);
-    } else {
-      signUpMessage.innerText = jsonData.data;
-    }
+  if (jsonData.ok) {
+    closeSignUp();
+    showNoticeWindow("註冊成功", "點選確定，開始編輯帳簿", homePage);
+  } else {
+    signUpMessage.innerText = jsonData.data;
   }
 }
 
 // 會員登入
 loginButton.addEventListener("click", memberLogin);
 async function memberLogin() {
-  if (!loginEmail.validity.valid || !loginPassword.validity.valid) {
-    loginMessage.innerText = "請輸入電子郵件及密碼或確認格式";
+  if (loginEmail.value === "") {
+    loginMessage.innerText = "請輸入信箱";
+    return;
+  }
+  if (loginPassword.value === "") {
+    loginMessage.innerText = "請輸入密碼";
+    return;
+  }
+  if (!loginEmail.validity.valid) {
+    loginMessage.innerText = "請輸入有效的電子郵件";
+    return;
+  }
+  if (!loginPassword.validity.valid) {
+    loginMessage.innerText = "密碼應包含6位數以上的字母或數字";
+    return;
+  }
+  let url = "/api/user/auth";
+  let requestBody = {
+    email: loginEmail.value,
+    password: loginPassword.value,
+  };
+  let fetchData = await fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(requestBody),
+  });
+  let jsonData = await fetchData.json();
+  if (jsonData.ok) {
+    closeLogin();
+    showNoticeWindow("登入成功", "點選確定，開始編輯帳簿", homePage);
   } else {
-    let url = "/api/user/auth";
-    let requestBody = {
-      email: loginEmail.value,
-      password: loginPassword.value,
-    };
-    let fetchData = await fetch(url, {
-      method: "PUT",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
-    let jsonData = await fetchData.json();
-    console.log("會員登入:", jsonData);
-    if (jsonData.ok) {
-      closeLogin();
-      showNoticeWindow("登入成功", "點選確定，繼續編輯帳簿", homePage);
-    } else {
-      loginMessage.innerText = jsonData.data;
-    }
+    loginMessage.innerText = jsonData.data;
   }
 }
 
 // 重新載入頁面
 function homePage() {
   window.location.href = "/home";
+}
+
+// google 登入
+function handleCredentialResponse(response) {
+  if (response.credential) {
+    // Handle signed-in state
+    let url = "/api/user";
+    let requestBody = { credential: response.credential };
+    fetch(url, {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(requestBody),
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (Data) {
+        closeLogin();
+        showNoticeWindow("登入成功", "點選確定，繼續編輯帳簿", homePage);
+      });
+  }
+}
+
+let clientWidth = document.body.offsetWidth;
+if (clientWidth < 390) {
+  window.onload = function () {
+    google.accounts.id.initialize({
+      client_id:
+        "1003610386354-npah7dg43lgjilmt05b0fp08atopsf92.apps.googleusercontent.com",
+      callback: handleCredentialResponse,
+    });
+    google.accounts.id.renderButton(document.getElementById("buttonDiv"), {
+      theme: "outline",
+      type: "standard",
+      size: "large",
+      width: 252,
+      height: 56,
+      shape: "rectangular",
+    });
+  };
+} else {
+  window.onload = function () {
+    google.accounts.id.initialize({
+      client_id:
+        "1003610386354-npah7dg43lgjilmt05b0fp08atopsf92.apps.googleusercontent.com",
+      callback: handleCredentialResponse,
+    });
+    google.accounts.id.renderButton(document.getElementById("buttonDiv"), {
+      theme: "outline",
+      type: "standard",
+      size: "large",
+      width: 254,
+      height: 56,
+      shape: "rectangular",
+    });
+  };
 }

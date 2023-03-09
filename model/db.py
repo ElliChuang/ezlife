@@ -1,22 +1,20 @@
-from mysql.connector import errorcode
+import redis
 import mysql.connector 
-from config import MYSQL_PW, MYSQL_HOST
+from config import REDIS_HOST, DB_CONFIG
+
+
+class Redis():
+    def connect_to_redis():
+        conn_redis = redis.Redis(host = REDIS_HOST, port = 6379)
+        return conn_redis
 
 
 class MySQL():
     def conn_obj():
-        dbconfig = {
-            "user" : "admin",
-            "password" : MYSQL_PW,
-            "host" : MYSQL_HOST,
-            "database" : "ezlife",
-        }
         conn_pool = mysql.connector.pooling.MySQLConnectionPool(
             pool_name = "ezlife_pool",
-            pool_size = 15,
+            pool_size = 10,
             pool_reset_session = True,
-            **dbconfig)
+            **DB_CONFIG)
         conn_obj = conn_pool.get_connection()
-
         return conn_obj
-

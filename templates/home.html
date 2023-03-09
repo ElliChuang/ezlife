@@ -12,17 +12,18 @@
     />
     <link rel="stylesheet" type="text/css" href="/static/css/home.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/notice.css" />
-    <title>index</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/member.css" />
+    <title>home</title>
   </head>
   <body>
     <nav class="nav">
       <div class="nav-bar">
-        <div class="page-name" id="ezlife">EzLife ></div>
-        <div class="book">帳簿</div>
+        <div class="page-name" id="ezlife">EzLife</div>
+        <div class="book">> 帳簿</div>
         <div class="right">
-          <div class="user-list"></div>
+          <img class="user-list" />
           <div class="user-list-content">
-            <div>會員資料</div>
+            <div id="go-member-section">會員資料</div>
             <div id="logout">登出系統</div>
           </div>
         </div>
@@ -35,7 +36,9 @@
         <p id="welcome-name"></p>
       </div>
       <div class="new-book">
-        <div class="add"></div>
+        <div class="add-zone">
+          <div class="add"></div>
+        </div>
       </div>
       <div class="book-list"></div>
       <!-- pop up message -->
@@ -43,20 +46,23 @@
         <div class="popup-window">
           <div class="popup-body">
             <div class="popup-closed"></div>
-            <div class="popup-title">請輸入帳簿名稱</div>
+            <div class="popup-title"></div>
             <input
               type="text"
               class="popup-message"
               required
-              placeholder="我們這一家"
+              placeholder="請輸入帳簿名稱"
             />
+            <div class="popup-status"></div>
             <button class="popup-button">確定</button>
           </div>
         </div>
       </div>
     </main>
     <script src="/static/js/html/html_notice.js"></script>
+    <script src="/static/js/html/html_member.js"></script>
     <script type="module" src="/static/js/home.js"></script>
     <script type="module" src="/static/js/notice.js"></script>
+    <script type="module" src="/static/js/member.js"></script>
   </body>
 </html>
