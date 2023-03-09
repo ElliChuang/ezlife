@@ -1,19 +1,12 @@
 from mysql.connector import errorcode
-import mysql.connector 
-from config import DB_CONFIG
+import mysql.connector
+from model.db import MySQL 
 
 
-class AccountBookModel():
-    def __init__(self):
-        self.conn_pool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name = "ezlife_pool",
-            pool_size = 10,
-            pool_reset_session = True,
-            **DB_CONFIG)
-        
-    def get_book_auth(self, book_id):
+class BookModel(): 
+    def get_book_auth(book_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         SELECT m.id, m.name, b.book_name, m2.name as host_member FROM collaborator AS c
@@ -40,9 +33,9 @@ class AccountBookModel():
                 connection_object.close()
 
 
-    def get_books_by_member(self, member_id):
+    def get_books_by_member(member_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         SELECT 
@@ -71,9 +64,9 @@ class AccountBookModel():
                 connection_object.close()
 
 
-    def check_if_exist(self, book_name, created_member_id):
+    def check_if_exist(book_name, created_member_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         SELECT book_name FROM account_book 
@@ -96,9 +89,9 @@ class AccountBookModel():
                 connection_object.close()
 
     
-    def create_book(self, book_name, created_member_id):
+    def create_book(book_name, created_member_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             mycursor.execute("START TRANSACTION")
             query = ("""
@@ -125,9 +118,9 @@ class AccountBookModel():
                 connection_object.close()
 
 
-    def delete_book(self, created_member_id, book_id):
+    def delete_book(created_member_id, book_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         DELETE FROM account_book 
@@ -151,9 +144,9 @@ class AccountBookModel():
                 connection_object.close()
 
         
-    def update_book(self, book_name, created_member_id, book_id):
+    def update_book(book_name, created_member_id, book_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         UPDATE account_book 
@@ -176,6 +169,3 @@ class AccountBookModel():
             if connection_object.is_connected():
                 mycursor.close()
                 connection_object.close()
-
-
-bookModel = AccountBookModel()

@@ -1,5 +1,5 @@
 from flask import *
-from model.settle_db import settleModel 
+from model.settle_db import SettleModel
 import jwt
 import datetime
 import pytz
@@ -38,7 +38,7 @@ def checkout(bookId):
                         "data" : "請輸入欲查詢的年度及月份",             
                     }),403
 
-        overview = settleModel.get_overview(bookId, start_dt, end_dt, status)
+        overview = SettleModel.get_overview(bookId, start_dt, end_dt, status)
         if not overview:
             return jsonify({
                         "data" : "該月份無未結算項目"             
@@ -49,7 +49,7 @@ def checkout(bookId):
                         "data" : "INTERNAL_SERVER_ERROR",             
                     }),500
 
-        results = settleModel.get_journal_lists(bookId, start_dt, end_dt, status, collaborator_id)
+        results = SettleModel.get_journal_lists(bookId, start_dt, end_dt, status, collaborator_id)
         if not results:
             return jsonify({
                         "data" : "該月份無未結算項目"        
@@ -134,7 +134,7 @@ def checkout(bookId):
         taiwan_tz = pytz.timezone('Asia/Taipei')
         now_taiwan = datetime.datetime.now(taiwan_tz)
         account_dt = now_taiwan.strftime('%Y%m%d%H%M%S')
-        result = settleModel.settle_account(bookId, start_dt, end_dt, member_id, account_dt) 
+        result = SettleModel.settle_account(bookId, start_dt, end_dt, member_id, account_dt) 
         if result == "SUCCESS":
             return jsonify({
                         "ok": True,

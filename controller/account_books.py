@@ -1,5 +1,5 @@
 from flask import *
-from model.book_db import bookModel
+from model.book_db import BookModel
 import jwt
 from config import TOKEN_PW
 
@@ -20,7 +20,7 @@ def book():
         token = session["token"]
         decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
         member_id = decode_data["id"]
-        books = bookModel.get_books_by_member(member_id)
+        books = BookModel.get_books_by_member(member_id)
         if not books: 
             return jsonify({
                         "data" : None
@@ -70,7 +70,7 @@ def book():
         created_member_id = decode_data["id"]
         
         # 確認帳簿名稱是否重複
-        existing_book = bookModel.check_if_exist(book_name, created_member_id)
+        existing_book = BookModel.check_if_exist(book_name, created_member_id)
         if existing_book == "ALREADY EXIST":
             return jsonify({
                         "error": True,
@@ -82,7 +82,7 @@ def book():
                         "data" : "INTERNAL_SERVER_ERROR",             
                     }),500
 
-        new_book = bookModel.create_book(book_name, created_member_id) 
+        new_book = BookModel.create_book(book_name, created_member_id) 
         if new_book == "SUCCESS":
             return jsonify({
                         "ok": True,          
@@ -108,7 +108,7 @@ def book():
         book_id = data["bookId"]
         decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
         created_member_id = decode_data["id"]
-        delete_book = bookModel.delete_book(created_member_id, book_id) 
+        delete_book = BookModel.delete_book(created_member_id, book_id) 
         if not delete_book:
             return jsonify({
                     "error": True,
@@ -147,7 +147,7 @@ def book():
         decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
         created_member_id = decode_data["id"]
         
-        existing_book = bookModel.check_if_exist(book_name, created_member_id)
+        existing_book = BookModel.check_if_exist(book_name, created_member_id)
         if existing_book == "ALREADY EXIST":
             return jsonify({
                         "error": True,
@@ -159,7 +159,7 @@ def book():
                         "data" : "INTERNAL_SERVER_ERROR",             
                     }),500
         
-        update_book = bookModel.update_book(book_name, created_member_id, book_id)
+        update_book = BookModel.update_book(book_name, created_member_id, book_id)
         if not update_book:
             return jsonify({
                         "error": True,

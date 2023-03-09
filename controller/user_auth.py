@@ -1,6 +1,6 @@
 from flask import *
 from werkzeug.security import check_password_hash
-from model.user_db import userModel
+from model.user_db import UserModel
 import jwt
 import datetime
 import boto3
@@ -48,7 +48,7 @@ def user():
 						"data" : "請輸入電子郵件及密碼",             
 					}),400
 
-		existing_user = userModel.get_user_by_email(email)
+		existing_user = UserModel.get_user_by_email(email)
 		if not existing_user: 
 			return jsonify({
 						"error": True,
@@ -111,7 +111,7 @@ def user_modify():
 	# 使用者未更新大頭照
 	if not image:
 		profile = request.form["profile"]
-		update_user = userModel.update_user_without_profile(name, email, id)
+		update_user = UserModel.update_user_without_profile(name, email, id)
 		if update_user == "SUCCESS":
 			# 更新 token 資料
 			payload = {
@@ -171,7 +171,7 @@ def user_modify():
 		profile = f'https://{CLOUDFRONT_PATH}/profile/{unique_filename}'
 
 	# 圖片 CDN 網址及會員資料更新到 RDS
-	update_user = userModel.update_user_with_profile(name, email, profile, id)
+	update_user = UserModel.update_user_with_profile(name, email, profile, id)
 	if update_user == "SUCCESS":
 		# 更新 token 資料
 		payload = {

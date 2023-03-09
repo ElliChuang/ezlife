@@ -140,7 +140,16 @@ footer {
     margin-left: 120px;
   }
 }
-
+@media (max-width: 1200px) {
+  .subcontainer {
+    height: 870px;
+  }
+}
+@media (max-width: 1050px) {
+  .subcontainer {
+    height: 750px;
+  }
+}
 @media (max-width: 576px) {
   .cover-text {
     padding: 5px;
@@ -154,6 +163,9 @@ footer {
   .slogan {
     font-size: 38px;
     font-weight: 800;
+  }
+  .subcontainer {
+    height: 680px;
   }
 }
 @media (max-width: 389px) {

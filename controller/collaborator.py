@@ -1,6 +1,6 @@
 from flask import *
-from model.user_db import userModel
-from model.collaborator_db import collaboratorModel
+from model.user_db import UserModel
+from model.collaborator_db import CollaboratorModel
 import jwt
 from config import TOKEN_PW
 
@@ -29,7 +29,7 @@ def set_collaborator():
         token = session["token"]
         decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
         created_member_id = decode_data["id"]
-        check_auth = collaboratorModel.check_edit_permission(created_member_id, book_id)
+        check_auth = CollaboratorModel.check_edit_permission(created_member_id, book_id)
         if not check_auth:
             return jsonify({
                         "error": True,
@@ -41,7 +41,7 @@ def set_collaborator():
                         "data" : "INTERNAL_SERVER_ERROR",             
                     }),500
 
-        existing_user = userModel.get_user_by_email(email)
+        existing_user = UserModel.get_user_by_email(email)
         if not existing_user:
             return jsonify({
                         "error": True,
@@ -54,7 +54,7 @@ def set_collaborator():
                     }),500
         
         collaborator_id = existing_user["id"]
-        add_co_editor = collaboratorModel.add_collaborator(collaborator_id, book_id)
+        add_co_editor = CollaboratorModel.add_collaborator(collaborator_id, book_id)
         if not add_co_editor:
             return jsonify({
                         "error": True, 
@@ -90,7 +90,7 @@ def set_collaborator():
         token = session["token"]
         decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
         created_member_id = decode_data["id"]
-        check_auth = collaboratorModel.check_edit_permission(created_member_id, book_id)
+        check_auth = CollaboratorModel.check_edit_permission(created_member_id, book_id)
         if not check_auth:
             return jsonify({
                         "error": True,
@@ -101,7 +101,7 @@ def set_collaborator():
                         "error": True,
                         "data" : "INTERNAL_SERVER_ERROR",             
                     }),500
-        delete_co_editor = collaboratorModel.delete_collaborator(collaborator_id, book_id)
+        delete_co_editor = CollaboratorModel.delete_collaborator(collaborator_id, book_id)
         if delete_co_editor == "SUCCESS":
             return jsonify({
                         "ok": True    

@@ -1,5 +1,5 @@
 from flask import *
-from model.book_db import bookModel 
+from model.book_db import BookModel 
 import jwt
 from config import TOKEN_PW
 
@@ -17,7 +17,7 @@ def book_auth(bookId):
     token = session["token"]
     decode_data = jwt.decode(token, TOKEN_PW, algorithms="HS256")
     member_id = decode_data["id"]
-    get_auth = bookModel.get_book_auth(bookId)
+    get_auth = BookModel.get_book_auth(bookId)
     if not get_auth:
         return jsonify({
                     "error": True,

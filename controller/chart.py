@@ -1,5 +1,5 @@
 from flask import *
-from model.analysis_db import analysisModel
+from model.analysis_db import AnalysisModel
 
 # 建立 Flask Blueprint
 chart = Blueprint("chart", __name__)
@@ -35,23 +35,26 @@ def chart_data(bookId):
         end_dt = f'{year}-{month + 1}-01'
     
     # 圓餅圖
-    results_of_pipe = analysisModel.get_pipe(bookId, start_dt, end_dt)
+    results_of_pipe = AnalysisModel.get_pipe(bookId, start_dt, end_dt)
+    if not results_of_pipe:
+        chart_main = {"食":0, "衣":0, "住":0, "行":0, "育":0, "樂":0}
+        chart_character = {"個人":0, "家庭":0, "育兒":0, "寵物":0,"宿舍":0, "旅行":0}
     if results_of_pipe == "INTERNAL_SERVER_ERROR":
         return jsonify({
                     "error": True,
                     "data" : "INTERNAL_SERVER_ERROR",             
                 }),500
-
-    chart_main = {"食":0, "衣":0, "住":0, "行":0, "育":0, "樂":0}
-    chart_character = {"個人":0, "家庭":0, "育兒":0, "寵物":0,"宿舍":0, "旅行":0}
-    for item in results_of_pipe:
-        if item["category"] in chart_main:
-            chart_main[item["category"]] = int(item["amount"])
-        if item["category"] in chart_character:   
-            chart_character[item["category"]] = int(item["amount"])
+    if results_of_pipe and results_of_pipe != "INTERNAL_SERVER_ERROR":
+        chart_main = {"食":0, "衣":0, "住":0, "行":0, "育":0, "樂":0}
+        chart_character = {"個人":0, "家庭":0, "育兒":0, "寵物":0,"宿舍":0, "旅行":0}
+        for item in results_of_pipe:
+            if item["category"] in chart_main:
+                chart_main[item["category"]] = int(item["amount"])
+            if item["category"] in chart_character:   
+                chart_character[item["category"]] = int(item["amount"])
     
     # 明細賬
-    results_of_filtered = analysisModel.get_filtered_datas(bookId, start_dt, end_dt, category_main, category_character, category_object, keyword)
+    results_of_filtered = AnalysisModel.get_filtered_datas(bookId, start_dt, end_dt, category_main, category_character, category_object, keyword)
     if not results_of_filtered:
         return jsonify({
                     "query_year" : year,

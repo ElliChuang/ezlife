@@ -1,6 +1,6 @@
 from flask import *
 from werkzeug.security import generate_password_hash
-from model.user_db import userModel 
+from model.user_db import UserModel 
 import jwt
 import datetime
 import secrets
@@ -21,12 +21,12 @@ def signup():
 					"data" : "請輸入姓名、電子郵件及密碼",             
 				}),400
 
-	existing_user = userModel.get_user_by_email(data["email"])
+	existing_user = UserModel.get_user_by_email(data["email"])
 	if not existing_user:
 		# 將使用者密碼加密
 		hash_password = generate_password_hash(data['password'], method='sha256')
 		initial_profile = 'https://d12sr6yglyx2x4.cloudfront.net/profile/user+(2023.03.05).png'
-		user_id = userModel.create_user(data["name"], data["email"], hash_password, initial_profile)
+		user_id = UserModel.create_user(data["name"], data["email"], hash_password, initial_profile)
 		payload = {
 				"id" : user_id,
 				"name" : data["name"],
@@ -67,11 +67,11 @@ def google_user():
 		return jsonify({"error": True, "data": "Invalid token"})
 
 	# 確認使用者是否已經註冊過
-	existing_user = userModel.get_user_by_email(email)
+	existing_user = UserModel.get_user_by_email(email)
 	if not existing_user:
 		password = secrets.token_hex(16)
 		initial_profile = 'https://d12sr6yglyx2x4.cloudfront.net/profile/user+(2023.03.05).png'
-		user_id = userModel.create_user(name, email, password, initial_profile) 
+		user_id = UserModel.create_user(name, email, password, initial_profile) 
 		if user_id == "INTERNAL_SERVER_ERROR":
 			return jsonify({
 				"error" : True,

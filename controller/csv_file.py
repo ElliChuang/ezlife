@@ -1,5 +1,5 @@
 from flask import *
-from model.analysis_db import analysisModel
+from model.analysis_db import AnalysisModel
 import pandas as pd
 
 # 建立 Flask Blueprint
@@ -35,7 +35,7 @@ def download(bookId):
         end_dt = f'{year}-{month + 1}-01'
     
     # 明細賬
-    results_of_filtered = analysisModel.get_filtered_datas(bookId, start_dt, end_dt, category_main, category_character, category_object, keyword)
+    results_of_filtered = AnalysisModel.get_filtered_datas(bookId, start_dt, end_dt, category_main, category_character, category_object, keyword)
     if not results_of_filtered:
         journal_list = {"data": "查無帳目明細"}
         df = pd.DataFrame(journal_list, index = [0])

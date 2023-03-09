@@ -1,5 +1,5 @@
 from flask import *
-from model.redis_db import Redis
+from model.db import Redis
 
 
 # 建立 Flask Blueprint

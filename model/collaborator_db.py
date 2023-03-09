@@ -1,20 +1,12 @@
 from mysql.connector import errorcode
 import mysql.connector 
-from config import DB_CONFIG
+from model.db import MySQL
 
 
 class CollaboratorModel():
-    def __init__(self):
-        self.conn_pool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name = "ezlife_pool",
-            pool_size = 10,
-            pool_reset_session = True,
-            **DB_CONFIG)
-
-
-    def check_edit_permission(self, created_member_id, book_id):
+    def check_edit_permission(created_member_id, book_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         SELECT * FROM account_book 
@@ -37,9 +29,9 @@ class CollaboratorModel():
                 connection_object.close()
 
 
-    def add_collaborator(self, collaborator_id, book_id):
+    def add_collaborator(collaborator_id, book_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         INSERT INTO collaborator (collaborator_id, book_id) 
@@ -64,9 +56,9 @@ class CollaboratorModel():
                 connection_object.close()
 
     
-    def delete_collaborator(self, collaborator_id, book_id):
+    def delete_collaborator(collaborator_id, book_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         DELETE c FROM collaborator c
@@ -88,6 +80,3 @@ class CollaboratorModel():
             if connection_object.is_connected():
                 mycursor.close()
                 connection_object.close()
-
-
-collaboratorModel = CollaboratorModel()

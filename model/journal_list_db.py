@@ -1,22 +1,13 @@
 from mysql.connector import errorcode
 import mysql.connector 
-from model.redis_db import Redis
+from model.db import Redis, MySQL
 from datetime import timedelta 
-from config import DB_CONFIG
 
 
-class JournalListkModel():
-    def __init__(self):
-        self.conn_pool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name = "ezlife_pool",
-            pool_size = 10,
-            pool_reset_session = True,
-            **DB_CONFIG)
-
-    
-    def get_journal_lists(self, bookId, start_dt, end_dt):
+class JournalListModel():
+    def get_journal_lists(bookId, start_dt, end_dt):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         SELECT 
@@ -82,9 +73,9 @@ class JournalListkModel():
                 connection_object.close()
 
             
-    def create_journal_list(self,journal_list_id, date, amount, bookId, journal_list_price_value, category_main, category_object, category_character, status, created_time, keyword):
+    def create_journal_list(journal_list_id, date, amount, bookId, journal_list_price_value, category_main, category_object, category_character, status, created_time, keyword):
         try:    
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             mycursor.execute("START TRANSACTION")
 
@@ -144,9 +135,9 @@ class JournalListkModel():
                 connection_object.close()
         
     
-    def delete_journal_list(self, id, status):
+    def delete_journal_list(id, status):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         DELETE j FROM journal_list j
@@ -171,9 +162,9 @@ class JournalListkModel():
                 connection_object.close()
 
 
-    def modify_journal_list(self, journal_list_id, date, amount, modified_time, bookId, journal_list_price_value, category_main, category_object, category_character, keyword):
+    def modify_journal_list(journal_list_id, date, amount, modified_time, bookId, journal_list_price_value, category_main, category_object, category_character, keyword):
         try:    
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             mycursor.execute("START TRANSACTION")
 
@@ -247,9 +238,9 @@ class JournalListkModel():
                 mycursor.close()
                 connection_object.close()
 
-    def get_status_of_journal_list(self, journal_list_id, status):
+    def get_status_of_journal_list(journal_list_id, status):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             mycursor.execute("""
                                 SELECT journal_list_id
@@ -270,5 +261,3 @@ class JournalListkModel():
             if connection_object.is_connected():
                 mycursor.close()
                 connection_object.close()
-
-journalListModel = JournalListkModel()

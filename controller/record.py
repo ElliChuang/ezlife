@@ -1,5 +1,5 @@
 from flask import *
-from model.settle_db import settleModel 
+from model.settle_db import SettleModel 
 
 # 建立 Flask Blueprint
 record = Blueprint("record", __name__)
@@ -17,7 +17,7 @@ def get_record(bookId):
 
         account_dt = request.args.get("account_dt")
         status = "已結算"
-        results = settleModel.get_records(bookId, account_dt, status)
+        results = SettleModel.get_records(bookId, account_dt, status)
         if not results:
             return jsonify({
                         "data" : "無結算紀錄"             

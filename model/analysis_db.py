@@ -1,20 +1,12 @@
 from mysql.connector import errorcode
-import mysql.connector 
-from config import DB_CONFIG
+import mysql.connector
+from model.db import MySQL 
 
 
 class AnalysisModel():
-    def __init__(self):
-        self.conn_pool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name = "ezlife_pool",
-            pool_size = 10,
-            pool_reset_session = True,
-            **DB_CONFIG)
-        
-
-    def get_pipe(self, bookId, start_dt, end_dt):
+    def get_pipe(bookId, start_dt, end_dt):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ('''
                         SELECT sum(j.amount) as amount, c.name as category
@@ -32,6 +24,8 @@ class AnalysisModel():
             results = mycursor.fetchall()
             if results:
                 return results
+            else:
+                return None
 
         except mysql.connector.Error as err:
             print("Something went wrong when get pipe: {}".format(err))
@@ -43,9 +37,9 @@ class AnalysisModel():
                 connection_object.close()
 
         
-    def get_filtered_datas(self, bookId, start_dt, end_dt, category_main, category_character, category_object, keyword):
+    def get_filtered_datas(bookId, start_dt, end_dt, category_main, category_character, category_object, keyword):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query_basic = """
                             SELECT 
@@ -167,7 +161,3 @@ class AnalysisModel():
             if connection_object.is_connected():
                 mycursor.close()
                 connection_object.close()
-
-
-
-analysisModel = AnalysisModel()

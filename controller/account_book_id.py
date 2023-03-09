@@ -1,5 +1,5 @@
 from flask import *
-from model.journal_list_db import journalListModel 
+from model.journal_list_db import JournalListModel
 import datetime
 import random
 import json
@@ -30,7 +30,7 @@ def journal_list(bookId):
             start_dt = f'{year}-{month}-01'
             end_dt = f'{year}-{month + 1}-01'
 
-        results = journalListModel.get_journal_lists(bookId, start_dt, end_dt)
+        results = JournalListModel.get_journal_lists(bookId, start_dt, end_dt)
         if not results:
             return jsonify({
                         "data" : "尚無新增項目"            
@@ -120,7 +120,7 @@ def journal_list(bookId):
         payable_dict = {item['collaborator_id']: item['price'] for item in payable}
         ids = set(prepaid_dict) | set(payable_dict)
         journal_list_price_value = [(journal_list_id, id, prepaid_dict.get(id, 0), payable_dict.get(id, 0)) for id in ids]
-        result = journalListModel.create_journal_list(journal_list_id, date, amount, bookId, journal_list_price_value, category_main, category_object, category_character ,status , created_time, keyword)
+        result = JournalListModel.create_journal_list(journal_list_id, date, amount, bookId, journal_list_price_value, category_main, category_object, category_character ,status , created_time, keyword)
         if result == "SUCCESS":
             return jsonify({
                         "ok": True,          
@@ -145,7 +145,7 @@ def journal_list(bookId):
         data = request.get_json()
         id = data["id"]
         status = "未結算"
-        result = journalListModel.delete_journal_list(id, status)
+        result = JournalListModel.delete_journal_list(id, status)
         if not result :
             return jsonify({
                     "data": "支出已結算，無法刪除。"    
@@ -187,7 +187,7 @@ def journal_list(bookId):
                     }),403
     
         status = "已結算"
-        result = journalListModel.get_status_of_journal_list(journal_list_id, status)
+        result = JournalListModel.get_status_of_journal_list(journal_list_id, status)
         if result == "已結算":
             return jsonify({
                         "data": "支出已結算，無法編輯"    
@@ -204,7 +204,7 @@ def journal_list(bookId):
         payable_dict = {item['collaborator_id']: item['price'] for item in payable}
         ids = set(prepaid_dict) | set(payable_dict)
         journal_list_price_value = [( prepaid_dict.get(id, 0), payable_dict.get(id, 0), modified_time ,journal_list_id, id ) for id in ids]
-        result = journalListModel.modify_journal_list(journal_list_id, date, amount, modified_time, bookId, journal_list_price_value, category_main, category_object, category_character, keyword)
+        result = JournalListModel.modify_journal_list(journal_list_id, date, amount, modified_time, bookId, journal_list_price_value, category_main, category_object, category_character, keyword)
         if result == "SUCCESS":
             return jsonify({
                         "ok": True,          

@@ -1,20 +1,12 @@
 from mysql.connector import errorcode
 import mysql.connector 
-from config import DB_CONFIG
+from model.db import MySQL
 
 
 class UserModel():
-    def __init__(self):
-        self.conn_pool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name = "ezlife_pool",
-            pool_size = 10,
-            pool_reset_session = True,
-            **DB_CONFIG)
-
-
-    def get_user_by_email(self, email):
+    def get_user_by_email(email):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("SELECT * FROM member where email = %s")
             mycursor.execute(query, (email,))
@@ -41,9 +33,9 @@ class UserModel():
                 connection_object.close()
     
 
-    def create_user(self, name, email, password, profile):
+    def create_user(name, email, password, profile):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("INSERT INTO member (name, email, password, profile) VALUES (%s, %s, %s, %s)")
             value = (name, email, password, profile)
@@ -63,9 +55,9 @@ class UserModel():
                 connection_object.close()
 
 
-    def update_user_with_profile(self, name, email, profile, id):
+    def update_user_with_profile(name, email, profile, id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         UPDATE member 
@@ -87,9 +79,9 @@ class UserModel():
                 connection_object.close()
 
     
-    def update_user_without_profile(self, name, email, id):
+    def update_user_without_profile(name, email, id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         UPDATE member 
@@ -110,11 +102,6 @@ class UserModel():
                 mycursor.close()
                 connection_object.close()
 
-
-
-
-
-userModel = UserModel()
 
 
 

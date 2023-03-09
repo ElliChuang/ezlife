@@ -1,20 +1,12 @@
 from mysql.connector import errorcode
 import mysql.connector 
-from config import DB_CONFIG
+from model.db import MySQL
 
 
 class SettleModel():
-    def __init__(self):
-        self.conn_pool = mysql.connector.pooling.MySQLConnectionPool(
-            pool_name = "ezlife_pool",
-            pool_size = 10,
-            pool_reset_session = True,
-            **DB_CONFIG)
-        
-
-    def get_overview(self, bookId, start_dt, end_dt, status):
+    def get_overview(bookId, start_dt, end_dt, status):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query = ("""
                         SELECT 
@@ -50,9 +42,9 @@ class SettleModel():
                 mycursor.close()
                 connection_object.close()
 
-    def get_journal_lists(self, bookId, start_dt, end_dt, status, collaborator_id):
+    def get_journal_lists(bookId, start_dt, end_dt, status, collaborator_id):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query_basic = ("""
                             SELECT 
@@ -112,9 +104,9 @@ class SettleModel():
                 connection_object.close()
 
 
-    def settle_account(self, bookId, start_dt, end_dt, member_id, account_dt):
+    def settle_account(bookId, start_dt, end_dt, member_id, account_dt):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             mycursor.execute("START TRANSACTION")
             query = ("""
@@ -156,9 +148,9 @@ class SettleModel():
                 connection_object.close() 
 
 
-    def get_records(self, bookId, account_dt, status):
+    def get_records(bookId, account_dt, status):
         try:
-            connection_object = self.conn_pool.get_connection()
+            connection_object = MySQL.conn_obj()
             mycursor = connection_object.cursor(dictionary=True)
             query_basic = ("""
                             SELECT 
@@ -209,4 +201,3 @@ class SettleModel():
                 connection_object.close()
 
 
-settleModel = SettleModel()
