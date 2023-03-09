@@ -25,6 +25,7 @@ Test **account** and **password** :
 - [Architecture](#architecture)
 - [Database Schema](#database-schema)
 - [Frontend Technique](#frontend-technique)
+- [API Doc](#api-doc)
 - [Contact](#contact)
 
 ## Main Features
@@ -99,6 +100,10 @@ Test **account** and **password** :
 - Third Party Library
   - Chart.js
   - FullCalendar
+
+## API Doc
+
+[API Doc](https://app.swaggerhub.com/apis-docs/ELLI8208/EzLife/1.0.0#/)
 
 ## Contact
 
