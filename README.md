@@ -61,7 +61,7 @@ Test **account** and **password** :
 - Networking
   - HTTP & HTTPS
   - Domain Name System (DNS)
-  - NGINX
+  - Nginx
   - SSL (Let's Encrypt)
 - Third Party Library
   - Google OAuth 2.0
