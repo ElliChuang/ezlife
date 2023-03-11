@@ -16,7 +16,7 @@ Test **account** and **password** :
 
 - Easy account settlement at your fingertips and access your records anytime!
 
-  ![Image showing analysis](/readme/settlement.gif)
+  ![Image showing settlement](/readme/settlement.gif)
 
 ## Catalog
 
@@ -32,9 +32,9 @@ Test **account** and **password** :
 
 - Memebr System
   - User can sign in locally or with Google account (OAuth2.0).
-  - User authentication with Json Web Token.
+  - User authentication with JSON Web Token.
 - Shared Account Book
-  - Use socket.io for real time co-editing.
+  - Use Socket.IO for real time co-editing.
   - Invite your friend with email.
 - Analyze and Export as CSV file
   - Supports multi-condition filtering for analyzing.
@@ -46,7 +46,6 @@ Test **account** and **password** :
 
 - Deployment
   - Docker
-  - Docker Hub
 - Language / Web Framework
   - Python / Flask
 - Database
@@ -77,19 +76,19 @@ Test **account** and **password** :
 
 - ### Server Architecture
 
-  ![Image showing analysis](/readme/Server_Architecture.png)
+  ![Image showing sever architecture](/readme/Server_Architecture.png)
 
 - ### Socket Architecture
 
-  ![Image showing analysis](/readme/Socket_Architecture.png)
+  ![Image showing socket architecture](/readme/Socket_Architecture.png)
 
 - ### Cache Architecture
 
-  ![Image showing analysis](/readme/Redis_Architecture.png)
+  ![Image showing redis architecture](/readme/Redis_Architecture.png)
 
 ## Database Shema
 
-![Image showing analysis](/readme/database.png)
+![Image showing database](/readme/database.png)
 
 ## Frontend Technique
 
