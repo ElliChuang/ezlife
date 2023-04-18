@@ -97,7 +97,9 @@ class JournalListModel():
                 VALUES (%s, %s, %s)""", status_value)  
 
             if keyword:
-                keyword_id_in_redis = Redis.connect_to_redis().get(keyword)
+                print(f"bookId{bookId}")
+                keyword_id_in_redis = Redis.connect_to_redis().zscore(f"bookId{bookId}", keyword)
+                print(keyword_id_in_redis)
                 if keyword_id_in_redis:
                     journal_list_keyword_value = (journal_list_id, keyword_id_in_redis)
                     mycursor.execute("""
@@ -114,8 +116,8 @@ class JournalListModel():
                     mycursor.execute("""
                         INSERT INTO journal_list_keyword (journal_list_id, keyword_id) 
                         VALUES (%s, %s)""", journal_list_keyword_value)
-                    Redis.connect_to_redis().set(keyword, keyword_id)
-                    Redis.connect_to_redis().expire(keyword, timedelta(weeks=1))
+                    Redis.connect_to_redis().zadd(f"bookId{bookId}", {keyword : keyword_id})
+                    Redis.connect_to_redis().expire(f"bookId{bookId}", timedelta(weeks=26))
             else:
                 mycursor.execute("""
                         INSERT INTO journal_list_keyword (journal_list_id) 
