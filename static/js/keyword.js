@@ -1,14 +1,18 @@
 const keyword = document.querySelector("input[name='keyword']");
 const ul = document.querySelector(".keyword-ul");
+const url = location.href;
+const bookId = url.split("account_book/")[1].split("/")[0];
+
 let removing = false;
 keyword.addEventListener("keyup", searchKeyword);
 async function searchKeyword() {
   if (removing) return;
   removeUl();
   removing = true;
-  const url = `/api/keywords?keyword=${keyword.value}`;
+  const url = `/api/keywords?bookId=${bookId}&keyword=${keyword.value}`;
   const fetchData = await fetch(url, { method: "GET" });
   const jsonData = await fetchData.json();
+  console.log(jsonData);
   if (!jsonData.data) {
     removing = false;
     return;
